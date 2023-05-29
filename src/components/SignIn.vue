@@ -7,7 +7,6 @@ import * as firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
 import { auth } from "../firebaseConfig"
 
-
 var uiConfig = {
     signInSuccessUrl: '/',
     signInOptions: [
@@ -24,7 +23,6 @@ const password = ref('');
 const router = useRouter();
 
 </script>
-
 
 <template>
     <v-sheet width="800" class="mx-auto">

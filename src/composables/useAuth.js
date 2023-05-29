@@ -38,6 +38,7 @@ export function useAuth() {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUID.value = user.uid;
+            } else {
             }
         });
         console.log("currentUID: ", currentUID.value);
