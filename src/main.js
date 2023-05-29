@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import './index.css'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import vue3GoogleLogin from 'vue3-google-login'
 import Home from './views/HomeView.vue'
 import SignUp from './components/SignUp.vue'
 import 'vuetify/styles'
@@ -35,6 +34,6 @@ const vuetify = createVuetify({
 })
 
 createApp(App)
-.use(router)
+// .use(router)
 .use(vuetify)
 .mount('#app')

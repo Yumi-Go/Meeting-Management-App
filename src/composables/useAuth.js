@@ -1,6 +1,8 @@
+import { ref } from 'vue'
 import { auth, db } from '../firebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 
+const currentUID = ref(null);
 export function useAuth() {
 
     function emailSignUp(email, password) {
@@ -32,14 +34,22 @@ export function useAuth() {
           });
     }
 
+    function userStateObserver() {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUID.value = user.uid;
+            }
+        });
+        console.log("currentUID: ", currentUID.value);
+    }
+
     function logOut() {
         signOut(auth).then(() => { 
             console.log("Sign Out successful!");
         }).catch((error) => {
             console.log("SignOut Error: ", error);
-          });
-
+        });
     }
 
-    return { emailSignUp, emailSignIn, logOut }
+    return { currentUID, emailSignUp, emailSignIn, userStateObserver, logOut }
 }
