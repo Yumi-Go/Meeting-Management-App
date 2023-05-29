@@ -9,19 +9,17 @@ const { currentUID, userStateObserver, logOut } = useAuth();
 <template>
     <p>current logged in user's UID: {{ currentUID }}</p>
     <v-container>
-        <v-row align="center" justify="center">
-            <v-col cols="auto">
-                <v-btn size="x-large">Book a meeting</v-btn>
-            </v-col>
+        <v-row justify="center">
+            <v-btn size="x-large" class="mb-5 w-75">Book a meeting</v-btn>
         </v-row>
-        <v-row align="center" justify="center">
-            <v-col cols="auto">
-                <v-btn size="x-large">Manage Schedules</v-btn>
-            </v-col>
+        <v-row justify="center">
+            <v-btn size="x-large" class="mb-5 w-75">Manage Schedules</v-btn>
         </v-row>
-        <v-row>
-            <v-btn @click="logOut">Log Out</v-btn>
-
+        <v-row justify="center">
+            <v-col cols="auto">
+                <v-btn @click="" class="mr-10">Setting</v-btn>
+                <v-btn @click="logOut">Log Out</v-btn>
+            </v-col>
         </v-row>
     </v-container>
 </template>
