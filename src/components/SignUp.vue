@@ -1,7 +1,20 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuth } from "../composables/useAuth"
-import { useRouter } from 'vue-router'
+import firebase from 'firebase/compat/app';
+import * as firebaseui from 'firebaseui'
+import 'firebaseui/dist/firebaseui.css'
+import { auth } from "../firebaseConfig"
+
+
+var uiConfig = {
+    signInSuccessUrl: 'http://www.google.com',
+    signInOptions: [
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    ],
+};
+var ui = new firebaseui.auth.AuthUI(auth);
+ui.start('#firebaseui-auth-container', uiConfig);
 
 const { emailSignUp } = useAuth();
 
@@ -108,7 +121,7 @@ const error = ref(null);
                     <v-col class="mr-1 pa-0">
                         <v-btn
                             width="100%"
-                            height="50"
+                            height="40"
                             color="error"
                             class=""
                             @click="cancel"
@@ -119,7 +132,7 @@ const error = ref(null);
                     <v-col class="ml-1 pa-0">
                         <v-btn
                             width="100%"
-                            height="50"
+                            height="40"
                             color="success"
                             class=""
                             @click="emailSignUp(email, password)"
@@ -127,6 +140,9 @@ const error = ref(null);
                             Submit
                         </v-btn>
                     </v-col>
+                </v-row>
+                <v-row align-content="center" class="flex justify-center">
+                    <div id="firebaseui-auth-container"></div>
                 </v-row>
             </v-container>
         </v-form>
