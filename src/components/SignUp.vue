@@ -1,29 +1,39 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuth } from "../composables/useAuth"
+import { useFirestore } from '../composables/useFirestore';
+import { useRouter } from 'vue-router'
+
+const router = useRouter();
 
 const { emailSignUp } = useAuth();
+const { 
+        fName,
+        mName,
+        lName,
+        organization,
+        department,
+        position,
+        role,
+        location,
+        timezone,
+        email,
+        addUser
+    } = useFirestore();
 
-const fName = ref('');
-const mName = ref('');
-const lName = ref('');
-const organization = ref('');
-const department = ref('');
-const position = ref('');
-const role = ref('');
-const location = ref('');
-const timeZone = ref('');
-const email = ref('');
-const password = ref('');
-const pNumber = ref('');
-const error = ref(null);
+const password = ref();
+function submit() {
+    emailSignUp(email.value, password.value);
+    // await addUser();
+    router.push('/');
+}
 
 </script>
 
 
 <template>
     <v-sheet width="800" class="mx-auto">
-        <v-form ref="form">
+        <v-form ref="form" @submit.prevent>
             <v-container>
                 <v-row>
                     <v-col class="mr-2 pa-0">
@@ -84,7 +94,7 @@ const error = ref(null);
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="timeZone"
+                            v-model="timezone"
                             label="Time Zone"
                         />
                     </v-col>
@@ -121,7 +131,8 @@ const error = ref(null);
                             height="40"
                             color="success"
                             class=""
-                            @click="emailSignUp(email, password)"
+                            @click="submit()"
+                            type="submit"
                         >
                             Submit
                         </v-btn>

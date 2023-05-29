@@ -1,8 +1,11 @@
 import { ref } from 'vue'
 import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { useFirestore } from './useFirestore';
 
+const { addUser } = useFirestore();
 const currentUID = ref(null);
+
 export function useAuth() {
 
     function emailSignUp(email, password) {
@@ -11,6 +14,8 @@ export function useAuth() {
         .then((userCredential) => {
             const user = userCredential.user;
             console.log(user);
+            console.log("user.uid: ", user.uid);
+            addUser(user.uid);
         })
         .catch((error) => {
             const errorCode = error.code;

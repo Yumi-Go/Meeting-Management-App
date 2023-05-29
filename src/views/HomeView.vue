@@ -1,6 +1,4 @@
 <script setup>
-import { watch } from 'vue'
-
 import { useAuth } from '../composables/useAuth'
 import { useRouter } from 'vue-router'
 import SignIn from '../components/SignIn.vue'
@@ -18,10 +16,9 @@ function clickLogout() {
 </script>
 
 <template>
-    <p>{{ router }}</p>
-    <p>current logged in user's UID: {{ currentUID }}</p>
     <SignIn v-if="currentUID === null"/>
     <v-container v-else>
+        <v-row>current logged in user's UID: {{ currentUID }}</v-row>
         <v-row justify="center">
             <v-btn
                 @click="router.push('/booking')"
