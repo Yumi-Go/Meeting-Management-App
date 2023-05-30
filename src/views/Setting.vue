@@ -15,14 +15,11 @@ const {
         role,
         location,
         timezone,
-        addUser
     } = useFirestore();
 
 const password = ref();
 function submit() {
-    emailSignUp(email.value, password.value);
-    // await addUser();
-    router.push('/');
+
 }
 
 </script>
@@ -104,7 +101,7 @@ function submit() {
                         required
                     />
                 </v-row>
-                <!-- <v-row>
+                <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
                             v-model="password"
@@ -119,7 +116,7 @@ function submit() {
                             required
                         />
                     </v-col>
-                </v-row> -->
+                </v-row>
                 <v-row>
                     <v-col class="mr-1 pa-0">
                         <v-btn

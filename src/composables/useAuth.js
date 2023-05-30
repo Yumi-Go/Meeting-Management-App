@@ -1,22 +1,9 @@
 import { ref } from 'vue'
-import { auth, db } from '../firebaseConfig';
-import {
-    signInWithPopup,
-    GoogleAuthProvider,
-    EmailAuthProvider,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut
-} from "firebase/auth";
+import { auth } from '../firebaseConfig';
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useFirestore } from './useFirestore';
 
-const googleProvider = new GoogleAuthProvider();
-const emailProvider = new EmailAuthProvider();
-
-
 const { addUser } = useFirestore();
-const currentUser = auth.currentUser;
 const currentUID = ref(null);
 
 export function useAuth() {

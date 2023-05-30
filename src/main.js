@@ -3,7 +3,6 @@ import './index.css'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from './views/HomeView.vue'
-import SignUp from './components/SignUp.vue'
 import SignIn from './components/SignIn.vue'
 import Setting from './views/Setting.vue'
 import Booking from './views/Booking.vue'
@@ -21,11 +20,6 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: Home,
-    },
-    {
-      path: '/signup',
-      name: 'SignUp',
-      component: SignUp,
     },
     {
       path: '/signin',
