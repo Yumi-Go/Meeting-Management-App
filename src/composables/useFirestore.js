@@ -11,13 +11,13 @@ const position = ref('');
 const role = ref('');
 const location = ref('');
 const timezone = ref('');
-const email = ref('');
+// const email = ref('');
 
 export function useFirestore() {
 
-    async function addUser(uid) {
-        const user = auth.currentUser;
-        console.log("new user: ", user.uid);
+    async function addUser(uid, email) {
+        const currentUser = auth.currentUser;
+        console.log("currentUser in addUser(): ", uid);
         const docRef = await setDoc(doc(db, "users", uid), {
             name: [fName.value, mName.value, lName.value],
             organization: organization.value,
@@ -26,7 +26,7 @@ export function useFirestore() {
             role: role.value,
             location: location.value,
             timezone: timezone.value,
-            email: email.value,
+            email: email,
         });
     }
 
@@ -41,7 +41,6 @@ export function useFirestore() {
         role,
         location,
         timezone,
-        email,
     }
 
 }
