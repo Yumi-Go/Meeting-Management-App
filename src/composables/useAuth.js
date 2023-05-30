@@ -1,12 +1,39 @@
 import { ref } from 'vue'
 import { auth, db } from '../firebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import {
+    signInWithPopup,
+    GoogleAuthProvider,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+} from "firebase/auth";
 import { useFirestore } from './useFirestore';
+
+const provider = new GoogleAuthProvider();
 
 const { addUser } = useFirestore();
 const currentUID = ref(null);
 
 export function useAuth() {
+
+    function googleSignIn() {
+        signInWithPopup(auth, provider)
+        .then((result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            const user = result.user;
+            console.log("googleSignIn User: ", user);
+        }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+        });
+    }
 
     function emailSignUp(email, password) {
         console.log("signUpWithEmail: ");
@@ -57,5 +84,5 @@ export function useAuth() {
         });
     }
 
-    return { currentUID, emailSignUp, emailSignIn, userStateObserver, logOut }
+    return { currentUID, googleSignIn, emailSignUp, emailSignIn, userStateObserver, logOut }
 }

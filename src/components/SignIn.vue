@@ -8,9 +8,23 @@ import 'firebaseui/dist/firebaseui.css'
 import { auth } from "../firebaseConfig"
 
 var uiConfig = {
-    signInSuccessUrl: '/',
+    callbacks: {
+        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+            return true;
+        },
+        uiShown: function() {
+            document.getElementById('loader').style.display = 'none';
+        }
+    },
+    // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+    signInFlow: 'redirect',
+    signInSuccessUrl: '/setting',
     signInOptions: [
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        {
+            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            requireDisplayName: false
+        },
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID
     ],
 };
 var ui = new firebaseui.auth.AuthUI(auth);
@@ -71,6 +85,7 @@ const router = useRouter();
                 </v-row>
                 <v-row align-content="center" class="flex justify-center">
                     <div id="firebaseui-auth-container"></div>
+                    <div id="loader">Loading...</div>
                 </v-row>
             </v-container>
         </v-form>

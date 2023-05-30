@@ -107,11 +107,20 @@ function submit() {
                     />
                 </v-row>
                 <v-row>
-                    <v-text-field
-                        v-model="password"
-                        label="Password"
-                        required
-                    />
+                    <v-col class="mr-2 pa-0">
+                        <v-text-field
+                            v-model="password"
+                            label="Password"
+                            required
+                        />
+                    </v-col>
+                    <v-col class="ma-0 pa-0">
+                        <v-text-field
+                            v-model="passwordConfirm"
+                            label="Password Confirmation"
+                            required
+                        />
+                    </v-col>
                 </v-row>
                 <v-row>
                     <v-col class="mr-1 pa-0">
