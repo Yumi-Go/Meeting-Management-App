@@ -1,9 +1,7 @@
 import { ref } from 'vue'
 import { auth } from '../firebaseConfig';
 import { onAuthStateChanged, signOut, updatePassword } from "firebase/auth";
-import { useFirestore } from './useFirestore';
 
-const { addUser } = useFirestore();
 const currentUID = ref(null);
 
 export function useAuth() {
@@ -12,7 +10,6 @@ export function useAuth() {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUID.value = user.uid;
-                addUser(user.uid, user.email);
             } else {
                 console.log("The logged in user does not exist.");
             }
@@ -36,7 +33,6 @@ export function useAuth() {
             console.log("error: ", error);
         });
     }
-
 
     return { currentUID, userStateObserver, logOut, changePassword }
 }

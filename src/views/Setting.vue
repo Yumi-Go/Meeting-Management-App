@@ -12,17 +12,7 @@ const { getUserInfo, updateUserInfo } = useFirestore();
 const { changePassword } = useAuth();
 const userAuth = auth.currentUser;
 
-function userData() {
-    getUserInfo()
-    .then((data) => {
-        console.log("data: ", data);
-        console.log("data type: ", typeof data);
-        return data;
-    });
-}
-userData();
-
-const fName = ref('');
+const fName = ref('this');
 const mName = ref('');
 const lName = ref('');
 const organization = ref('');
@@ -32,21 +22,28 @@ const role = ref('');
 const location = ref('');
 const timezone = ref('');
 
-onBeforeMount(() => {
-    fName.value = userData.fName ?? '';
-    mName.value = userData.mName ?? '';
-    lName.value = userData.lName ?? '';
-    organization.value = userData.organization ?? 'nope';
-    department.value = userData.department ?? '';
-    position.value = userData.position ?? '';
-    role.value = userData.role ?? '';
-    location.value = userData.location ?? '';
-    timezone.value = userData.timezone ?? '';
+function loadUserInfo(data) {
+    fName.value = data.fName ?? '';
+    mName.value = data.mName ?? '';
+    lName.value = data.lName ?? '';
+    organization.value = data.organization ?? 'nope';
+    department.value = data.department ?? '';
+    position.value = data.position ?? '';
+    role.value = data.role ?? '';
+    location.value = data.location ?? '';
+    timezone.value = data.timezone ?? '';
     console.log("fName: ", fName.value);
-    console.log("userData|: ", userData.email);
-});
+    console.log("userData|: ", data.email);
+}
 
-
+async function userData() {
+    const data = await getUserInfo();
+    console.log("data: ", data);
+    console.log("data type: ", typeof data);
+    loadUserInfo(data);
+    return data;
+}
+userData();
 
 const rules = {
     fName: {
@@ -144,7 +141,7 @@ async function submit() {
         return;
     }
     console.log("form validation succeed!");
-    await updateUserInfo(
+    updateUserInfo(
         fName.value,
         mName.value,
         lName.value,
@@ -176,7 +173,7 @@ async function submit() {
     <strong> {{ error.$message }} </strong>
     </p>
     <v-sheet width="800" class="mx-auto">
-        <v-form ref="form" @submit.prevent="submit">
+        <v-form ref="form" @submit.prevent>
             <v-container>
                 <v-row>
                     <v-col class="mr-2 pa-0">
@@ -286,6 +283,7 @@ async function submit() {
                             height="40"
                             color="success"
                             class=""
+                            @click="submit"
                             type="submit"
                         >
                             Save

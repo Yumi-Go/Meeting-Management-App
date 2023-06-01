@@ -7,16 +7,10 @@ export function useFirestore() {
 
     const user = auth.currentUser;
 
-    async function addUser(uid, email) {
-        console.log("currentUser in addUser(): ", uid);
-        const docRef = await setDoc(doc(db, "users", uid), {
-            email: email,
-        });
-    }
-
     async function updateUserInfo(
         fName, mName, lName, organization, department, position, role, location, timezone
     ) {
+        console.log("uid of user: ", user.uid);
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
             fName: fName,
@@ -44,9 +38,7 @@ export function useFirestore() {
     }
 
     return {
-        addUser,
         updateUserInfo,
         getUserInfo
     }
-
 }
