@@ -25,14 +25,27 @@ export function useAuth() {
         });
     }
 
+    function reAuthentication(user) {
+        // const user = auth.currentUser;
+        const credential = promptForCredentials();
+        reauthenticateWithCredential(user, credential)
+        .then(() => {
+            console.log("User Re-Authenticated successfully!");
+        }).catch((error) => {
+            console.log("User Re-Authentication error: ", error);
+        });
+    }
+
     function changePassword(newPassword) {
         const user = auth.currentUser;
-        updatePassword(user, newPassword).then(() => {
+        reAuthentication(user);
+        updatePassword(user, newPassword)
+        .then(() => {
             console.log("Password Updated successfully!!");
         }).catch((error) => {
             console.log("error: ", error);
         });
     }
 
-    return { currentUID, userStateObserver, logOut, changePassword }
+    return { currentUID, userStateObserver, logOut, reAuthentication,changePassword }
 }

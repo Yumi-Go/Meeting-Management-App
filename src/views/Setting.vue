@@ -49,57 +49,57 @@ const rules = {
     fName: {
         required,
         maxLength: helpers.withMessage(
-            'First Name must be 50 characters or less.',
-            maxLength(50)
+            'First Name must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     mName: {
         maxLength: helpers.withMessage(
-            'Middle Name must be 50 characters or less.',
-            maxLength(50)
+            'Middle Name must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     lName: {
         required,
         maxLength: helpers.withMessage(
-            'Last Name must be 50 characters or less.',
-            maxLength(50)
+            'Last Name must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     organization: {
         maxLength: helpers.withMessage(
-            'Organization must be 50 characters or less.',
-            maxLength(50)
+            'Organization must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     department: {
         maxLength: helpers.withMessage(
-            'Department must be 50 characters or less.',
-            maxLength(50)
+            'Department must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     position: {
         maxLength: helpers.withMessage(
-            'Position must be 50 characters or less.',
-            maxLength(50)
+            'Position must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     role: {
         maxLength: helpers.withMessage(
-            'Role must be 50 characters or less.',
-            maxLength(50)
+            'Role must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     location: {
         maxLength: helpers.withMessage(
-            'Location must be 50 characters or less.',
-            maxLength(50)
+            'Location must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     timezone: {
         maxLength: helpers.withMessage(
-            'Time Zone must be 50 characters or less.',
-            maxLength(50)
+            'Time Zone must be 20 characters or less.',
+            maxLength(20)
         ),
     },
     // password: {
@@ -153,6 +153,13 @@ async function submit() {
         timezone.value
     );
     router.push('/');
+}
+
+const passwordResetDialogOpen = ref(false);
+
+function resetPassword() {
+    passwordResetDialogOpen.value = true;
+
 }
 
 // const timeZones = Intl.supportedValuesOf('timeZone')
@@ -247,7 +254,60 @@ async function submit() {
                     />
                 </v-row>
                 <v-row>
-                    <v-btn variant="tonal" class="tw-w-full tw-mb-10">Change Password</v-btn>
+                    <v-btn
+                        variant="tonal"
+                        class="tw-w-full tw-mb-10"
+                    >
+                        Change Password
+                        <v-dialog
+                            v-model="passwordResetDialogOpen"
+                            activator="parent"
+                            width="500"
+                        >
+                        <v-card>
+                            <v-card-title>
+                                <span class="text-h5">Change Password</span>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-container>
+                                    <v-row>
+                                        <v-text-field
+                                            label="Password*"
+                                            type="password"
+                                            required
+                                        ></v-text-field>
+                                    </v-row>
+                                    <v-row>
+                                        <v-text-field
+                                            label="Confirm Password*"
+                                            type="password"
+                                            required
+                                        ></v-text-field>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer/>
+                                <v-btn
+                                    color="blue-darken-1"
+                                    variant="text"
+                                    @click="passwordResetDialogOpen = false"
+                                >
+                                    Cancel
+                                </v-btn>
+                                <v-btn
+                                    color="blue-darken-1"
+                                    variant="text"
+                                    @click="passwordResetDialogOpen = false"
+                                >
+                                    Save
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+
+
+                        </v-dialog>
+                    </v-btn>
                 </v-row>
                 <!-- <v-row>
                     <v-col class="mr-2 pa-0">
@@ -272,7 +332,7 @@ async function submit() {
                             height="40"
                             color="error"
                             class=""
-                            @click="cancel"
+                            @click="router.push('/')"
                         >
                             Cancel
                         </v-btn>
