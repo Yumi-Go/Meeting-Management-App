@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { auth } from '../firebaseConfig';
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, updatePassword } from "firebase/auth";
 import { useFirestore } from './useFirestore';
 
 const { addUser } = useFirestore();
@@ -28,5 +28,15 @@ export function useAuth() {
         });
     }
 
-    return { currentUID, userStateObserver, logOut }
+    function changePassword(newPassword) {
+        const user = auth.currentUser;
+        updatePassword(user, newPassword).then(() => {
+            console.log("Password Updated successfully!!");
+        }).catch((error) => {
+            console.log("error: ", error);
+        });
+    }
+
+
+    return { currentUID, userStateObserver, logOut, changePassword }
 }

@@ -13,7 +13,6 @@ var uiConfig = {
         uiShown: function() {
             document.getElementById('loader').style.display = 'none';
         }
-
     },
     signInFlow: 'popup',
     signInSuccessUrl: '/setting',
