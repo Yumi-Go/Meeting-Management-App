@@ -23,6 +23,8 @@ const userInfo = ref({
     timezone: ''
 });
 // const userInfo = ref();
+const isUserReAuthenticated = ref(false);
+const isPasswordChanged = ref(false);
 
 export function useAuth() {
 
@@ -71,6 +73,8 @@ export function useAuth() {
             reauthenticateWithCredential(user, credential)
             .then(() => {
                 console.log("User Re-Authenticated successfully!");
+                isUserReAuthenticated.value = true;
+                console.log("isUserReAuthenticated: ", isUserReAuthenticated.value);
             }).catch((error) => {
                 console.log("User Re-Authentication error: ", error);
             });
@@ -87,6 +91,7 @@ export function useAuth() {
                 console.log("User Re-Authentication error: ", error);
             });
         }
+        // return isUserReAuthenticated.value;
     }
 
     function changePassword(newPassword) {
@@ -95,10 +100,14 @@ export function useAuth() {
         updatePassword(user, newPassword)
         .then(() => {
             console.log("Password Updated successfully!!");
+            isPasswordChanged.value = true;
         }).catch((error) => {
             console.log("error: ", error);
+            isPasswordChanged.value = false;
         });
+        // isUserReAuthenticated.value = false;
+        // return isPasswordChanged.value;
     }
 
-    return { currentUser, userInfo, userStateObserver, logOut, reAuthentication, changePassword }
+    return { currentUser, userInfo, isUserReAuthenticated, isPasswordChanged, userStateObserver, logOut, reAuthentication, changePassword }
 }

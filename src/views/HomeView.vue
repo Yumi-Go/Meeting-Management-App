@@ -21,7 +21,7 @@ function clickLogout() {
 </script>
 
 <template>
-    <SignIn v-if="currentUser === undefined"/>
+    <SignIn v-if="currentUser === null"/>
     <v-container v-else>
         <v-row>current logged in user's UID: {{ currentUser.uid }}</v-row>
         <v-row justify="center">

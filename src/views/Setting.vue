@@ -14,9 +14,6 @@ const { userInfo, currentUser, userStateObserver, reAuthentication, changePasswo
 
 userStateObserver();
 
-// console.log("provider: ", user.providerData[0].providerId);
-
-
 const pwd = ref('');
 // const fName = ref('');
 // const mName = ref('');
@@ -29,18 +26,6 @@ const pwd = ref('');
 // const timezone = ref('');
 console.log("userInfo: ", userInfo.value);
 
-
-// const fName = ref(userInfo.value.fName ?? '');
-// const mName = ref (userInfo.value.mName ?? '');
-// const lName = ref(userInfo.value.lName ?? '');
-// const organization = ref(userInfo.value.organization ?? 'nope');
-// const department = ref(userInfo.value.department ?? '');
-// const position = ref(userInfo.value.position ?? '');
-// const role = ref(userInfo.value.role ?? '');
-// const location = ref(userInfo.value.location ?? '');
-// const timezone = ref(userInfo.value.timezone ?? '');
-// console.log("fName: ", fName.value);
-
 const fName = ref(userInfo.value.fName);
 const mName = ref (userInfo.value.mName);
 const lName = ref(userInfo.value.lName);
@@ -50,33 +35,7 @@ const position = ref(userInfo.value.position);
 const role = ref(userInfo.value.role);
 const location = ref(userInfo.value.location);
 const timezone = ref(userInfo.value.timezone);
-console.log("fName: ", fName);
-
-
-
-
-
-// function loadUserInfo(data) {
-//     fName.value = data.fName ?? '';
-//     mName.value = data.mName ?? '';
-//     lName.value = data.lName ?? '';
-//     organization.value = data.organization ?? 'nope';
-//     department.value = data.department ?? '';
-//     position.value = data.position ?? '';
-//     role.value = data.role ?? '';
-//     location.value = data.location ?? '';
-//     timezone.value = data.timezone ?? '';
-//     console.log("fName: ", fName.value);
-//     console.log("userData|: ", data.email);
-// }
-
-// async function userData() {
-//     const data = await getUserInfo();
-//     console.log("data: ", data);
-//     console.log("data type: ", typeof data);
-//     loadUserInfo(data);
-// }
-// userData();
+console.log("fName: ", fName.value);
 
 const rules = {
     fName: {
@@ -181,15 +140,15 @@ async function submit() {
     }
     console.log("form validation succeed!");
     updateUserInfo(
-        userInfo.value.fName,
-        userInfo.value.mName,
-        userInfo.value.lName,
-        userInfo.value.organization,
-        userInfo.value.department,
-        userInfo.value.position,
-        userInfo.value.role,
-        userInfo.value.location,
-        userInfo.value.timezone
+        fName.value,
+        mName.value,
+        lName.value,
+        organization.value,
+        department.value,
+        position.value,
+        role.value,
+        location.value,
+        timezone.value
     );
     router.push('/');
 }
@@ -217,27 +176,27 @@ function closePasswordResetPopup() {
     >
     <strong> {{ error.$message }} </strong>
     </p>
-    <p>{{ fName }}</p>
-    <v-sheet width="800" class="mx-auto">
+    <p v-if="currentUser === null">No exist user logged in</p>
+    <v-sheet v-else width="800" class="mx-auto">
         <v-form ref="form" @submit.prevent>
             <v-container>
                 <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="userInfo.fName"
+                            v-model="fName"
                             label="First Name"
                             required
                         />
                     </v-col>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="userInfo.mName"
+                            v-model="mName"
                             label="Middle Name (optional)"
                         />
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="userInfo.lName"
+                            v-model="lName"
                             label="Last Name"
                             required
                         />
@@ -246,13 +205,13 @@ function closePasswordResetPopup() {
                 <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="userInfo.organization"
+                            v-model="organization"
                             label="Organization"
                         />
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="userInfo.department"
+                            v-model="department"
                             label="Department"
                         />
                     </v-col>
@@ -260,13 +219,13 @@ function closePasswordResetPopup() {
                 <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="userInfo.position"
+                            v-model="position"
                             label="Position"
                         />
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="userInfo.role"
+                            v-model="role"
                             label="Role"
                         />
                     </v-col>
@@ -274,37 +233,23 @@ function closePasswordResetPopup() {
                 <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="userInfo.location"
+                            v-model="location"
                             label="Location"
                         />
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="userInfo.timezone"
+                            v-model="timezone"
                             label="Time Zone"
                         />
                     </v-col>
                 </v-row>
-                <!-- <v-row>
+                <v-row>
                     <v-text-field
                         v-model="currentUser.email"
                         label="Email"
                         disabled
                     />
-                </v-row> -->
-                <v-row>
-                    <v-text-field
-                        v-model="pwd"
-                        label="pwd"
-                    />
-                </v-row>
-                <v-row>
-                    <v-btn
-                        @click="reAuthentication(pwd)"
-                    >
-                        Re-Authentication
-                    </v-btn>
-
                 </v-row>
 
                 <v-row>
