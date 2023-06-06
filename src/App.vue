@@ -6,5 +6,13 @@ import HomeView from './views/HomeView.vue'
 <template>
 
   <!-- add conditional rendering Nav bar (only if user logged in) later -->
-  <router-view/>
+
+  <div
+    id="outerWrapper"
+    class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-w-full tw-h-full"
+  >
+    <div class="tw-flex tw-flex-col tw-mt-10 tw-w-[1000px]">
+      <router-view/>
+    </div>
+  </div>
 </template>

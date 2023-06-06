@@ -4,11 +4,15 @@ import { ref } from "vue"
 import { useFirestore } from '../../composables/useFirestore';
 import SearchResult from "./SearchResult.vue";
 
-const { searchResult, allUsers, getAllUserInfo, getUserInfoByName } = useFirestore();
+const { searchResult, getAllUserInfo, getUserInfoByName } = useFirestore();
 const search = ref('');
 
 function getSearchResult() {
-    getUserInfoByName(search.value.toLowerCase());
+    if (search.value.length > 0) {
+        getUserInfoByName(search.value.toLowerCase());
+    } else {
+        getAllUserInfo();
+    }
     console.log("searchResult: ", searchResult.value);
 }
 

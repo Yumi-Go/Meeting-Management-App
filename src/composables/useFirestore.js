@@ -3,7 +3,6 @@ import { auth, db } from '../firebaseConfig';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, query, where } from "firebase/firestore";
 
 const searchResult = ref([]);
-const allUsers = ref([]);
 
 export function useFirestore() {
 
@@ -49,12 +48,13 @@ export function useFirestore() {
     }
 
     async function getAllUserInfo() {
-        allUsers.value = [];
+        searchResult.value = [];
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((doc) => {
-          console.log(doc.id, " => ", doc.data());
-          allUsers.value.push(doc.data());
+            console.log(doc.id, " => ", doc.data());
+            searchResult.value.push(doc.data());
         });
+        console.log("allUsers in useFirestore: ", searchResult.value);
     }
 
     async function getUserInfoByName(name) {
@@ -96,7 +96,6 @@ export function useFirestore() {
 
     return {
         searchResult,
-        allUsers,
         addUser,
         updateUserInfo,
         getUserInfoByUID,

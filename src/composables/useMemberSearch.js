@@ -1,17 +1,17 @@
-import { ref } from "vue";
-import { useFirestore } from "./useFirestore";
+// import { ref } from "vue";
+// import { useFirestore } from "./useFirestore";
 
-const search = ref('');
-const { searchResult, allUsers, getUserInfoByName } = useFirestore();
+// const search = ref('');
+// const { searchResult, getUserInfoByName } = useFirestore();
 
-export function useMemberSearch() {
+// export function useMemberSearch() {
 
-    function filterByName() {
-        return getUserInfoByName(search.value);
-    }
-
-
+//     function filterByName() {
+//         return getUserInfoByName(search.value);
+//     }
 
 
-    return { search, filterByName }
-}
+
+
+//     return { search, filterByName }
+// }
