@@ -1,11 +1,16 @@
 <script setup>
 import { useAuth } from '../composables/useAuth'
+import { auth } from '../firebaseConfig'
 import { useRouter } from 'vue-router'
 import SignIn from '../components/SignIn.vue'
 import Setting from './Setting.vue'
 
-const { currentUID, userStateObserver, logOut } = useAuth();
+const { currentUser, userStateObserver, logOut } = useAuth();
+
 userStateObserver();
+
+console.log("user in homeview: ", auth.currentUser);
+
 const router = useRouter();
 
 function clickLogout() {
@@ -16,9 +21,9 @@ function clickLogout() {
 </script>
 
 <template>
-    <SignIn v-if="currentUID === null"/>
+    <SignIn v-if="currentUser === undefined"/>
     <v-container v-else>
-        <v-row>current logged in user's UID: {{ currentUID }}</v-row>
+        <v-row>current logged in user's UID: {{ currentUser.uid }}</v-row>
         <v-row justify="center">
             <v-btn
                 @click="router.push('/booking')"

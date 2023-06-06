@@ -1,53 +1,89 @@
 <script setup>
-import { onBeforeMount, ref, reactive, computed } from 'vue'
+import { onBeforeMount, watch, ref, reactive, computed } from 'vue'
 import { useFirestore } from '../composables/useFirestore'
 import { useAuth } from '../composables/useAuth'
 import { auth, db } from '../firebaseConfig'
 import { useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, helpers, minLength, maxLength, sameAs } from '@vuelidate/validators'
+import PasswordResetPopup from '../components/PasswordResetPopup.vue';
 
 const router = useRouter();
 const { getUserInfo, updateUserInfo } = useFirestore();
-const { changePassword } = useAuth();
-const userAuth = auth.currentUser;
+const { userInfo, currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
 
-const fName = ref('this');
-const mName = ref('');
-const lName = ref('');
-const organization = ref('');
-const department = ref('');
-const position = ref('');
-const role = ref('');
-const location = ref('');
-const timezone = ref('');
+userStateObserver();
 
-function loadUserInfo(data) {
-    fName.value = data.fName ?? '';
-    mName.value = data.mName ?? '';
-    lName.value = data.lName ?? '';
-    organization.value = data.organization ?? 'nope';
-    department.value = data.department ?? '';
-    position.value = data.position ?? '';
-    role.value = data.role ?? '';
-    location.value = data.location ?? '';
-    timezone.value = data.timezone ?? '';
-    console.log("fName: ", fName.value);
-    console.log("userData|: ", data.email);
-}
+// console.log("provider: ", user.providerData[0].providerId);
 
-async function userData() {
-    const data = await getUserInfo();
-    console.log("data: ", data);
-    console.log("data type: ", typeof data);
-    loadUserInfo(data);
-    return data;
-}
-userData();
+
+const pwd = ref('');
+// const fName = ref('');
+// const mName = ref('');
+// const lName = ref('');
+// const organization = ref('');
+// const department = ref('');
+// const position = ref('');
+// const role = ref('');
+// const location = ref('');
+// const timezone = ref('');
+console.log("userInfo: ", userInfo.value);
+
+
+// const fName = ref(userInfo.value.fName ?? '');
+// const mName = ref (userInfo.value.mName ?? '');
+// const lName = ref(userInfo.value.lName ?? '');
+// const organization = ref(userInfo.value.organization ?? 'nope');
+// const department = ref(userInfo.value.department ?? '');
+// const position = ref(userInfo.value.position ?? '');
+// const role = ref(userInfo.value.role ?? '');
+// const location = ref(userInfo.value.location ?? '');
+// const timezone = ref(userInfo.value.timezone ?? '');
+// console.log("fName: ", fName.value);
+
+const fName = ref(userInfo.value.fName);
+const mName = ref (userInfo.value.mName);
+const lName = ref(userInfo.value.lName);
+const organization = ref(userInfo.value.organization);
+const department = ref(userInfo.value.department);
+const position = ref(userInfo.value.position);
+const role = ref(userInfo.value.role);
+const location = ref(userInfo.value.location);
+const timezone = ref(userInfo.value.timezone);
+console.log("fName: ", fName);
+
+
+
+
+
+// function loadUserInfo(data) {
+//     fName.value = data.fName ?? '';
+//     mName.value = data.mName ?? '';
+//     lName.value = data.lName ?? '';
+//     organization.value = data.organization ?? 'nope';
+//     department.value = data.department ?? '';
+//     position.value = data.position ?? '';
+//     role.value = data.role ?? '';
+//     location.value = data.location ?? '';
+//     timezone.value = data.timezone ?? '';
+//     console.log("fName: ", fName.value);
+//     console.log("userData|: ", data.email);
+// }
+
+// async function userData() {
+//     const data = await getUserInfo();
+//     console.log("data: ", data);
+//     console.log("data type: ", typeof data);
+//     loadUserInfo(data);
+// }
+// userData();
 
 const rules = {
     fName: {
-        required,
+        required: helpers.withMessage(
+            'First Name is required.',
+            required
+        ),
         maxLength: helpers.withMessage(
             'First Name must be 20 characters or less.',
             maxLength(20)
@@ -60,7 +96,10 @@ const rules = {
         ),
     },
     lName: {
-        required,
+        required: helpers.withMessage(
+            'Last Name is required.',
+            required
+        ),
         maxLength: helpers.withMessage(
             'Last Name must be 20 characters or less.',
             maxLength(20)
@@ -142,24 +181,23 @@ async function submit() {
     }
     console.log("form validation succeed!");
     updateUserInfo(
-        fName.value,
-        mName.value,
-        lName.value,
-        organization.value,
-        department.value,
-        position.value,
-        role.value,
-        location.value,
-        timezone.value
+        userInfo.value.fName,
+        userInfo.value.mName,
+        userInfo.value.lName,
+        userInfo.value.organization,
+        userInfo.value.department,
+        userInfo.value.position,
+        userInfo.value.role,
+        userInfo.value.location,
+        userInfo.value.timezone
     );
     router.push('/');
 }
 
-const passwordResetDialogOpen = ref(false);
+const passwordResetPopup = ref(false);
 
-function resetPassword() {
-    passwordResetDialogOpen.value = true;
-
+function closePasswordResetPopup() {
+    passwordResetPopup.value = false;
 }
 
 // const timeZones = Intl.supportedValuesOf('timeZone')
@@ -179,26 +217,27 @@ function resetPassword() {
     >
     <strong> {{ error.$message }} </strong>
     </p>
+    <p>{{ fName }}</p>
     <v-sheet width="800" class="mx-auto">
         <v-form ref="form" @submit.prevent>
             <v-container>
                 <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="fName"
+                            v-model="userInfo.fName"
                             label="First Name"
                             required
                         />
                     </v-col>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="mName"
+                            v-model="userInfo.mName"
                             label="Middle Name (optional)"
                         />
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="lName"
+                            v-model="userInfo.lName"
                             label="Last Name"
                             required
                         />
@@ -207,13 +246,13 @@ function resetPassword() {
                 <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="organization"
+                            v-model="userInfo.organization"
                             label="Organization"
                         />
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="department"
+                            v-model="userInfo.department"
                             label="Department"
                         />
                     </v-col>
@@ -221,13 +260,13 @@ function resetPassword() {
                 <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="position"
+                            v-model="userInfo.position"
                             label="Position"
                         />
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="role"
+                            v-model="userInfo.role"
                             label="Role"
                         />
                     </v-col>
@@ -235,24 +274,39 @@ function resetPassword() {
                 <v-row>
                     <v-col class="mr-2 pa-0">
                         <v-text-field
-                            v-model="location"
+                            v-model="userInfo.location"
                             label="Location"
                         />
                     </v-col>
                     <v-col class="ma-0 pa-0">
                         <v-text-field
-                            v-model="timezone"
+                            v-model="userInfo.timezone"
                             label="Time Zone"
                         />
                     </v-col>
                 </v-row>
-                <v-row>
+                <!-- <v-row>
                     <v-text-field
-                        v-model="userAuth.email"
+                        v-model="currentUser.email"
                         label="Email"
                         disabled
                     />
+                </v-row> -->
+                <v-row>
+                    <v-text-field
+                        v-model="pwd"
+                        label="pwd"
+                    />
                 </v-row>
+                <v-row>
+                    <v-btn
+                        @click="reAuthentication(pwd)"
+                    >
+                        Re-Authentication
+                    </v-btn>
+
+                </v-row>
+
                 <v-row>
                     <v-btn
                         variant="tonal"
@@ -260,11 +314,14 @@ function resetPassword() {
                     >
                         Change Password
                         <v-dialog
-                            v-model="passwordResetDialogOpen"
+                            v-model="passwordResetPopup"
                             activator="parent"
                             width="500"
                         >
-                        <v-card>
+                        <PasswordResetPopup
+                            v-if="passwordResetPopup"
+                            @closePasswordResetPopup="closePasswordResetPopup"/>
+                        <!-- <v-card>
                             <v-card-title>
                                 <span class="text-h5">Change Password</span>
                             </v-card-title>
@@ -291,40 +348,24 @@ function resetPassword() {
                                 <v-btn
                                     color="blue-darken-1"
                                     variant="text"
-                                    @click="passwordResetDialogOpen = false"
+                                    @click="passwordResetPopupOpen = false"
                                 >
                                     Cancel
                                 </v-btn>
                                 <v-btn
                                     color="blue-darken-1"
                                     variant="text"
-                                    @click="passwordResetDialogOpen = false"
+                                    @click="passwordResetPopupOpen = false"
                                 >
                                     Save
                                 </v-btn>
                             </v-card-actions>
-                        </v-card>
+                        </v-card> -->
 
 
                         </v-dialog>
                     </v-btn>
                 </v-row>
-                <!-- <v-row>
-                    <v-col class="mr-2 pa-0">
-                        <v-text-field
-                            v-model="state.password"
-                            label="Password"
-                            required
-                        />
-                    </v-col>
-                    <v-col class="ma-0 pa-0">
-                        <v-text-field
-                            v-model="state.passwordConfirm"
-                            label="Password Confirmation"
-                            required
-                        />
-                    </v-col>
-                </v-row> -->
                 <v-row>
                     <v-col class="mr-1 pa-0">
                         <v-btn

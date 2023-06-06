@@ -4,11 +4,17 @@ import firebase from 'firebase/compat/app';
 import * as firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
 import { auth } from "../firebaseConfig"
+import { useFirestore } from '../composables/useFirestore';
 
+const { addUser } = useFirestore();
 var uiConfig = {
     callbacks: {
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-            return true;
+            console.log("authResult: ", authResult);
+            console.log("uid in authResult: ", authResult.user.uid);
+            console.log("email in authResult: ", authResult.user.email);
+            addUser(authResult.user.uid, authResult.user.email);
+            return false;
         },
         uiShown: function() {
             document.getElementById('loader').style.display = 'none';
