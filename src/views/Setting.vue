@@ -15,15 +15,7 @@ const { userInfo, currentUser, userStateObserver, reAuthentication, changePasswo
 userStateObserver();
 
 const pwd = ref('');
-// const fName = ref('');
-// const mName = ref('');
-// const lName = ref('');
-// const organization = ref('');
-// const department = ref('');
-// const position = ref('');
-// const role = ref('');
-// const location = ref('');
-// const timezone = ref('');
+
 console.log("userInfo: ", userInfo.value);
 
 const fName = ref(userInfo.value.fName);
@@ -100,21 +92,6 @@ const rules = {
             maxLength(20)
         ),
     },
-    // password: {
-    //     required,
-    //     minLength: helpers.withMessage(
-    //         'Password must be at least 6 characters.',
-    //         minLength(6)
-    //     ),
-    //     maxLength: helpers.withMessage(
-    //         'Password must be 20 characters or less.',
-    //         maxLength(20)
-    //     ),
-    // },
-    // passwordConfirm: {
-    //     required,
-    //     sameAsPassword: sameAs(state.password)
-    // }
 }
 
 const v$ = useVuelidate(
@@ -266,48 +243,6 @@ function closePasswordResetPopup() {
                         <PasswordResetPopup
                             v-if="passwordResetPopup"
                             @closePasswordResetPopup="closePasswordResetPopup"/>
-                        <!-- <v-card>
-                            <v-card-title>
-                                <span class="text-h5">Change Password</span>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-container>
-                                    <v-row>
-                                        <v-text-field
-                                            label="Password*"
-                                            type="password"
-                                            required
-                                        ></v-text-field>
-                                    </v-row>
-                                    <v-row>
-                                        <v-text-field
-                                            label="Confirm Password*"
-                                            type="password"
-                                            required
-                                        ></v-text-field>
-                                    </v-row>
-                                </v-container>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-spacer/>
-                                <v-btn
-                                    color="blue-darken-1"
-                                    variant="text"
-                                    @click="passwordResetPopupOpen = false"
-                                >
-                                    Cancel
-                                </v-btn>
-                                <v-btn
-                                    color="blue-darken-1"
-                                    variant="text"
-                                    @click="passwordResetPopupOpen = false"
-                                >
-                                    Save
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card> -->
-
-
                         </v-dialog>
                     </v-btn>
                 </v-row>

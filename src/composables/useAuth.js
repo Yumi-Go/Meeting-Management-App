@@ -91,7 +91,6 @@ export function useAuth() {
                 console.log("User Re-Authentication error: ", error);
             });
         }
-        // return isUserReAuthenticated.value;
     }
 
     function changePassword(newPassword) {
@@ -105,8 +104,6 @@ export function useAuth() {
             console.log("error: ", error);
             isPasswordChanged.value = false;
         });
-        // isUserReAuthenticated.value = false;
-        // return isPasswordChanged.value;
     }
 
     return { currentUser, userInfo, isUserReAuthenticated, isPasswordChanged, userStateObserver, logOut, reAuthentication, changePassword }
