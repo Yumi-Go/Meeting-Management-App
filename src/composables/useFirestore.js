@@ -1,10 +1,9 @@
 import { ref } from 'vue'
 import { auth, db } from '../firebaseConfig';
-import { collection, doc, getDoc, setDoc, addDoc, updateDoc } from "firebase/firestore";
-import { useAuth } from './useAuth';
+import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, query, where } from "firebase/firestore";
 
-// const userInfo = ref();
-// const { userStateObserver, currentUser } = useAuth();
+const searchResult = ref([]);
+const allUsers = ref([]);
 
 export function useFirestore() {
 
@@ -23,9 +22,9 @@ export function useFirestore() {
         console.log("uid of user: ", user.uid);
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
-            fName: fName,
-            mName: mName,
-            lName: lName,
+            fName: fName.length > 0 ? fName.toLowerCase() : fName,
+            mName: mName.length > 0 ? mName.toLowerCase() : mName,
+            lName: lName.length > 0 ? lName.toLowerCase() : lName,
             organization: organization,
             department: department,
             position: position,
@@ -35,7 +34,7 @@ export function useFirestore() {
         });
     }
 
-    async function getUserInfo(uid) {
+    async function getUserInfoByUID(uid) {
         // userStateObserver();
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
@@ -49,9 +48,59 @@ export function useFirestore() {
         }
     }
 
+    async function getAllUserInfo() {
+        allUsers.value = [];
+        const querySnapshot = await getDocs(collection(db, "users"));
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+          allUsers.value.push(doc.data());
+        });
+    }
+
+    async function getUserInfoByName(name) {
+        // const result = [];
+        searchResult.value = [];
+        const fNameQuery = query(collection(db, "users"), where("fName", "==", name));
+        const mNameQuery = query(collection(db, "users"), where("mName", "==", name));
+        const lNameQuery = query(collection(db, "users"), where("lName", "==", name));
+        // const fNameQuerySnapshot = await getDocs(fNameQuery);
+        // const mNameQuerySnapshot = await getDocs(mNameQuery);
+        // const lNameQuerySnapshot = await getDocs(lNameQuery);
+        // fNameQuerySnapshot.forEach((doc) => {
+        //     console.log(doc.id, " => ", doc.data());
+        //     searchResult.value.push(doc.data());
+        // });
+        // mNameQuerySnapshot.forEach((doc) => {
+        //     console.log(doc.id, " => ", doc.data());
+        //     searchResult.value.push(doc.data());
+        // });
+        // lNameQuerySnapshot.forEach((doc) => {
+        //     console.log(doc.id, " => ", doc.data());
+        //     searchResult.value.push(doc.data());
+        // });
+        const queries = [fNameQuery, mNameQuery, lNameQuery];
+
+        queries.forEach(async (query) => {
+            const querySnapshot = await getDocs(query);
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                searchResult.value.push(doc.data());
+            });
+        });
+        // console.log("searchResult in useFirestore: ", searchResult.value);
+        // return result;
+
+    }
+
+
+
     return {
+        searchResult,
+        allUsers,
         addUser,
         updateUserInfo,
-        getUserInfo
+        getUserInfoByUID,
+        getAllUserInfo,
+        getUserInfoByName
     }
 }

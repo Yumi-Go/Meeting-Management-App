@@ -1,7 +1,7 @@
 <script setup>
 import { watch, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '../composables/useAuth'
+import { useAuth } from '../../composables/useAuth'
 
 const { isUserReAuthenticated, isPasswordChanged, userStateObserver, reAuthentication, changePassword } = useAuth();
 const router = useRouter();

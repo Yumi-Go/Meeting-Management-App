@@ -6,10 +6,10 @@ import { auth, db } from '../firebaseConfig'
 import { useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, helpers, minLength, maxLength, sameAs } from '@vuelidate/validators'
-import PasswordResetPopup from '../components/PasswordResetPopup.vue';
+import PasswordResetPopup from '../components/Setting/PasswordResetPopup.vue';
 
 const router = useRouter();
-const { getUserInfo, updateUserInfo } = useFirestore();
+const { getUserInfoByUID, updateUserInfo } = useFirestore();
 const { userInfo, currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
 
 userStateObserver();

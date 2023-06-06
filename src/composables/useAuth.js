@@ -9,7 +9,7 @@ import { onAuthStateChanged,
 } from "firebase/auth";
 import { useFirestore } from './useFirestore';
 
-const { getUserInfo } = useFirestore();
+const { getUserInfoByUID } = useFirestore();
 const currentUser = ref(auth.currentUser);
 const userInfo = ref({
     fName: '',
@@ -34,7 +34,7 @@ export function useAuth() {
                 currentUser.value = user;
                 console.log("current uid: ", user.uid);
                 console.log("current user:", currentUser.value);
-                getUserInfo(user.uid)
+                getUserInfoByUID(user.uid)
                 .then(info => {
                     console.log("info: ", info.fName);
                     // userInfo.value = info;
