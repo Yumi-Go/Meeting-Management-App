@@ -11,7 +11,7 @@ import HomeView from './views/HomeView.vue'
     id="outerWrapper"
     class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-w-full tw-h-full"
   >
-    <div class="tw-flex tw-flex-col tw-mt-10 tw-w-[1000px]">
+    <div class="tw-flex tw-flex-col tw-mt-10 tw-w-[80vw]">
       <router-view/>
     </div>
   </div>

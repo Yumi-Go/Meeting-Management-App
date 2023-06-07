@@ -1,13 +1,12 @@
 <script setup>
-import SearchMember from '../components/Booking/SearchMember.vue';
+import SearchBar from '../components/Booking/SearchBar.vue';
 // import SearchResult from '../components/Booking/SearchResult.vue';
 
 </script>
 
 
 <template>
-    <p>this is Booking page</p>
-    <SearchMember/>
+    <SearchBar/>
     <!-- <SearchResult/> -->
 
 </template>

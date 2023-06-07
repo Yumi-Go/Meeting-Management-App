@@ -19,25 +19,24 @@ function getSearchResult() {
 </script>
 
 <template>
-    <v-container fluid class="tw-bg-blue-100">
-        <v-row>
-            searchResult in SearchMember.vue: 
-        </v-row>
-        <v-row>
+    <v-container fluid class="">
+        <!-- <v-row>
             {{ searchResult }}
-        </v-row>
+        </v-row> -->
         <v-row>
             <v-text-field
                 v-model="search"
                 label="Search"
-                color="blue"
-                bg-color="purple"
+                color="black"
+                bg-color=""
                 single-line
                 hide-details
                 class="tw-mb-1"
+                variant="outlined"
                 @keypress.enter="getSearchResult"
             >
                 <template #append-inner>
+                    <!-- <v-icon icon="md:home" @click.prevent="getSearchResult"/> -->
                     <v-icon  @click.prevent="getSearchResult">
                         <span class="material-symbols-outlined">
                             search

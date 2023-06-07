@@ -14,8 +14,6 @@ const { userInfo, currentUser, userStateObserver, reAuthentication, changePasswo
 
 userStateObserver();
 
-const pwd = ref('');
-
 console.log("userInfo: ", userInfo.value);
 
 const fName = ref(userInfo.value.fName);
@@ -130,10 +128,10 @@ async function submit() {
     router.push('/');
 }
 
-const passwordResetPopup = ref(false);
+const openPasswordResetPopup = ref(false);
 
 function closePasswordResetPopup() {
-    passwordResetPopup.value = false;
+    openPasswordResetPopup.value = false;
 }
 
 // const timeZones = Intl.supportedValuesOf('timeZone')
@@ -236,12 +234,12 @@ function closePasswordResetPopup() {
                     >
                         Change Password
                         <v-dialog
-                            v-model="passwordResetPopup"
+                            v-model="openPasswordResetPopup"
                             activator="parent"
                             width="500"
                         >
                         <PasswordResetPopup
-                            v-if="passwordResetPopup"
+                            v-if="openPasswordResetPopup"
                             @closePasswordResetPopup="closePasswordResetPopup"/>
                         </v-dialog>
                     </v-btn>

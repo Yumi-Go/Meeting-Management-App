@@ -12,6 +12,7 @@ export function useFirestore() {
         console.log("currentUser in addUser(): ", uid);
         const docRef = await setDoc(doc(db, "users", uid), {
             email: email,
+            connection: []
         });
     }
 
@@ -29,17 +30,15 @@ export function useFirestore() {
             position: position,
             role: role,
             location: location,
-            timezone: timezone,
+            timezone: timezone
         });
     }
 
     async function getUserInfoByUID(uid) {
-        // userStateObserver();
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           console.log("Document data:", docSnap.data());
-        //   userInfo.value = docSnap.data();
           return docSnap.data();
         } else {
           console.log("No such document!");
@@ -63,21 +62,7 @@ export function useFirestore() {
         const fNameQuery = query(collection(db, "users"), where("fName", "==", name));
         const mNameQuery = query(collection(db, "users"), where("mName", "==", name));
         const lNameQuery = query(collection(db, "users"), where("lName", "==", name));
-        // const fNameQuerySnapshot = await getDocs(fNameQuery);
-        // const mNameQuerySnapshot = await getDocs(mNameQuery);
-        // const lNameQuerySnapshot = await getDocs(lNameQuery);
-        // fNameQuerySnapshot.forEach((doc) => {
-        //     console.log(doc.id, " => ", doc.data());
-        //     searchResult.value.push(doc.data());
-        // });
-        // mNameQuerySnapshot.forEach((doc) => {
-        //     console.log(doc.id, " => ", doc.data());
-        //     searchResult.value.push(doc.data());
-        // });
-        // lNameQuerySnapshot.forEach((doc) => {
-        //     console.log(doc.id, " => ", doc.data());
-        //     searchResult.value.push(doc.data());
-        // });
+
         const queries = [fNameQuery, mNameQuery, lNameQuery];
 
         queries.forEach(async (query) => {
@@ -89,10 +74,23 @@ export function useFirestore() {
         });
         // console.log("searchResult in useFirestore: ", searchResult.value);
         // return result;
+    }
+
+    function addConnection(uid) {
 
     }
 
+    function requestMeeting() {
 
+    }
+
+    function acceptMeetingRequest() {
+
+    }
+
+    function rejectMeetingRequest() {
+
+    }
 
     return {
         searchResult,
@@ -100,6 +98,10 @@ export function useFirestore() {
         updateUserInfo,
         getUserInfoByUID,
         getAllUserInfo,
-        getUserInfoByName
+        getUserInfoByName,
+        addConnection,
+        requestMeeting,
+        acceptMeetingRequest,
+        rejectMeetingRequest
     }
 }
