@@ -7,7 +7,7 @@ const props = defineProps({
     user: Object,
 });
 
-const { addConnection, requestMeeting } = useFirestore();
+const { requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const isConnected = ref(false);
 
@@ -53,7 +53,7 @@ const isConnected = ref(false);
             </v-btn>
             <v-btn
                 v-else
-                @click="addConnection"
+                @click="requestConnection"
                 class=""
             >
                 <div>
@@ -94,7 +94,7 @@ const isConnected = ref(false);
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-                @click=""
+                @click="requestMeeting"
                 variant="text"
                 color="indigo"
             >
