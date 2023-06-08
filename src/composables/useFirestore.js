@@ -54,7 +54,9 @@ export function useFirestore() {
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((doc) => {
             console.log(doc.id, " => ", doc.data());
-            searchResult.value.push(doc.data());
+            const docObj = doc.data();
+            docObj['uid'] = doc.id;
+            searchResult.value.push(docObj);
         });
         console.log("allUsers in useFirestore: ", searchResult.value);
     }
@@ -70,7 +72,9 @@ export function useFirestore() {
             const querySnapshot = await getDocs(query);
             querySnapshot.forEach((doc) => {
                 console.log(doc.id, " => ", doc.data());
-                searchResult.value.push(doc.data());
+                const docObj = doc.data();
+                docObj['uid'] = doc.id;
+                searchResult.value.push(docObj);
             });
         });
         // console.log("searchResult in useFirestore: ", searchResult.value);

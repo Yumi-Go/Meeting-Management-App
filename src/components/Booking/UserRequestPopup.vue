@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import { auth } from '../../firebaseConfig'
+// import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat'
 
@@ -7,9 +9,13 @@ const props = defineProps({
     user: Object,
 });
 
-const { requestConnection, requestMeeting } = useFirestore();
+// const { currentUser } = useAuth();
+const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const isConnected = ref(false);
+
+console.log("currentUser.uid: ", auth.currentUser.uid);
+console.log("viewed user uid: ", props.user.uid);
 
 </script>
 
@@ -52,7 +58,7 @@ const isConnected = ref(false);
                 </div>
             </v-btn>
             <v-btn
-                v-else
+                v-else-if="!isConnected && auth.currentUser.uid !== user.uid"
                 @click="requestConnection"
                 class=""
             >
@@ -61,7 +67,7 @@ const isConnected = ref(false);
                         activator="parent"
                         location="top"
                     >
-                        Connect
+                        Request a connection
                     </v-tooltip>
                     <span class="material-symbols-outlined">
                         person_add
