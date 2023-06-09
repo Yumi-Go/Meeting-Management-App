@@ -36,7 +36,7 @@ export function useAuth() {
                 console.log("current user:", currentUser.value);
                 getUserInfoByUID(user.uid)
                 .then(info => {
-                    console.log("info: ", info.fName);
+                    console.log("info: ", info);
                     // userInfo.value = info;
                     for (const [key, value] of Object.entries(info)) {
                         if (value.length > 0) {
@@ -51,6 +51,7 @@ export function useAuth() {
                 console.log("The logged in user does not exist.");
             }
         });
+        return userInfo.value;
     }
 
     function logOut() {

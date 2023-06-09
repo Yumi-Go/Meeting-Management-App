@@ -10,11 +10,11 @@ import PasswordResetPopup from '../components/Setting/PasswordResetPopup.vue';
 
 const router = useRouter();
 const { getUserInfoByUID, updateUserInfo } = useFirestore();
-const { userInfo, currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
+const { currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
 
-userStateObserver();
+const userInfo = ref(userStateObserver());
 
-console.log("userInfo: ", userInfo.value);
+console.log("userInfo: ", userStateObserver());
 
 const fName = ref(userInfo.value.fName);
 const mName = ref (userInfo.value.mName);

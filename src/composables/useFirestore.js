@@ -10,13 +10,23 @@ export function useFirestore() {
 
     async function addUser(uid, email) {
         console.log("currentUser in addUser(): ", uid);
-        const docRef = await setDoc(doc(db, "users", uid), {
-            email: email,
-            connection: [],
-            connectionRequestsSent: [],
-            connectionRequestsReceived: [],
-            availability: [], // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
-        });
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            console.log("existing user");
+            console.log("existing user data:", docSnap.data());
+        } else {
+            // docSnap.data() will be undefined in this case
+            await setDoc(docRef, {
+                email: email,
+                connection: [],
+                connectionRequestsSent: [],
+                connectionRequestsReceived: [],
+                availability: [], // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
+            });
+            console.log("New user added!");
+        }
     }
 
     async function updateUserInfo(
