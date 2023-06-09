@@ -11,18 +11,19 @@ import { useFirestore } from './useFirestore';
 
 const { getUserInfoByUID } = useFirestore();
 const currentUser = ref(auth.currentUser);
-// const userInfo = ref({
-//     fName: '',
-//     mName: '',
-//     lName: '',
-//     organization: '',
-//     department: '',
-//     position: '',
-//     role: '',
-//     location: '',
-//     timezone: ''
-// });
-const userInfo = ref();
+const currentUserInfo = ref({
+    fName: '',
+    mName: '',
+    lName: '',
+    organization: '',
+    department: '',
+    position: '',
+    role: '',
+    location: '',
+    timezone: ''
+});
+// const currentUserInfo = ref();
+
 const isUserReAuthenticated = ref(false);
 const isPasswordChanged = ref(false);
 
@@ -37,19 +38,20 @@ export function useAuth() {
                 getUserInfoByUID(user.uid)
                 .then(info => {
                     console.log("info: ", info);
-                    userInfo.value = info;
-                    // for (const [key, value] of Object.entries(info)) {
-                    //     if (value.length > 0) {
-                    //         userInfo.value[key] = value;
-                    //     }
-                    // }
+                    // currentUserInfo.value = info;
+                    for (const [key, value] of Object.entries(info)) {
+                        if (value.length > 0) {
+                            currentUserInfo.value[key] = value;
+                        }
+                    }
+                    console.log("currentUserInfo.value: ", currentUserInfo.value);
                 });
-                console.log("userInfo.value: ", userInfo.value);
             } else {
                 console.log("The logged in user does not exist.");
             }
         });
-        return userInfo.value;
+        console.log("currentUserInfo: ", currentUserInfo.value);
+        return currentUserInfo.value;
     }
 
     function logOut() {
@@ -105,5 +107,5 @@ export function useAuth() {
         });
     }
 
-    return { currentUser, userInfo, isUserReAuthenticated, isPasswordChanged, userStateObserver, logOut, reAuthentication, changePassword }
+    return { currentUser, currentUserInfo, isUserReAuthenticated, isPasswordChanged, userStateObserver, logOut, reAuthentication, changePassword }
 }

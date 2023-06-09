@@ -6,8 +6,6 @@ const searchResult = ref([]);
 
 export function useFirestore() {
 
-    const user = auth.currentUser;
-
     async function addUser(uid, email) {
         console.log("currentUser in addUser(): ", uid);
         const docRef = doc(db, "users", uid);
@@ -17,7 +15,6 @@ export function useFirestore() {
             console.log("existing user");
             console.log("existing user data:", docSnap.data());
         } else {
-            // docSnap.data() will be undefined in this case
             await setDoc(docRef, {
                 email: email,
                 fName: '',
@@ -41,8 +38,8 @@ export function useFirestore() {
     async function updateUserInfo(
         fName, mName, lName, organization, department, position, role, location, timezone
     ) {
-        console.log("uid of user: ", user.uid);
-        const userRef = doc(db, "users", user.uid);
+        console.log("uid of currentUser: ", auth.currentUser.value.uid);
+        const userRef = doc(db, "users", auth.currentUser.value.uid);
         await updateDoc(userRef, {
             fName: fName.length > 0 ? fName.toLowerCase() : fName,
             mName: mName.length > 0 ? mName.toLowerCase() : mName,

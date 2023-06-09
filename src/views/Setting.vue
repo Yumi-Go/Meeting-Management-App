@@ -9,24 +9,27 @@ import { required, helpers, minLength, maxLength, sameAs } from '@vuelidate/vali
 import PasswordResetPopup from '../components/Setting/PasswordResetPopup.vue';
 
 const router = useRouter();
-const { getUserInfoByUID, updateUserInfo } = useFirestore();
+const { updateUserInfo, getUserInfoByUID } = useFirestore();
 const { currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
 
-console.log("currentUser.value.uid: ", currentUser.value.uid);
-const userInfo = ref(userStateObserver());
+userStateObserver();
 
-console.log("userInfo: ", userStateObserver());
+console.log("currentUser.value.uid: ", currentUser.value);
+const currentUserInfo = userStateObserver();
 
-const fName = ref(userInfo.value.fName ?? '');
-const mName = ref (userInfo.value.mName ?? '');
-const lName = ref(userInfo.value.lName ?? '');
-const organization = ref(userInfo.value.organization ?? '');
-const department = ref(userInfo.value.department ?? '');
-const position = ref(userInfo.value.position ?? '');
-const role = ref(userInfo.value.role ?? '');
-const location = ref(userInfo.value.location ?? '');
-const timezone = ref(userInfo.value.timezone ?? '');
-console.log("fName: ", fName.value);
+console.log("currentUserInfo in Setting.vue: ", currentUserInfo);
+console.log("currentUserInfo.fName in Setting.vue: ", currentUserInfo.fName);
+
+const fName = ref(currentUserInfo.fName);
+const mName = ref (currentUserInfo.mName);
+const lName = ref(currentUserInfo.lName);
+const organization = ref(currentUserInfo.organization);
+const department = ref(currentUserInfo.department);
+const position = ref(currentUserInfo.position);
+const role = ref(currentUserInfo.role);
+const location = ref(currentUserInfo.location);
+const timezone = ref(currentUserInfo.timezone);
+console.log("email in currentUserInfo.value: ", currentUserInfo.email);
 
 const rules = {
     fName: {
