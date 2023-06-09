@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../firebaseConfig';
 import { onAuthStateChanged,
     signOut,
@@ -9,20 +10,10 @@ import { onAuthStateChanged,
 } from "firebase/auth";
 import { useFirestore } from './useFirestore';
 
-const { getUserInfoByUID } = useFirestore();
+const currentUserInfo = useLocalStorage('currentUser', {});
 const currentUser = ref(auth.currentUser);
-const currentUserInfo = ref({
-    fName: '',
-    mName: '',
-    lName: '',
-    organization: '',
-    department: '',
-    position: '',
-    role: '',
-    location: '',
-    timezone: ''
-});
-// const currentUserInfo = ref();
+
+const { getUserInfoByUID } = useFirestore();
 
 const isUserReAuthenticated = ref(false);
 const isPasswordChanged = ref(false);
@@ -38,12 +29,7 @@ export function useAuth() {
                 getUserInfoByUID(user.uid)
                 .then(info => {
                     console.log("info: ", info);
-                    // currentUserInfo.value = info;
-                    for (const [key, value] of Object.entries(info)) {
-                        if (value.length > 0) {
-                            currentUserInfo.value[key] = value;
-                        }
-                    }
+                    currentUserInfo.value = info;
                     console.log("currentUserInfo.value: ", currentUserInfo.value);
                 });
             } else {
@@ -95,8 +81,6 @@ export function useAuth() {
     }
 
     function changePassword(newPassword) {
-        // const user = auth.currentUser;
-        // reAuthentication(user);
         updatePassword(currentUser.value, newPassword)
         .then(() => {
             console.log("Password Updated successfully!!");

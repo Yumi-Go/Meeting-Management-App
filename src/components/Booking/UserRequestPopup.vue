@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
 // import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from '../../composables/useFirestore';
@@ -9,13 +10,16 @@ const props = defineProps({
     user: Object,
 });
 
+const popupUser = useLocalStorage('popupUser', {});
+popupUser.value = props.user;
+
 // const { currentUser } = useAuth();
 const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const isConnected = ref(false);
 
 console.log("currentUser.uid: ", auth.currentUser.uid);
-console.log("viewed user uid: ", props.user.uid);
+console.log("viewed user uid: ", popupUser.value.uid);
 
 </script>
 
@@ -33,9 +37,9 @@ console.log("viewed user uid: ", props.user.uid);
             </v-btn> -->
 
             <v-toolbar-title class="font-weight-bold">
-                {{ capitalize(user.fName) }}
-                {{ capitalize(user.mName) }}
-                {{ capitalize(user.lName) }}
+                {{ capitalize(popupUser.fName) }}
+                {{ capitalize(popupUser.mName) }}
+                {{ capitalize(popupUser.lName) }}
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
@@ -58,7 +62,7 @@ console.log("viewed user uid: ", props.user.uid);
                 </div>
             </v-btn>
             <v-btn
-                v-else-if="!isConnected && auth.currentUser.uid !== user.uid"
+                v-else-if="!isConnected && auth.currentUser.uid !== popupUser.uid"
                 @click="requestConnection"
                 class=""
             >
@@ -76,7 +80,7 @@ console.log("viewed user uid: ", props.user.uid);
             </v-btn>
         </v-toolbar>
         <v-list>
-            <v-list-item v-for="[key, value] in Object.entries(user)">
+            <v-list-item v-for="[key, value] in Object.entries(popupUser)">
                 <template #subtitle>
                     {{ capitalize(key) }}
                 </template>

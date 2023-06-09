@@ -15,6 +15,7 @@ function clickUser(user) {
     openUserPopup.value = true;
     chosenUser.value = user;
     console.log("chosenUser: ", chosenUser.value);
+    // local storage need to hold this chosenUser info for refreshing of the page
 }
 
 </script>
