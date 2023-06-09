@@ -20,6 +20,15 @@ export function useFirestore() {
             // docSnap.data() will be undefined in this case
             await setDoc(docRef, {
                 email: email,
+                fName: '',
+                mName: '',
+                lName: '',
+                organization: '',
+                department: '',
+                position: '',
+                role: '',
+                location: '',
+                timezone: '',
                 connection: [],
                 connectionRequestsSent: [],
                 connectionRequestsReceived: [],

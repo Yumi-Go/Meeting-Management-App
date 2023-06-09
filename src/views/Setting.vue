@@ -12,19 +12,20 @@ const router = useRouter();
 const { getUserInfoByUID, updateUserInfo } = useFirestore();
 const { currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
 
+console.log("currentUser.value.uid: ", currentUser.value.uid);
 const userInfo = ref(userStateObserver());
 
 console.log("userInfo: ", userStateObserver());
 
-const fName = ref(userInfo.value.fName);
-const mName = ref (userInfo.value.mName);
-const lName = ref(userInfo.value.lName);
-const organization = ref(userInfo.value.organization);
-const department = ref(userInfo.value.department);
-const position = ref(userInfo.value.position);
-const role = ref(userInfo.value.role);
-const location = ref(userInfo.value.location);
-const timezone = ref(userInfo.value.timezone);
+const fName = ref(userInfo.value.fName ?? '');
+const mName = ref (userInfo.value.mName ?? '');
+const lName = ref(userInfo.value.lName ?? '');
+const organization = ref(userInfo.value.organization ?? '');
+const department = ref(userInfo.value.department ?? '');
+const position = ref(userInfo.value.position ?? '');
+const role = ref(userInfo.value.role ?? '');
+const location = ref(userInfo.value.location ?? '');
+const timezone = ref(userInfo.value.timezone ?? '');
 console.log("fName: ", fName.value);
 
 const rules = {

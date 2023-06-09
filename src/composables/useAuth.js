@@ -11,18 +11,18 @@ import { useFirestore } from './useFirestore';
 
 const { getUserInfoByUID } = useFirestore();
 const currentUser = ref(auth.currentUser);
-const userInfo = ref({
-    fName: '',
-    mName: '',
-    lName: '',
-    organization: '',
-    department: '',
-    position: '',
-    role: '',
-    location: '',
-    timezone: ''
-});
-// const userInfo = ref();
+// const userInfo = ref({
+//     fName: '',
+//     mName: '',
+//     lName: '',
+//     organization: '',
+//     department: '',
+//     position: '',
+//     role: '',
+//     location: '',
+//     timezone: ''
+// });
+const userInfo = ref();
 const isUserReAuthenticated = ref(false);
 const isPasswordChanged = ref(false);
 
@@ -37,14 +37,12 @@ export function useAuth() {
                 getUserInfoByUID(user.uid)
                 .then(info => {
                     console.log("info: ", info);
-                    // userInfo.value = info;
-                    for (const [key, value] of Object.entries(info)) {
-                        if (value.length > 0) {
-                            userInfo.value[key] = value;
-                        } else {
-                            userInfo.value[key] = '';
-                        }
-                    }
+                    userInfo.value = info;
+                    // for (const [key, value] of Object.entries(info)) {
+                    //     if (value.length > 0) {
+                    //         userInfo.value[key] = value;
+                    //     }
+                    // }
                 });
                 console.log("userInfo.value: ", userInfo.value);
             } else {
@@ -63,8 +61,8 @@ export function useAuth() {
     }
 
     function reAuthentication(passwordInput) {
-        const user = auth.currentUser;
-        const currentProvider = user.providerData[0].providerId;
+        // const user = auth.currentUser;
+        const currentProvider = currentUser.value.providerData[0].providerId;
         console.log("provider: ", currentProvider);
         if (currentProvider === "password") {
             const credential = EmailAuthProvider.credential(
@@ -95,9 +93,9 @@ export function useAuth() {
     }
 
     function changePassword(newPassword) {
-        const user = auth.currentUser;
+        // const user = auth.currentUser;
         // reAuthentication(user);
-        updatePassword(user, newPassword)
+        updatePassword(currentUser.value, newPassword)
         .then(() => {
             console.log("Password Updated successfully!!");
             isPasswordChanged.value = true;
