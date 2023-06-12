@@ -63,7 +63,7 @@ console.log("viewed user uid: ", popupUser.value.uid);
             </v-btn>
             <v-btn
                 v-else-if="!isConnected && auth.currentUser.uid !== popupUser.uid"
-                @click="requestConnection"
+                @click="requestConnection(auth.currentUser.uid, popupUser.uid)"
                 class=""
             >
                 <div>
@@ -79,27 +79,43 @@ console.log("viewed user uid: ", popupUser.value.uid);
                 </div>
             </v-btn>
         </v-toolbar>
-        <v-list>
-            <v-list-item v-for="[key, value] in Object.entries(popupUser)">
-                <template #subtitle>
-                    {{ capitalize(key) }}
-                </template>
-                {{ capitalize(value) }}
-            </v-list-item>
-            <v-list-item>
-                <v-btn block variant="outlined" class="">
-                    Check Schedule
-                </v-btn>
-            </v-list-item>
-        </v-list>
 
-        <!-- <v-card-text>
-            <v-text-field bg-color="blue-grey-lighten-4" color="blue-grey-darken-4" variant="underlined">
-                <template #label>
-                    <div class="tw-italic">Message to {{ capitalize(user.fName) }}...</div>
-                </template>
-            </v-text-field>
-        </v-card-text> -->
+        <v-container class="">
+            <v-row no-gutters>
+                <v-col class="" cols="12" lg="3">
+                    <v-sheet class="pa-2 ma-2">
+                        <v-list>
+                            <v-list-item v-for="[key, value] in Object.entries(popupUser)">
+                                <template #subtitle>
+                                    {{ capitalize(key) }}
+                                </template>
+                                {{ value }}
+                            </v-list-item>
+                            <!-- <v-list-item>
+                                <v-btn block variant="outlined" class="">
+                                    Check Schedule
+                                </v-btn>
+                            </v-list-item> -->
+                        </v-list>
+                        <!-- <v-card-text>
+                            <v-text-field bg-color="blue-grey-lighten-4" color="blue-grey-darken-4" variant="underlined">
+                                <template #label>
+                                    <div class="tw-italic">Message to {{ capitalize(user.fName) }}...</div>
+                                </template>
+                            </v-text-field>
+                        </v-card-text> -->
+                    </v-sheet>
+                </v-col>
+                <v-col cols="12" lg="9">
+                    <v-sheet class="pa-2 ma-2">
+                        calendar
+                        <!-- I'm waiting for v-calendar launching for Vuetify3
+                            see below
+                            https://vuetifyjs.com/en/labs/introduction/ -->
+                    </v-sheet>
+                </v-col>
+            </v-row>
+        </v-container>
 
         <v-card-actions>
             <v-spacer></v-spacer>

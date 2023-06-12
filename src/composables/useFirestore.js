@@ -133,15 +133,15 @@ export function useFirestore() {
         });
     }
 
-    function requestMeeting() {
+    function requestMeeting(senderUid, receiverUid, meeting) {
 
     }
 
-    function acceptMeetingRequest() {
+    function acceptMeetingRequest(senderUid, receiverUid, meeting) {
 
     }
 
-    function refuseMeetingRequest() {
+    function refuseMeetingRequest(senderUid, receiverUid, meeting) {
 
     }
 

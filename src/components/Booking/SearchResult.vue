@@ -72,7 +72,7 @@ function clickUser(user) {
                         >
                             <UserRequestPopup
                                 :user="chosenUser"
-                                width="500"/>
+                                width="80vw"/>
                         </v-dialog>
                     </v-list-item>
                 </v-list>
