@@ -4,16 +4,16 @@ import { ref } from "vue"
 import { useFirestore } from '../../composables/useFirestore';
 import SearchResult from "./SearchResult.vue";
 
-const { searchResult, getAllUserInfo, getUserInfoByName } = useFirestore();
-const search = ref('');
+const { userSearchResult, getAllUserInfo, getUserInfoByName } = useFirestore();
+const userSearch = ref('');
 
-function getSearchResult() {
-    if (search.value.length > 0) {
-        getUserInfoByName(search.value.toLowerCase());
+function getUserSearchResult() {
+    if (userSearch.value.length > 0) {
+        getUserInfoByName(userSearch.value.toLowerCase());
     } else {
         getAllUserInfo();
     }
-    console.log("searchResult: ", searchResult.value);
+    console.log("userSearchResult: ", userSearchResult.value);
 }
 
 </script>
@@ -21,11 +21,11 @@ function getSearchResult() {
 <template>
     <v-container fluid class="">
         <!-- <v-row>
-            {{ searchResult }}
+            {{ userSearchResult }}
         </v-row> -->
         <v-row>
             <v-text-field
-                v-model="search"
+                v-model="userSearch"
                 label="Search"
                 color="black"
                 bg-color=""
@@ -33,11 +33,11 @@ function getSearchResult() {
                 hide-details
                 class="tw-mb-1"
                 variant="outlined"
-                @keypress.enter="getSearchResult"
+                @keypress.enter="getUserSearchResult"
             >
                 <template #append-inner>
                     <!-- <v-icon icon="md:home" @click.prevent="getSearchResult"/> -->
-                    <v-icon  @click.prevent="getSearchResult">
+                    <v-icon  @click.prevent="getUserSearchResult">
                         <span class="material-symbols-outlined">
                             search
                         </span>
@@ -49,8 +49,7 @@ function getSearchResult() {
     </v-container>
 
     <SearchResult
-        :search="search"
-        :searchResult="searchResult"
+        :userSearchResult="userSearchResult"
     />
 
 </template>

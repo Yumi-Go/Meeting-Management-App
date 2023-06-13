@@ -9,27 +9,31 @@ import { required, helpers, minLength, maxLength, sameAs } from '@vuelidate/vali
 import PasswordResetPopup from '../components/Setting/PasswordResetPopup.vue';
 
 const router = useRouter();
+import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 const { updateUserInfo, getUserInfoByUID } = useFirestore();
 const { currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
 
 userStateObserver();
 
+
+const currentUserInfo = useLocalStorage("currentUser", null, { serializer: StorageSerializers.object });
+
 console.log("currentUser.value.uid: ", currentUser.value);
-const currentUserInfo = userStateObserver();
+// const currentUserInfo = userStateObserver();
 
-console.log("currentUserInfo in Setting.vue: ", currentUserInfo);
-console.log("currentUserInfo.fName in Setting.vue: ", currentUserInfo.fName);
+console.log("currentUserInfo in Setting.vue: ", currentUserInfo.value);
+console.log("currentUserInfo.fName in Setting.vue: ", currentUserInfo.value.fName);
 
-const fName = ref(currentUserInfo.fName);
-const mName = ref (currentUserInfo.mName);
-const lName = ref(currentUserInfo.lName);
-const organization = ref(currentUserInfo.organization);
-const department = ref(currentUserInfo.department);
-const position = ref(currentUserInfo.position);
-const role = ref(currentUserInfo.role);
-const location = ref(currentUserInfo.location);
-const timezone = ref(currentUserInfo.timezone);
-console.log("email in currentUserInfo.value: ", currentUserInfo.email);
+const fName = ref(currentUserInfo.value.fName);
+const mName = ref (currentUserInfo.value.mName);
+const lName = ref(currentUserInfo.value.lName);
+const organization = ref(currentUserInfo.value.organization);
+const department = ref(currentUserInfo.value.department);
+const position = ref(currentUserInfo.value.position);
+const role = ref(currentUserInfo.value.role);
+const location = ref(currentUserInfo.value.location);
+const timezone = ref(currentUserInfo.value.timezone);
+console.log("email in currentUserInfo.value: ", currentUserInfo.value.email);
 
 const rules = {
     fName: {

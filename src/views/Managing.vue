@@ -21,9 +21,9 @@ function clickInboxBtn() {
         >
             <template #prepend>
                 <v-icon color="">
-                        <span class="material-symbols-outlined">
-                            mail
-                        </span>
+                    <span class="material-symbols-outlined">
+                        mail
+                    </span>
                 </v-icon>
                 <v-icon color="red">
                     <span class="material-symbols-outlined">
@@ -35,5 +35,8 @@ function clickInboxBtn() {
         </v-btn>
     </div>
     <Inbox v-if="showInbox"/>
+    <div v-else>
+        Calendar / List / Chart
+    </div>
 
 </template>

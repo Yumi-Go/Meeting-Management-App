@@ -5,6 +5,7 @@ import * as firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
 import { auth } from "../firebaseConfig"
 import { useFirestore } from '../composables/useFirestore';
+import { useAuth } from '../composables/useAuth';
 
 const { addUser } = useFirestore();
 var uiConfig = {

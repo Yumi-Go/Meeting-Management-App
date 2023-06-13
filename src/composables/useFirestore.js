@@ -2,7 +2,22 @@ import { ref } from 'vue'
 import { auth, db } from '../firebaseConfig';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, query, where, arrayUnion, arrayRemove } from "firebase/firestore";
 
-const searchResult = ref([]);
+// each meeting db format
+    // id: '',
+    // status: '',
+    // title: '',
+    // link: '',
+    // type: true,
+    // category: '',
+    // organizer: [],
+    // participants: [],
+    // start: '',
+    // end: '',
+    // duration: '',
+    // timezone: '',
+    // etc: []
+
+const userSearchResult = ref([]);
 
 export function useFirestore() {
 
@@ -17,29 +32,32 @@ export function useFirestore() {
         } else {
             await setDoc(docRef, {
                 email: email,
-                fName: '',
-                mName: '',
-                lName: '',
-                organization: '',
-                department: '',
-                position: '',
-                role: '',
-                location: '',
-                timezone: '',
+                fName: "",
+                mName: "",
+                lName: "",
+                organization: "",
+                department: "",
+                position: "",
+                role: "",
+                location: "",
+                timezone: "",
                 connection: [],
                 connectionRequestsSent: [],
                 connectionRequestsReceived: [],
+                meetingRequestsSent: [],
+                meetingRequestsReceived: [],
                 availability: [], // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
             });
             console.log("New user added!");
+            location.reload();
         }
     }
 
     async function updateUserInfo(
         fName, mName, lName, organization, department, position, role, location, timezone
     ) {
-        console.log("uid of currentUser: ", auth.currentUser.value.uid);
-        const userRef = doc(db, "users", auth.currentUser.value.uid);
+        console.log("uid of currentUser: ", auth.currentUser.uid);
+        const userRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(userRef, {
             fName: fName.length > 0 ? fName.toLowerCase() : fName,
             mName: mName.length > 0 ? mName.toLowerCase() : mName,
@@ -66,20 +84,20 @@ export function useFirestore() {
     }
 
     async function getAllUserInfo() {
-        searchResult.value = [];
+        userSearchResult.value = [];
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((doc) => {
             console.log(doc.id, " => ", doc.data());
             const docObj = doc.data();
             docObj['uid'] = doc.id;
-            searchResult.value.push(docObj);
+            userSearchResult.value.push(docObj);
         });
-        console.log("allUsers in useFirestore: ", searchResult.value);
+        console.log("allUsers in useFirestore: ", userSearchResult.value);
     }
 
     async function getUserInfoByName(name) {
         // const result = [];
-        searchResult.value = [];
+        userSearchResult.value = [];
         const fNameQuery = query(collection(db, "users"), where("fName", "==", name));
         const mNameQuery = query(collection(db, "users"), where("mName", "==", name));
         const lNameQuery = query(collection(db, "users"), where("lName", "==", name));
@@ -90,10 +108,10 @@ export function useFirestore() {
                 console.log(doc.id, " => ", doc.data());
                 const docObj = doc.data();
                 docObj['uid'] = doc.id;
-                searchResult.value.push(docObj);
+                userSearchResult.value.push(docObj);
             });
         });
-        // console.log("searchResult in useFirestore: ", searchResult.value);
+        // console.log("userSearchResult in useFirestore: ", userSearchResult.value);
         // return result;
     }
 
@@ -145,8 +163,33 @@ export function useFirestore() {
 
     }
 
+
+    // used in Inbox
+    // 이거 여기에서 직접 말고, 로컬스토리지에서 꺼내오면 될듯. 그거 다 해결되면 이 두 펑션 지우기
+    async function getAllReceivedList(receiverUid) {
+        const docRef = doc(db, "users", receiverUid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          console.log("Document data:", docSnap.data());
+          return docSnap.data();
+        } else {
+          console.log("No such document!");
+        //   return null;
+        }
+    }
+
+
+    function getAllSentList(senderUid) {
+
+
+    }
+
+
+
+
+
     return {
-        searchResult,
+        userSearchResult,
         addUser,
         updateUserInfo,
         getUserInfoByUID,

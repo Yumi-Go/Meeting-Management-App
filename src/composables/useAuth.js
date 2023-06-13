@@ -37,7 +37,7 @@ export function useAuth() {
             }
         });
         console.log("currentUserInfo: ", currentUserInfo.value);
-        return currentUserInfo.value;
+        // return currentUserInfo.value;
     }
 
     function logOut() {
