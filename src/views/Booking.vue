@@ -1,4 +1,5 @@
 <script setup>
+// import CreateGroupMeeting from '../components/Booking/CreateGroupMeeting.vue';
 import SearchBar from '../components/Booking/SearchBar.vue';
 // import SearchResult from '../components/Booking/SearchResult.vue';
 
@@ -10,5 +11,7 @@ import SearchBar from '../components/Booking/SearchBar.vue';
     <!-- 컴포넌트 구조 Inbox.vue랑 통일할지 말지 결정해서 수정하기 -->
     <SearchBar/>
     <!-- <SearchResult/> -->
+    <!-- <CreateGroupMeeting/> -->
+
 
 </template>

@@ -41,9 +41,10 @@ export function useFirestore() {
                 role: "",
                 location: "",
                 timezone: "",
-                connection: [],
+                connections: [],
                 connectionRequestsSent: [],
                 connectionRequestsReceived: [],
+                meetings: [], // meeting ID list (linked to meetings collection)
                 meetingRequestsSent: [],
                 meetingRequestsReceived: [],
                 availability: [], // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
@@ -151,12 +152,43 @@ export function useFirestore() {
         });
     }
 
-    function requestMeeting(senderUid, receiverUid, meeting) {
-
+    async function requestMeeting(senderUid, receiverUid, meeting) {
+        const senderRef = doc(db, "users", senderUid);
+        await updateDoc(senderRef, {
+            meetingRequestsSent: arrayUnion(meeting)
+        });
+        const receiverRef = doc(db, "users", receiverUid);
+        await updateDoc(receiverRef, {
+            meetingRequestsReceived: arrayUnion(meeting)
+        });
     }
 
-    function acceptMeetingRequest(senderUid, receiverUid, meeting) {
-
+    async function acceptMeetingRequest(senderUid, receiverUid, meeting) {
+        const senderRef = doc(db, "users", senderUid);
+        await updateDoc(senderRef, {
+            meetings: arrayUnion(meeting.id),
+            meetingRequestsSent: arrayRemove(meeting)
+        });
+        const receiverRef = doc(db, "users", receiverUid);
+        await updateDoc(receiverRef, {
+            meetings: arrayUnion(meeting.id),
+            meetingRequestsReceived: arrayRemove(meeting)
+        });
+        const meetingRef = doc(db, "meetings", meeting.id);
+        await setDoc(meetingRef, {
+            status: '',
+            title: '',
+            link: '',
+            type: true,
+            category: '',
+            organizer: [],
+            participants: [],
+            start: '',
+            end: '',
+            duration: 0,
+            timezone: '',
+            etc: []
+        });
     }
 
     function refuseMeetingRequest(senderUid, receiverUid, meeting) {

@@ -6,9 +6,25 @@ const props = defineProps({
     userSearchResult: Array,
 });
 
+function users() {
+    props.userSearchResult.forEach(user => {
+        user['checked'] = false;
+    });
+    return props.userSearchResult;
+}
+
+
+// props.userSearchResult.forEach(user => {
+//     console.log("user: ", user);
+//     user['checked'] = false;
+// });
+
+console.log("users(): ", users());
+
 const openUserPopup = ref(false);
 
 const chosenUser = ref();
+const chosenUsers = ref([]);
 
 function clickUser(user) {
     openUserPopup.value = true;
@@ -20,14 +36,14 @@ function clickUser(user) {
 </script>
 
 <template>
-    <v-container fluid class="tw-px-5">
+    <v-container fluid class="">
         <!-- <v-row>
             {{ userSearchResult }}
         </v-row> -->
         <v-row>
             <v-list
-                bg-color="grey-lighten-2"
-                class="tw-w-full tw-h-[600px] tw-m-0 tw-text-white"
+                class="tw-w-full"
+                select-strategy="classic"
             >
                 <v-list-subheader class="tw-text-black">
                     Users Search Result
@@ -40,30 +56,33 @@ function clickUser(user) {
                             No Result
                             <!-- icon -->
                         </div>
-                        <div>
-                            <span class="tw-text-[#E0E0E0] tw-opacity-80">
-                                User Does Not Exist
-                            </span>
-                        </div>
                     </div>
                 </v-list-item>
                 <v-list-item
                     v-else
-                    v-for="user in userSearchResult"
-                    class="tw-group"
+                    v-for="user in users()"
+                    :value="user"
                 >
-                    <div
-                        @click="clickUser(user)"
-                        class="tw-flex tw-flex-row tw-hover:bg-red-300 tw-cursor-pointer tw-hover:text-black group-hover:tw-bg-slate-400">
-                        <div class="tw-w-[40%] tw-bg-white tw-opacity-80 tw-text-black tw-px-3 tw-py-2 tw-mr-1 tw-font-bold">
-                            {{ user.fName }}
-                            {{ user.mName }}
-                            {{ user.lName }}
-                        </div>
-                        <div class="tw-grow tw-bg-white tw-opacity-50 tw-text-black tw-px-3 tw-py-2 tw-font-bold">
-                            {{ user.email }}
-                        </div>
-                    </div>
+                    <!-- {{ user.checked }} -->
+                    <v-list-item-action>
+                        <v-checkbox v-model="user.checked">
+                            <template #label>
+                                <div
+                                    @click="clickUser(user)"
+                                    class="tw-flex tw-flex-row tw-w-full"
+                                >
+                                    <div class="tw-w-[40%]">
+                                        {{ user.fName }}
+                                        {{ user.mName }}
+                                        {{ user.lName }}
+                                    </div>
+                                    <div class="tw-grow">
+                                        {{ user.email }}
+                                    </div>
+                                </div>
+                            </template>
+                        </v-checkbox>
+                    </v-list-item-action>
                     <v-dialog
                         v-model="openUserPopup"
                         width="auto"
@@ -72,15 +91,41 @@ function clickUser(user) {
                             :user="chosenUser"
                             width="80vw"/>
                     </v-dialog>
-            </v-list-item>
-
+                </v-list-item>
             </v-list>
+        </v-row>
+        <v-row>
+            <div class="tw-w-full tw-my-2">
+                <v-btn
+                    @click=""
+                    variant="flat"
+                    block
+                    color="grey-darken-4"
+                    :disabled="chosenUsers.length < 1"
+                    class=""
+                >
+                    <template #prepend>
+                        <v-icon color="">
+                            <span class="material-symbols-outlined">
+                                groups
+                            </span>
+                        </v-icon>
+                    </template>
+                    Check the availability for all selected
+                </v-btn>
+            </div>
+
         </v-row>
 
     </v-container>
 
 </template>
 
+<style>
+  .activeListItem {
+    background-color: red !important;
 
+}
+</style>
 
 
