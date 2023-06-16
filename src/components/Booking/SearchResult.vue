@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import UserRequestPopup from './UserRequestPopup.vue';
+import { mdiOpenInNew } from '@mdi/js';
+
 
 const props = defineProps({
     userSearchResult: Array,
@@ -13,23 +15,20 @@ function users() {
     return props.userSearchResult;
 }
 
-
-// props.userSearchResult.forEach(user => {
-//     console.log("user: ", user);
-//     user['checked'] = false;
-// });
-
 console.log("users(): ", users());
 
 const openUserPopup = ref(false);
 
-const chosenUser = ref();
-const chosenUsers = ref([]);
+const openUser = ref();
+
+function getSelectedUsers() {
+    return props.userSearchResult.filter(user => user.checked);
+}
 
 function clickUser(user) {
     openUserPopup.value = true;
-    chosenUser.value = user;
-    console.log("chosenUser: ", chosenUser.value);
+    openUser.value = user;
+    console.log("openUser: ", openUser.value);
     // local storage need to hold this chosenUser info for refreshing of the page
 }
 
@@ -48,7 +47,10 @@ function clickUser(user) {
                 <v-list-subheader class="tw-text-black">
                     Users Search Result
                 </v-list-subheader>
-                <v-list-item v-if="userSearchResult.length < 1" class="tw-p-5 tw-font-bold">
+                <v-list-item
+                    v-if="userSearchResult.length < 1"
+                    class="tw-p-5 tw-font-bold"
+                >
                     <div
                         class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-h-[500px]"
                     >
@@ -62,33 +64,41 @@ function clickUser(user) {
                     v-else
                     v-for="user in users()"
                     :value="user"
+                    :key="user.uid"
                 >
-                    <!-- {{ user.checked }} -->
-                    <v-list-item-action>
-                        <v-checkbox v-model="user.checked">
-                            <template #label>
-                                <div
-                                    @click="clickUser(user)"
-                                    class="tw-flex tw-flex-row tw-w-full"
-                                >
-                                    <div class="tw-w-[40%]">
-                                        {{ user.fName }}
-                                        {{ user.mName }}
-                                        {{ user.lName }}
-                                    </div>
-                                    <div class="tw-grow">
-                                        {{ user.email }}
-                                    </div>
-                                </div>
-                            </template>
-                        </v-checkbox>
-                    </v-list-item-action>
+                    {{ user.checked }}
+                    <template #prepend="{ isActive }">
+                        <v-list-item-action start>
+                            <v-checkbox-btn :model-value="isActive" v-model="user.checked">
+                            </v-checkbox-btn>
+                        </v-list-item-action>
+                    </template>
+                    <v-list-item-title
+                        class="tw-w-[50%]"
+                    >
+                        {{ user.fName }}
+                        {{ user.mName }}
+                        {{ user.lName }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle
+                        class=""
+                    >
+                        {{ user.email }}
+                    </v-list-item-subtitle>
+                    <template #append>
+                        <v-btn
+                            @click="clickUser(user)"
+                            variant="tonal"
+                        >
+                            Open Dialog
+                        </v-btn>
+                    </template>
                     <v-dialog
                         v-model="openUserPopup"
                         width="auto"
                     >
                         <UserRequestPopup
-                            :user="chosenUser"
+                            :user="openUser"
                             width="80vw"/>
                     </v-dialog>
                 </v-list-item>
@@ -101,7 +111,7 @@ function clickUser(user) {
                     variant="flat"
                     block
                     color="grey-darken-4"
-                    :disabled="chosenUsers.length < 1"
+                    :disabled="getSelectedUsers().length < 2"
                     class=""
                 >
                     <template #prepend>
@@ -120,12 +130,3 @@ function clickUser(user) {
     </v-container>
 
 </template>
-
-<style>
-  .activeListItem {
-    background-color: red !important;
-
-}
-</style>
-
-
