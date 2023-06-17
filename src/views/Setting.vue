@@ -152,7 +152,6 @@ function closePasswordResetPopup() {
 
 
 <template>
-    This is setting page
     <p
         v-for="error of v$.$errors"
         :key="error.$uid"

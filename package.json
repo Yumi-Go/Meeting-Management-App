@@ -11,12 +11,13 @@
   "dependencies": {
     "@vuelidate/core": "^2.0.2",
     "@vuelidate/validators": "^2.0.2",
+    "@vuepic/vue-datepicker": "^5.3.0",
     "@vueuse/core": "^10.1.2",
     "firebase": "^9.22.1",
     "firebaseui": "^6.0.2",
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",
-    "vuetify": "^3.3.1"
+    "vuetify": "^3.3.4"
   },
   "devDependencies": {
     "@mdi/font": "^7.2.96",

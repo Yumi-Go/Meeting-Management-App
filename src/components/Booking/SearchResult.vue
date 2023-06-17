@@ -19,7 +19,7 @@ console.log("users(): ", users());
 
 const openUserPopup = ref(false);
 
-const openUser = ref();
+const popupUser = ref();
 
 function getSelectedUsers() {
     return props.userSearchResult.filter(user => user.checked);
@@ -27,8 +27,8 @@ function getSelectedUsers() {
 
 function clickUser(user) {
     openUserPopup.value = true;
-    openUser.value = user;
-    console.log("openUser: ", openUser.value);
+    popupUser.value = user;
+    console.log("popupUser: ", popupUser.value);
     // local storage need to hold this chosenUser info for refreshing of the page
 }
 
@@ -98,7 +98,7 @@ function clickUser(user) {
                         width="auto"
                     >
                         <UserRequestPopup
-                            :user="openUser"
+                            :user="popupUser"
                             width="80vw"/>
                     </v-dialog>
                 </v-list-item>
