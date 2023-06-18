@@ -57,7 +57,7 @@ function clickInboxBtn() {
             </v-btn>
         </div>
     </div>
-    <div class="tw-w-[80vw] tw-h-[80vh] tw-bg-green-200">
+    <div class="">
         <Inbox v-if="showInbox"/>
         <Availability v-else-if="showAvailability"/>
         <div v-else>
