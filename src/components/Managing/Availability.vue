@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router'
@@ -8,13 +8,17 @@ const router = useRouter();
 
 const date = ref();
 const days = ref({
-    Monday: [false, timeItems()[36], timeItems()[68]],
-    Tuesday: [false, timeItems()[36], timeItems()[68]],
-    Wednesday: [false, timeItems()[36], timeItems()[68]],
-    Thursday: [false, timeItems()[36], timeItems()[68]],
-    Friday: [false, timeItems()[36], timeItems()[68]],
-    Saturday: [false, timeItems()[36], timeItems()[68]],
-    Sunday: [false, timeItems()[36], timeItems()[68]]
+    Monday: [true, timeItems()[36], timeItems()[68]],
+    Tuesday: [true, timeItems()[36], timeItems()[68]],
+    Wednesday: [true, timeItems()[36], timeItems()[68]],
+    Thursday: [true, timeItems()[36], timeItems()[68]],
+    Friday: [true, timeItems()[36], timeItems()[68]],
+    Saturday: [true, timeItems()[36], timeItems()[68]],
+    Sunday: [true, timeItems()[36], timeItems()[68]]
+});
+
+watch(days.value, () => {
+    console.log("days: ", days.value);
 });
 
 function timeItems() {
@@ -32,6 +36,12 @@ function timeItems() {
     // console.log(times);
     return times;
 }
+
+function saveAvailability() {
+
+
+}
+
 
 </script>
 
@@ -96,7 +106,7 @@ function timeItems() {
                     color="black"
                     class=""
                     variant="tonal"
-                    @click=""
+                    @click="saveAvailability"
                     type="submit"
                 >
                     Save

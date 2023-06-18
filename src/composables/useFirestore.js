@@ -210,12 +210,18 @@ export function useFirestore() {
         }
     }
 
-
     function getAllSentList(senderUid) {
 
 
     }
 
+
+
+
+    function updateWeeklyAvailability() {
+
+
+    }
 
 
 
@@ -232,6 +238,7 @@ export function useFirestore() {
         refuseConnection,
         requestMeeting,
         acceptMeetingRequest,
-        refuseMeetingRequest
+        refuseMeetingRequest,
+        updateWeeklyAvailability
     }
 }
