@@ -3,18 +3,20 @@ import { ref, watch } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router'
+import { useFirestore } from '../../composables/useFirestore';
 
 const router = useRouter();
+const { updateWeeklyAvailability } = useFirestore();
 
 const date = ref();
 const days = ref({
-    Monday: [true, timeItems()[36], timeItems()[68]],
-    Tuesday: [true, timeItems()[36], timeItems()[68]],
-    Wednesday: [true, timeItems()[36], timeItems()[68]],
-    Thursday: [true, timeItems()[36], timeItems()[68]],
-    Friday: [true, timeItems()[36], timeItems()[68]],
-    Saturday: [true, timeItems()[36], timeItems()[68]],
-    Sunday: [true, timeItems()[36], timeItems()[68]]
+    Monday: [true, timeItems()[36], timeItems()[68], false],
+    Tuesday: [true, timeItems()[36], timeItems()[68], false],
+    Wednesday: [true, timeItems()[36], timeItems()[68], false],
+    Thursday: [true, timeItems()[36], timeItems()[68], false],
+    Friday: [true, timeItems()[36], timeItems()[68], false],
+    Saturday: [true, timeItems()[36], timeItems()[68], false],
+    Sunday: [true, timeItems()[36], timeItems()[68], false]
 });
 
 watch(days.value, () => {
@@ -38,7 +40,7 @@ function timeItems() {
 }
 
 function saveAvailability() {
-
+    updateWeeklyAvailability(days.value);
 
 }
 
@@ -63,7 +65,8 @@ function saveAvailability() {
                 <!-- {{ days[day] }} -->
             </v-col>
             <v-col v-if="days[day][0]" cols="9" class="d-flex align-center flex-row">
-                <v-select
+                <v-autocomplete
+                    v-if="!days[day][3]"
                     v-model="days[day][1]"
                     :items="timeItems()"
                     label="From"
@@ -73,14 +76,66 @@ function saveAvailability() {
                     base-color=""
                     bg-color=""
                     color=""
-                ></v-select>
-                <v-select
+                ></v-autocomplete>
+                <v-autocomplete
+                    v-if="!days[day][3]"
                     v-model="days[day][2]"
                     :items="timeItems()"
                     label="To"
                     density="compact"
                     hide-details="auto"
-                ></v-select>
+                ></v-autocomplete>
+
+                <v-btn
+                    v-if="!days[day][3]"
+                    variant="plain"
+                    @click="days[day][3] = true"
+                >
+                    Input directly
+                </v-btn>
+                <!-- vanilla JavaScript input time is temporarily used here.
+                It's because there is no Time Picker feature launched in Vuetify3 currently.
+                When Vuetify3 launches Time Picker,
+                this will be changed to Vuetify Time Picker component
+                (only Vuetify2 has Time Picker yet) -->
+                <div
+                    v-if="days[day][3]"
+                    class="tw-flex tw-flex-row tw-w-full tw-justify-between tw-items-center">
+                    <div class="tw-mr-10">
+                        <label
+                            for="from"
+                            class="tw-text-blue-500 tw-mr-5"
+                        >
+                            From
+                        </label>
+                        <input
+                            type="time"
+                            id="from"
+                            name="from"
+                        >
+                    </div>
+                    <div>
+                        <label
+                            for="to"
+                            class="tw-text-blue-500 tw-mr-5"
+                        >
+                            To
+                        </label>
+                        <input
+                            type="time"
+                            id="to"
+                            name="to"
+                        >
+                    </div>
+                    <div class="">
+                        <v-btn
+                            variant="plain"
+                            @click="days[day][3] = false"
+                        >
+                            Choose time
+                        </v-btn>
+                    </div>
+                </div>
             </v-col>
             <v-col v-else cols="9" class="d-flex align-center">
                 Unavailable
@@ -160,9 +215,7 @@ function saveAvailability() {
 
     </v-container>
 
-
-
-
 </template>
 
-
+<style>
+</style>

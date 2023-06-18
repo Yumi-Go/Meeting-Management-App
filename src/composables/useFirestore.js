@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { auth, db } from '../firebaseConfig';
-import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, query, where, arrayUnion, arrayRemove } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
+    query, where, arrayUnion, arrayRemove, serverTimestamp, Timestamp } from "firebase/firestore";
 
 // each meeting db format
     // id: '',
@@ -218,7 +219,7 @@ export function useFirestore() {
 
 
 
-    function updateWeeklyAvailability() {
+    function updateWeeklyAvailability(weekObject) {
 
 
     }
