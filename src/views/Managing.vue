@@ -57,7 +57,7 @@ function clickInboxBtn() {
             </v-btn>
         </div>
     </div>
-    <div class="">
+    <div class="tw-w-[100%]">
         <Inbox v-if="showInbox"/>
         <Availability v-else-if="showAvailability"/>
         <div v-else>

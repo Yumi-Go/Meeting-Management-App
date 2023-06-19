@@ -224,7 +224,10 @@ export function useFirestore() {
 
     }
 
+    function addDateOverrides() {
 
+
+    }
 
 
     return {
@@ -240,6 +243,7 @@ export function useFirestore() {
         requestMeeting,
         acceptMeetingRequest,
         refuseMeetingRequest,
-        updateWeeklyAvailability
+        updateWeeklyAvailability,
+        addDateOverrides
     }
 }
