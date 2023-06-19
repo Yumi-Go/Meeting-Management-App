@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { addDays } from 'date-fns';
+import { mdiDelete, mdiTrashCanOutline } from '@mdi/js';
 
 const props = defineProps({
     timeItems: Array,
@@ -46,83 +47,90 @@ function formatDate(startEndDateArray) {
         :enable-time-picker="false"
         range
     />
-    <v-container fluid class="">
-        <v-row v-if="pickedStartEndDatesArray[1] === null">
-            <v-col>
-                <v-row class="mt-10 mb-5 tw-font-semibold">
-                    {{ formatDate(pickedStartEndDatesArray)[0] }}
-                </v-row>
-                <v-row class="">
-                    <v-col class="d-flex flex-row">
-                        <v-row class="">
-                            <v-col cols="4">
-                                <v-combobox
-                                    v-model="days['start'][0]"
-                                    :items="timeItems()"
-                                    label="From"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details="auto"
-                                    class=""
-                                    base-color="red"
-                                    bg-color="orange-lighten-5"
-                                    color="red-lighten-3"
-                                />
-                            </v-col>
-                            <v-col cols="2">
-                                <v-chip
-                                    class=""
-                                    :color="days['start'][2] ? 'pink' : 'purple'"
-                                    @click="days['start'][2] = !(days['start'][2])"
-                                    variant="text"
-                                    label
-                                    :ripple="false"
-                                >
-                                    <span v-if="days['start'][2]" class="tw-font-semibold">
-                                        AM
-                                    </span>
-                                    <span v-else class="tw-font-semibold">
-                                        PM
-                                    </span>
-                                </v-chip>
-                            </v-col>
-                            <v-col cols="4">
-                                <v-combobox
-                                    v-model="days['start'][1]"
-                                    :items="timeItems()"
-                                    label="Until"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details="auto"
-                                    class=""
-                                    base-color="red"
-                                    bg-color="orange-lighten-5"
-                                    color="red-lighten-3"
-                                />
-                            </v-col>
-                            <v-col cols="2">
-                                <v-chip
-                                    class=""
-                                    :color="days['start'][3] ? 'pink' : 'purple'"
-                                    @click="days['start'][3] = !(days['start'][3])"
-                                    variant="text"
-                                    label
-                                    :ripple="false"
-                                >
-                                    <span v-if="days['start'][3]" class="tw-font-semibold">
-                                        AM
-                                    </span>
-                                    <span v-else class="tw-font-semibold">
-                                        PM
-                                    </span>
-                                </v-chip>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                </v-row>
-            </v-col>
-        </v-row>
-        <v-row v-else v-for="(dateObj, i) in formatDate(pickedStartEndDatesArray)">
+    <v-list width="100%">
+        <v-list-item
+            v-if="pickedStartEndDatesArray[1] === null"
+            base-color=""
+            class=""
+            acitve="true"
+            :border="true"
+        >
+            <template #prepend>
+                <span class="tw-font-semibold">{{ formatDate(pickedStartEndDatesArray)[0] }}</span>
+            </template>
+            <v-list-item-title>
+                <div class="d-flex flex-row ml-5">
+                    <div class="d-flex align-center mr-0">
+                        <v-combobox
+                            v-model="days['start'][0]"
+                            :items="timeItems()"
+                            label="From"
+                            variant="outlined"
+                            density="compact"
+                            hide-details="auto"
+                            class="mr-0 my-2"
+                            base-color="red"
+                            bg-color=""
+                            color="red-lighten-3"
+                        />
+                    </div>
+                    <div class="d-flex align-center ml-0">
+                        <v-chip
+                            class="ml-0 mr-5"
+                            :color="days['start'][2] ? 'pink' : 'purple'"
+                            @click="days['start'][2] = !(days['start'][2])"
+                            variant="text"
+                            label
+                            :ripple="false"
+                        >
+                            <span v-if="days['start'][2]" class="">
+                                am
+                            </span>
+                            <span v-else class="">
+                                pm
+                            </span>
+                        </v-chip>
+                    </div>
+                    <div class="d-flex align-center mr-0">
+                        <v-combobox
+                            v-model="days['start'][1]"
+                            :items="timeItems()"
+                            label="Until"
+                            variant="outlined"
+                            density="compact"
+                            hide-details="auto"
+                            class="mr-0 my-2"
+                            base-color="red"
+                            bg-color=""
+                            color="red-lighten-3"
+                        />
+                    </div>
+                    <div class="d-flex align-center ml-0">
+                        <v-chip
+                            class="ml-0 mr-5"
+                            :color="days['start'][3] ? 'pink' : 'purple'"
+                            @click="days['start'][3] = !(days['start'][3])"
+                            variant="text"
+                            label
+                            :ripple="false"
+                        >
+                            <span v-if="days['start'][3]" class="">
+                                am
+                            </span>
+                            <span v-else class="">
+                                pm
+                            </span>
+                        </v-chip>
+                    </div>
+                </div>
+            </v-list-item-title>
+            <template #append>
+                <v-icon :icon="mdiTrashCanOutline" class="ma-0"/>
+            </template>
+
+                            
+        </v-list-item>
+        <v-list-item v-else v-for="(dateObj, i) in formatDate(pickedStartEndDatesArray)">
             <v-col>
                 <v-row v-if="i === 0">
                     From: {{ dateObj }}
@@ -131,70 +139,8 @@ function formatDate(startEndDateArray) {
                     Until: {{ dateObj }}
                 </v-row>
             </v-col>
-        </v-row>
+        </v-list-item>
 
-        <!-- <v-row
-            v-for="(day) in Object.keys(days)"
-            no-gutters
-        >
-            <v-col class="">
-                <v-combobox
-                    v-model="days[day][0]"
-                    :items="timeItems()"
-                    label="From"
-                    density="compact"
-                    hide-details="auto"
-                    class="mr-1"
-                    base-color=""
-                    bg-color=""
-                    color=""
-                />
-                <v-chip
-                    class="mr-5"
-                    :color="days[day][2] ? 'pink' : 'purple'"
-                    @click="days[day][2] = !(days[day][2])"
-                    variant="text"
-                    label
-                    :ripple="false"
-                >
-                    <span v-if="days[day][2]" class="tw-font-semibold">
-                        AM
-                    </span>
-                    <span v-else class="tw-font-semibold">
-                        PM
-                    </span>
-                </v-chip>
-                <v-combobox
-                    v-model="days[day][1]"
-                    :items="timeItems()"
-                    label="To"
-                    density="compact"
-                    hide-details="auto"
-                    class="mr-1"
-                />
-                <v-chip
-                    class="mr-5"
-                    :color="days[day][3] ? 'pink' : 'purple'"
-                    @click="days[day][3] = !(days[day][3])"
-                    variant="text"
-                    label
-                    :ripple="false"
-                >
-                    <span v-if="days[day][3]" class="tw-font-semibold">
-                        AM
-                    </span>
-                    <span v-else class="tw-font-semibold">
-                        PM
-                    </span>
-                </v-chip>
-            </v-col>
-        </v-row> -->
-
-
-
-
-
-
-    </v-container>
+    </v-list>
 
 </template>

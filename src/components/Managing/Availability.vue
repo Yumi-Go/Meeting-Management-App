@@ -113,11 +113,11 @@ function saveAvailability() {
                             label
                             :ripple="false"
                         >
-                            <span v-if="days[day][3]" class="tw-font-semibold">
-                                AM
+                            <span v-if="days[day][3]" class="">
+                                am
                             </span>
-                            <span v-else class="tw-font-semibold">
-                                PM
+                            <span v-else class="">
+                                pm
                             </span>
                         </v-chip>
                         <v-combobox
@@ -137,11 +137,11 @@ function saveAvailability() {
                             label
                             :ripple="false"
                         >
-                            <span v-if="days[day][4]" class="tw-font-semibold">
-                                AM
+                            <span v-if="days[day][4]" class="">
+                                am
                             </span>
-                            <span v-else class="tw-font-semibold">
-                                PM
+                            <span v-else class="">
+                                pm
                             </span>
                         </v-chip>
                     </v-col>
