@@ -60,13 +60,13 @@ function formatDate(startEndDateArray) {
                                     v-model="days['start'][0]"
                                     :items="timeItems()"
                                     label="From"
-                                    variant="underlined"
+                                    variant="outlined"
                                     density="compact"
                                     hide-details="auto"
                                     class=""
-                                    base-color=""
-                                    bg-color=""
-                                    color=""
+                                    base-color="red"
+                                    bg-color="orange-lighten-5"
+                                    color="red-lighten-3"
                                 />
                             </v-col>
                             <v-col cols="2">
@@ -91,10 +91,13 @@ function formatDate(startEndDateArray) {
                                     v-model="days['start'][1]"
                                     :items="timeItems()"
                                     label="Until"
-                                    variant="underlined"
+                                    variant="outlined"
                                     density="compact"
                                     hide-details="auto"
                                     class=""
+                                    base-color="red"
+                                    bg-color="orange-lighten-5"
+                                    color="red-lighten-3"
                                 />
                             </v-col>
                             <v-col cols="2">

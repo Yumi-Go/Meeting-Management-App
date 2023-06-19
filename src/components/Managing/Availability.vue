@@ -100,7 +100,7 @@ function saveAvailability() {
                             variant="outlined"
                             density="compact"
                             hide-details="auto"
-                            class="mr-1"
+                            class="mr-0"
                             base-color=""
                             bg-color=""
                             color=""
@@ -127,7 +127,7 @@ function saveAvailability() {
                             variant="outlined"
                             density="compact"
                             hide-details="auto"
-                            class="mr-1"
+                            class="mr-0"
                         />
                         <v-chip
                             class="mr-5"
