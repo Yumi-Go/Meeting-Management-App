@@ -14,29 +14,41 @@ const { capitalize } = useFormat();
 
 const date = ref();
 const days = ref({
-    monday: [true, timeItems()[36], timeItems()[68], false, '', ''],
-    tuesday: [true, timeItems()[36], timeItems()[68], false, '', ''],
-    wednesday: [true, timeItems()[36], timeItems()[68], false, '', ''],
-    thursday: [true, timeItems()[36], timeItems()[68], false, '', ''],
-    friday: [true, timeItems()[36], timeItems()[68], false, '', ''],
-    saturday: [false, timeItems()[36], timeItems()[68], false, '', ''],
-    sunday: [false, timeItems()[36], timeItems()[68], false, '', '']
-}); // [unavailable true/false, 09:00am(initial value of From), 05:00pm(initial value of To), input directly true/false, fromTime in direct input, toTime in direct input]
+    monday: [true, timeItems()[36], timeItems()[20], true, true],
+    tuesday: [true, timeItems()[36], timeItems()[20], true, true],
+    wednesday: [true, timeItems()[36], timeItems()[20], true, true],
+    thursday: [true, timeItems()[36], timeItems()[20], true, true],
+    friday: [true, timeItems()[36], timeItems()[20], true, true],
+    saturday: [false, timeItems()[36], timeItems()[20], true, true],
+    sunday: [false, timeItems()[36], timeItems()[20], true, true]
+}); // [unavailable true/false, 09:00am(initial value of From), 05:00pm(initial value of To), AM(true)/PM(false) in From time, AM(true)/PM(false) in To time]
 
 watch(days.value, () => {
     console.log("days: ", days.value);
 });
 
+// const aPm = ref(
+//     [
+//         [true, true],
+//         [true, true],
+//         [true, true],
+//         [true, true],
+//         [true, true],
+//         [true, true],
+//         [true, true]
+//     ]
+// ); // [from, to] (true: am, false: pm)
+
 function timeItems() {
     var interval = 15;
     var times = [];
     var minuteSum = 0;
-    var aPm = ['am', 'pm'];
+    // var aPm = ['am', 'pm'];
 
-    for (var i = 0; minuteSum < 60*24; i++) {
+    for (var i = 0; minuteSum < 60*12; i++) {
         var hour = Math.floor(minuteSum / 60);
         var minute = (minuteSum % 60);
-        times[i] = ("0" + (hour % 12)).slice(-2) + ':' + ("0" + minute).slice(-2) + aPm[Math.floor(hour/12)];
+        times[i] = ("0" + (hour % 12)).slice(-2) + ':' + ("0" + minute).slice(-2);
         minuteSum = minuteSum + interval;
     }
     // console.log(times);
@@ -93,77 +105,55 @@ function saveAvailability() {
                         <!-- {{ days[day] }} -->
                     </v-col>
                     <v-col v-if="days[day][0]" cols="9" class="d-flex align-center flex-row">
-                        <v-autocomplete
-                            v-if="!days[day][3]"
+                        <v-combobox
                             v-model="days[day][1]"
                             :items="timeItems()"
                             label="From"
                             density="compact"
                             hide-details="auto"
-                            class="mr-2"
+                            class="mr-1"
                             base-color=""
                             bg-color=""
                             color=""
-                        ></v-autocomplete>
-                        <v-autocomplete
-                            v-if="!days[day][3]"
+                        />
+                        <v-chip
+                            class="mr-5"
+                            :color="days[day][3] ? 'pink' : 'purple'"
+                            @click="days[day][3] = !(days[day][3])"
+                            variant="text"
+                            label
+                            :ripple="false"
+                        >
+                            <span v-if="days[day][3]" class="tw-font-semibold">
+                                AM
+                            </span>
+                            <span v-else class="tw-font-semibold">
+                                PM
+                            </span>
+                        </v-chip>
+                        <v-combobox
                             v-model="days[day][2]"
                             :items="timeItems()"
                             label="To"
                             density="compact"
                             hide-details="auto"
-                        ></v-autocomplete>
-
-                        <v-btn
-                            v-if="!days[day][3]"
-                            variant="plain"
-                            @click="days[day][3] = true"
+                            class="mr-1"
+                        />
+                        <v-chip
+                            class="mr-5"
+                            :color="days[day][4] ? 'pink' : 'purple'"
+                            @click="days[day][4] = !(days[day][4])"
+                            variant="text"
+                            label
+                            :ripple="false"
                         >
-                            Input directly
-                        </v-btn>
-                        <!-- vanilla JavaScript input time is temporarily used here.
-                        It's because there is no Time Picker feature launched in Vuetify3 currently.
-                        When Vuetify3 launches Time Picker,
-                        this will be changed to Vuetify Time Picker component
-                        (only Vuetify2 has Time Picker yet) -->
-                        <div
-                            v-if="days[day][3]"
-                            class="tw-flex tw-flex-row tw-w-full tw-justify-between tw-items-center">
-                            <div class="tw-mr-10">
-                                <label
-                                    for="from"
-                                    class="tw-text-blue-500 tw-mr-5"
-                                >
-                                    From
-                                </label>
-                                <input
-                                    type="time"
-                                    :id="`fromTime${i}`"
-                                    v-model="days[day][4]"
-                                >
-                            </div>
-                            <div>
-                                <label
-                                    for="to"
-                                    class="tw-text-blue-500 tw-mr-5"
-                                >
-                                    To
-                                </label>
-                                <input
-                                    type="time"
-                                    :id="`toTime${i}`"
-                                    v-model="days[day][5]"
-                                >
-                            </div>
-                            <div class="">
-                                <v-btn
-                                    variant="plain"
-                                    @click="days[day][3] = false"
-                                >
-                                    Choose time
-                                </v-btn>
-                            </div>
-                        </div>
+                            <span v-if="days[day][4]" class="tw-font-semibold">
+                                AM
+                            </span>
+                            <span v-else class="tw-font-semibold">
+                                PM
+                            </span>
+                        </v-chip>
                     </v-col>
                     <v-col v-else cols="9" class="d-flex align-center tw-text-gray-400 tw-font-semibold">
                         Unavailable

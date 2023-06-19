@@ -29,30 +29,81 @@ function formatDate(startEndDateArray) {
 </script>
 
 <template>
-
     <VueDatePicker
         v-model="pickedStartEndDatesArray"
         placeholder="Select Date"
         :enable-time-picker="false"
         range
     />
-    <p v-for="(dateObj, i) in formatDate(pickedStartEndDatesArray)">
-        <p v-if="i === 0">
-            From: {{ dateObj }}
-        </p>
-        <p v-else>
-            To: {{ dateObj }}
-        </p>
-    </p>
     <v-container fluid class="">
+        <v-row v-for="(dateObj, i) in formatDate(pickedStartEndDatesArray)">
+            <div v-if="pickedStartEndDatesArray[1] === null">
+                <v-col>
+                    <v-row>
+                        {{ dateObj }}
+                    </v-row>
+                </v-col>
+            </div>
+            <div v-else>
+                <v-col>
+                    <v-row v-if="i === 0">
+                        From: {{ dateObj }}
+                    </v-row>
+                    <v-row v-else>
+                        To: {{ dateObj }}
+                    </v-row>
+                </v-col>
+            </div>
+        </v-row>
         <v-row>
-            <v-list>
-                <v-list-item>
+            <v-col>
 
-                </v-list-item>
-            </v-list>
+                <!-- vanilla JavaScript input time is temporarily used here.
+                It's because there is no Time Picker feature launched in Vuetify3 currently.
+                When Vuetify3 launches Time Picker,
+                this will be changed to Vuetify Time Picker component
+                (only Vuetify2 has Time Picker yet) -->
+                <div
+                    class="tw-flex tw-flex-row tw-w-full tw-justify-between tw-items-center">
+                    <div class="tw-mr-10">
+                        <label
+                            for="from"
+                            class="tw-text-blue-500 tw-mr-5"
+                        >
+                            From
+                        </label>
+                        <input
+                            type="time"
+                        >
+                    </div>
+                    <div>
+                        <label
+                            for="to"
+                            class="tw-text-blue-500 tw-mr-5"
+                        >
+                            To
+                        </label>
+                        <input
+                            type="time"
+                        >
+                    </div>
+                    <div class="">
+                        <v-btn
+                            variant="plain"
+                            @click=""
+                        >
+                            Choose time
+                        </v-btn>
+                    </div>
+                </div>
+
+
+            </v-col>
+
+
+
+
         </v-row>
     </v-container>
 
-    <v-date-picker/>
 </template>
