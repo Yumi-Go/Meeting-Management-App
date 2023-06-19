@@ -21,23 +21,11 @@ const days = ref({
     friday: [true, timeItems()[36], timeItems()[20], true, true],
     saturday: [false, timeItems()[36], timeItems()[20], true, true],
     sunday: [false, timeItems()[36], timeItems()[20], true, true]
-}); // [unavailable true/false, 09:00am(initial value of From), 05:00pm(initial value of To), AM(true)/PM(false) in From time, AM(true)/PM(false) in To time]
+}); // [unavailable true/false, 09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
 watch(days.value, () => {
     console.log("days: ", days.value);
 });
-
-// const aPm = ref(
-//     [
-//         [true, true],
-//         [true, true],
-//         [true, true],
-//         [true, true],
-//         [true, true],
-//         [true, true],
-//         [true, true]
-//     ]
-// ); // [from, to] (true: am, false: pm)
 
 function timeItems() {
     var interval = 15;
@@ -68,7 +56,7 @@ function saveAvailability() {
 
     <v-container class="w-100 bg-white">
         <v-row>
-            <v-col cols="9">
+            <v-col cols="7">
                 <v-icon
                     :icon="mdiCalendarClock"
                     color="grey"
@@ -78,7 +66,7 @@ function saveAvailability() {
                     Weekly Schedule
                 </span>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="5">
                 <v-icon
                     :icon="mdiCalendarEdit"
                     color="grey"
@@ -91,7 +79,7 @@ function saveAvailability() {
         </v-row>
 
         <v-row>
-            <v-col cols="9" class="">
+            <v-col cols="7" class="">
                 <v-row
                     v-for="(day, i) in Object.keys(days)"
                     no-gutters
@@ -109,6 +97,7 @@ function saveAvailability() {
                             v-model="days[day][1]"
                             :items="timeItems()"
                             label="From"
+                            variant="outlined"
                             density="compact"
                             hide-details="auto"
                             class="mr-1"
@@ -134,7 +123,8 @@ function saveAvailability() {
                         <v-combobox
                             v-model="days[day][2]"
                             :items="timeItems()"
-                            label="To"
+                            label="Until"
+                            variant="outlined"
                             density="compact"
                             hide-details="auto"
                             class="mr-1"
@@ -161,39 +151,39 @@ function saveAvailability() {
                 </v-row>
             </v-col>
             <v-col
-                cols="3"
+                cols="5"
                 class="tw-border-l-2 tw-border-gray-100"
             >
-                <DateAvailability/>
+                <DateAvailability :timeItems="timeItems"/>
             </v-col>
         </v-row>
         <v-row class="mt-10">
-                    <v-col class="mr-1 ml-2 pa-0">
-                        <v-btn
-                            width="100%"
-                            height="40"
-                            color="grey"
-                            class=""
-                            variant="tonal"
-                            @click="router.push('/')"
-                        >
-                            Cancel
-                        </v-btn>
-                    </v-col>
-                    <v-col class="ml-1 mr-2 pa-0">
-                        <v-btn
-                            width="100%"
-                            height="40"
-                            color="black"
-                            class=""
-                            variant="tonal"
-                            @click="saveAvailability"
-                            type="submit"
-                        >
-                            Save
-                        </v-btn>
-                    </v-col>
-                </v-row>
+            <v-col class="mr-1 ml-2 pa-0">
+                <v-btn
+                    width="100%"
+                    height="40"
+                    color="grey"
+                    class=""
+                    variant="tonal"
+                    @click="router.push('/')"
+                >
+                    Cancel
+                </v-btn>
+            </v-col>
+            <v-col class="ml-1 mr-2 pa-0">
+                <v-btn
+                    width="100%"
+                    height="40"
+                    color="black"
+                    class=""
+                    variant="tonal"
+                    @click="saveAvailability"
+                    type="submit"
+                >
+                    Save
+                </v-btn>
+            </v-col>
+        </v-row>
     </v-container>
 
 </template>
