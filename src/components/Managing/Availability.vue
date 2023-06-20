@@ -31,15 +31,12 @@ function timeItems() {
     var interval = 15;
     var times = [];
     var minuteSum = 0;
-    // var aPm = ['am', 'pm'];
-
     for (var i = 0; minuteSum < 60*12; i++) {
         var hour = Math.floor(minuteSum / 60);
         var minute = (minuteSum % 60);
         times[i] = ("0" + (hour % 12)).slice(-2) + ':' + ("0" + minute).slice(-2);
         minuteSum = minuteSum + interval;
     }
-    // console.log(times);
     return times;
 }
 
