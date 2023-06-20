@@ -106,7 +106,7 @@ function saveAvailability() {
                             color=""
                         />
                         <v-chip
-                            class="mr-5"
+                            class="ml-1 mr-5 px-1"
                             :color="days[day][3] ? 'pink' : 'purple'"
                             @click="days[day][3] = !(days[day][3])"
                             variant="text"
@@ -130,7 +130,7 @@ function saveAvailability() {
                             class="mr-0"
                         />
                         <v-chip
-                            class="mr-5"
+                            class="ml-1 mr-5 px-1"
                             :color="days[day][4] ? 'pink' : 'purple'"
                             @click="days[day][4] = !(days[day][4])"
                             variant="text"

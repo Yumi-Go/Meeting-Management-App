@@ -76,7 +76,7 @@ function formatDate(startEndDateArray) {
                     </div>
                     <div class="d-flex align-center ml-0">
                         <v-chip
-                            class="ml-0 mr-5"
+                            class="ml-1 mr-5 px-1"
                             :color="days['start'][2] ? 'pink' : 'purple'"
                             @click="days['start'][2] = !(days['start'][2])"
                             variant="text"
@@ -107,7 +107,7 @@ function formatDate(startEndDateArray) {
                     </div>
                     <div class="d-flex align-center ml-0">
                         <v-chip
-                            class="ml-0 mr-5"
+                            class="ml-1 mr-5 px-1"
                             :color="days['start'][3] ? 'pink' : 'purple'"
                             @click="days['start'][3] = !(days['start'][3])"
                             variant="text"
