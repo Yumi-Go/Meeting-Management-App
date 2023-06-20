@@ -9,8 +9,6 @@ const props = defineProps({
     timeItems: Array,
 });
 
-// console.log("props.timeItems: ", props.timeItems());
-
 const defaultStartEndTime = ref({
     start: [props.timeItems()[36], props.timeItems()[20], true, true],
     end: [props.timeItems()[36], props.timeItems()[20], true, true],
@@ -22,7 +20,9 @@ const pickedDatesList = ref([]);
 watch(pickedStartEndDatesArray, (newArray) => {
     console.log("newArray[0]: ", typeof newArray[0]);
     console.log("newArray[1]: ", typeof newArray[1]);
-    // newArray[1] = newArray[1] ?? 'nothing';
+    if (newArray[1] === null) {
+        newArray.pop();
+    }
     console.log("newArray: ", newArray);
     pickedDatesList.value.push(newArray);
     console.log("pickedDatesList: ", pickedDatesList.value);
@@ -60,101 +60,169 @@ function formatDate(startEndDateArray) {
         v-if="pickedDatesList.length > 0"
         width="100%"
     >
-        <template v-for="dates in pickedDatesList">
-        <v-list-item
-            v-if="dates[1] === null"
-            base-color=""
-            class=""
-            :acitve="true"
-            :border="true"
-        >
-            <!-- dates: {{ dates[1] }} -->
-            <template #prepend>
-                <span class="tw-font-semibold">{{ formatDate(dates)[0] }}</span>
-            </template>
-            <v-list-item-title>
-                <div class="d-flex flex-row ml-5">
-                    <div class="d-flex align-center mr-0">
-                        <v-combobox
-                            v-model="defaultStartEndTime['start'][0]"
-                            :items="timeItems()"
-                            label="From"
-                            variant="outlined"
-                            density="compact"
-                            hide-details="auto"
-                            class="mr-0 my-2"
-                            base-color="red"
-                            bg-color=""
-                            color="red-lighten-3"
-                        />
-                    </div>
-                    <div class="d-flex align-center ml-0">
-                        <v-chip
-                            class="ml-1 mr-5 px-1"
-                            :color="defaultStartEndTime['start'][2] ? 'pink' : 'purple'"
-                            @click="defaultStartEndTime['start'][2] = !(defaultStartEndTime['start'][2])"
-                            variant="text"
-                            label
-                            :ripple="false"
-                        >
-                            <span v-if="defaultStartEndTime['start'][2]" class="">
-                                am
-                            </span>
-                            <span v-else class="">
-                                pm
-                            </span>
-                        </v-chip>
-                    </div>
-                    <div class="d-flex align-center mr-0">
-                        <v-combobox
-                            v-model="defaultStartEndTime['start'][1]"
-                            :items="timeItems()"
-                            label="Until"
-                            variant="outlined"
-                            density="compact"
-                            hide-details="auto"
-                            class="mr-0 my-2"
-                            base-color="red"
-                            bg-color=""
-                            color="red-lighten-3"
-                        />
-                    </div>
-                    <div class="d-flex align-center ml-0">
-                        <v-chip
-                            class="ml-1 mr-5 px-1"
-                            :color="defaultStartEndTime['start'][3] ? 'pink' : 'purple'"
-                            @click="defaultStartEndTime['start'][3] = !(defaultStartEndTime['start'][3])"
-                            variant="text"
-                            label
-                            :ripple="false"
-                        >
-                            <span v-if="defaultStartEndTime['start'][3]" class="">
-                                am
-                            </span>
-                            <span v-else class="">
-                                pm
-                            </span>
-                        </v-chip>
-                    </div>
-                </div>
-            </v-list-item-title>
-            <template #append>
-                <v-icon :icon="mdiTrashCanOutline" class="ma-0"/>
-            </template>                            
-        </v-list-item>
-        </template>
+            <v-list-item
+                v-for="startEndDates in pickedDatesList"
+                base-color=""
+                class=""
+                :acitve="true"
+                :border="true"
+            >
+                <template v-if="startEndDates.length === 1">
+                    <template #prepend>
+                        <span class="tw-font-semibold">{{ formatDate(startEndDates)[0] }}</span>
+                    </template>
+                    <v-list-item-title>
+                        <div class="d-flex flex-row ml-5">
+                            <div class="d-flex align-center mr-0">
+                                <v-combobox
+                                    v-model="defaultStartEndTime['start'][0]"
+                                    :items="timeItems()"
+                                    label="From"
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details="auto"
+                                    class="mr-0 my-2"
+                                    base-color="red"
+                                    bg-color=""
+                                    color="red-lighten-3"
+                                />
+                            </div>
+                            <div class="d-flex align-center ml-0">
+                                <v-chip
+                                    class="ml-1 mr-5 px-1"
+                                    :color="defaultStartEndTime['start'][2] ? 'pink' : 'purple'"
+                                    @click="defaultStartEndTime['start'][2] = !(defaultStartEndTime['start'][2])"
+                                    variant="text"
+                                    label
+                                    :ripple="false"
+                                >
+                                    <span v-if="defaultStartEndTime['start'][2]" class="">
+                                        am
+                                    </span>
+                                    <span v-else class="">
+                                        pm
+                                    </span>
+                                </v-chip>
+                            </div>
+                            <div class="d-flex align-center mr-0">
+                                <v-combobox
+                                    v-model="defaultStartEndTime['start'][1]"
+                                    :items="timeItems()"
+                                    label="Until"
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details="auto"
+                                    class="mr-0 my-2"
+                                    base-color="red"
+                                    bg-color=""
+                                    color="red-lighten-3"
+                                />
+                            </div>
+                            <div class="d-flex align-center ml-0">
+                                <v-chip
+                                    class="ml-1 mr-5 px-1"
+                                    :color="defaultStartEndTime['start'][3] ? 'pink' : 'purple'"
+                                    @click="defaultStartEndTime['start'][3] = !(defaultStartEndTime['start'][3])"
+                                    variant="text"
+                                    label
+                                    :ripple="false"
+                                >
+                                    <span v-if="defaultStartEndTime['start'][3]" class="">
+                                        am
+                                    </span>
+                                    <span v-else class="">
+                                        pm
+                                    </span>
+                                </v-chip>
+                            </div>
+                        </div>
+                    </v-list-item-title>
+                    <template #append>
+                        <v-icon :icon="mdiTrashCanOutline" class="ma-0"/>
+                    </template>
+                </template>
 
-        <!-- <v-list-item v-else v-for="(dateObj, i) in formatDate(pickedStartEndDatesArray)">
-            <v-col>
-                <v-row v-if="i === 0">
-                    From: {{ dateObj }}
-                </v-row>
-                <v-row v-else>
-                    Until: {{ dateObj }}
-                </v-row>
-            </v-col>
-        </v-list-item> -->
+                <template v-else>
+                    <template #prepend>
+                        <span v-for="(date, i) in startEndDates" v-if="i === 0" class="tw-font-semibold">
+                            Start: {{ date }}
+                        </span>
+                        <span v-else class="tw-font-semibold">
+                            End: {{ date }}
+                        </span>
+                    </template>
+                    <v-list-item-title>
+                        <div class="d-flex flex-row ml-5">
+                            <div class="d-flex align-center mr-0">
+                                <v-combobox
+                                    v-model="defaultStartEndTime['start'][0]"
+                                    :items="timeItems()"
+                                    label="From"
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details="auto"
+                                    class="mr-0 my-2"
+                                    base-color="red"
+                                    bg-color=""
+                                    color="red-lighten-3"
+                                />
+                            </div>
+                            <div class="d-flex align-center ml-0">
+                                <v-chip
+                                    class="ml-1 mr-5 px-1"
+                                    :color="defaultStartEndTime['start'][2] ? 'pink' : 'purple'"
+                                    @click="defaultStartEndTime['start'][2] = !(defaultStartEndTime['start'][2])"
+                                    variant="text"
+                                    label
+                                    :ripple="false"
+                                >
+                                    <span v-if="defaultStartEndTime['start'][2]" class="">
+                                        am
+                                    </span>
+                                    <span v-else class="">
+                                        pm
+                                    </span>
+                                </v-chip>
+                            </div>
+                            <div class="d-flex align-center mr-0">
+                                <v-combobox
+                                    v-model="defaultStartEndTime['start'][1]"
+                                    :items="timeItems()"
+                                    label="Until"
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details="auto"
+                                    class="mr-0 my-2"
+                                    base-color="red"
+                                    bg-color=""
+                                    color="red-lighten-3"
+                                />
+                            </div>
+                            <div class="d-flex align-center ml-0">
+                                <v-chip
+                                    class="ml-1 mr-5 px-1"
+                                    :color="defaultStartEndTime['start'][3] ? 'pink' : 'purple'"
+                                    @click="defaultStartEndTime['start'][3] = !(defaultStartEndTime['start'][3])"
+                                    variant="text"
+                                    label
+                                    :ripple="false"
+                                >
+                                    <span v-if="defaultStartEndTime['start'][3]" class="">
+                                        am
+                                    </span>
+                                    <span v-else class="">
+                                        pm
+                                    </span>
+                                </v-chip>
+                            </div>
+                        </div>
+                    </v-list-item-title>
+                    <template #append>
+                        <v-icon :icon="mdiTrashCanOutline" class="ma-0"/>
+                    </template>                    
 
+                </template>
+            </v-list-item>
     </v-list>
 
 </template>
