@@ -48,7 +48,8 @@ export function useFirestore() {
                 meetings: [], // meeting ID list (linked to meetings collection)
                 meetingRequestsSent: [],
                 meetingRequestsReceived: [],
-                availability: [], // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
+                weeklyAvailability: [], // [[mon], [tues], [wednes], [thurs], [fri], [sat], [sun]]
+                datesAvailability: [] // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
             });
             console.log("New user added!");
             location.reload();
@@ -210,7 +211,6 @@ export function useFirestore() {
         //   return null;
         }
     }
-
     function getAllSentList(senderUid) {
 
 
@@ -220,12 +220,16 @@ export function useFirestore() {
 
 
     function updateWeeklyAvailability(weekObject) {
-
-
+        // weekObject = [
+        // {mon: [from, until], ...},
+        // {tues: [from, until], ...},
+        // ...wednes, thurs, fri, sat, sun
+        // ]
     }
 
-    function addDateOverrides() {
-
+    function addDateOverrides(dateObject) {
+        // get the day of week of dateObject
+        // overerrides weekAvailability on that day
 
     }
 
