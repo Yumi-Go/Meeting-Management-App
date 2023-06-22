@@ -68,7 +68,6 @@ function saveAvailability() {
                 </span>
             </v-col>
         </v-row>
-
         <v-row>
             <v-col cols="7" class="">
                 <WeeklyAvailability
@@ -82,7 +81,8 @@ function saveAvailability() {
                 class="tw-border-l-2 tw-border-gray-100"
             >
                 <DateAvailability
-                    :timeItems="timeItems"/>
+                    :timeItems="timeItems"
+                />
             </v-col>
         </v-row>
         <v-row class="mt-10">

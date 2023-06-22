@@ -9,7 +9,7 @@ import { mdiCheckboxMarkedCirclePlusOutline, mdiCalendarBlank, mdiCalendarBlankO
 const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
 
 const props = defineProps({
-    timeItems: Array,
+    timeItems: Function
 });
 
 const defaultStartEndTime = ref({
@@ -17,21 +17,23 @@ const defaultStartEndTime = ref({
     end: [props.timeItems()[36], props.timeItems()[20], true, true],
 }); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
-const pickedStartEndDatesArray = ref([new Date(), addDays(new Date(), 0)]);
-const pickedDatesList = ref([]);
+const pickedStartEndDates = ref([new Date(), addDays(new Date(), 0)]);
+const allPickedStartEndDates = ref([]);
 
-watch(pickedStartEndDatesArray, (newArray) => {
-    if (newArray[1] === null) {
-        newArray.pop();
+watch(pickedStartEndDates, (newVal) => {
+    if (newVal[1] === null) {
+        newVal.pop();
     }
-    console.log("newArray: ", newArray);
-    pickedDatesList.value.push(newArray);
-    console.log("pickedDatesList: ", pickedDatesList.value);
+    console.log("newVal: ", newVal);
+    allPickedStartEndDates.value.push(newVal);
+    console.log("allPickedStartEndDates: ", allPickedStartEndDates.value);
+    console.log("typeof newVal: ", typeof newVal);
+    console.log("typeof allPickedStartEndDates: ", typeof allPickedStartEndDates.value);
 });
 
-function formatDate(startEndDateArray) {
+function formatDate(startEndDates) {
     const result = [];
-    startEndDateArray.forEach(date => {
+    startEndDates.forEach(date => {
         if (date !== null) {
             const day = date.getDate();
             const month = date.getMonth() + 1;
@@ -50,17 +52,24 @@ function formatDate(startEndDateArray) {
 <template>
     <v-container fluid class="ma-0 pa-0 tw-h-full">
         <VueDatePicker
-            v-model="pickedStartEndDatesArray"
+            v-model="pickedStartEndDates"
             placeholder="Select Date"
             :enable-time-picker="false"
             range
-        />
+            calendar-cell-class-name="dp-custom-cell"
+        >
+            <template #calendar-header="{ index, day }">
+                <div :class="index === 5 || index === 6 ? 'tw-text-red-800' : 'tw-text-blue-800'">
+                    {{ day }}
+                </div>
+            </template>
+        </VueDatePicker>
         <v-list
-            v-if="pickedDatesList.length > 0"
+            v-if="allPickedStartEndDates.length > 0"
             width="100%"
         >
             <v-list-item
-                v-for="startEndDates in pickedDatesList"
+                v-for="startEndDates in allPickedStartEndDates"
                 base-color=""
                 class="mb-1"
                 :acitve="true"
@@ -218,3 +227,10 @@ function formatDate(startEndDateArray) {
         </v-list>
     </v-container>
 </template>
+
+<sytle lang="scss">
+.dp-custom-cell {
+    border-radius: 100%;
+}
+
+</sytle>

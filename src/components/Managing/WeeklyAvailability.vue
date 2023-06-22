@@ -14,7 +14,7 @@ const { capitalize } = useFormat();
 
 const props = defineProps({
     days: Object,
-    timeItems: Array,
+    timeItems: Function,
 });
 
 </script>
