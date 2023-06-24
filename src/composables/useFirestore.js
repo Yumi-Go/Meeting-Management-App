@@ -2,6 +2,8 @@ import { ref } from 'vue'
 import { auth, db } from '../firebaseConfig';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
     query, where, arrayUnion, arrayRemove, serverTimestamp, Timestamp } from "firebase/firestore";
+import { useDateTime } from '../composables/useDateTime'
+
 
 // each meeting db format
     // id: '',
@@ -18,6 +20,7 @@ import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
     // timezone: '',
     // etc: []
 
+const { formatDate, getDay, getMonth, getYear } = useDateTime();
 const userSearchResult = ref([]);
 
 export function useFirestore() {
@@ -49,7 +52,7 @@ export function useFirestore() {
                 meetingRequestsSent: [],
                 meetingRequestsReceived: [],
                 weeklyAvailability: [], // [[mon], [tues], [wednes], [thurs], [fri], [sat], [sun]]
-                datesAvailability: [] // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
+                dateOverrides: [] // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
             });
             console.log("New user added!");
             location.reload();
@@ -219,19 +222,45 @@ export function useFirestore() {
 
 
 
-    function updateWeeklyAvailability(weekObject) {
-        // weekObject = [
+    function updateWeeklyAvailability(weeks) {
+        // weekObj = [
         // {mon: [from, until], ...},
         // {tues: [from, until], ...},
         // ...wednes, thurs, fri, sat, sun
         // ]
+        console.log("weekObject in updateWeeklyAvailability: ", weeks);
     }
 
-    function addDateOverrides(dateObject) {
+    function addDateOverrides(dates) {
         // get the day of week of dateObject
         // overerrides weekAvailability on that day
+        // overriddenDates = [
+        //     [
+        //         [
+        //             getDay(date), getMonth(date), getYear(date)],
+        //             getDay(date), getMonth(date), getYear(date)]
+        //         ],
+        //         [
+        //             getDay(date), getMonth(date), getYear(date)],
+        //             getDay(date), getMonth(date), getYear(date)]
+        //         ],
+        //         ...
+        //     ]
+        // ]
+        console.log("dates in addDateOverrides: ", dates);
+        const overriddenDates = [];
+        dates.forEach(date => {
+            const startEnd = [];
+            
 
+        })
+        
+
+        console.log("overriddenDates: ", overriddenDates);
     }
+
+
+// dateExample: Timestamp.fromDate(new Date("December 10, 1815"))
 
 
     return {

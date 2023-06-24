@@ -20,8 +20,14 @@ const days = ref({
     sunday: [false, timeItems()[36], timeItems()[20], true, true]
 }); // [unavailable true/false, 09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
+const overriddenDates = ref([]);
+
 watch(days.value, (newDays) => {
     console.log("newDays: ", newDays);
+});
+
+watch(overriddenDates.value, (newVal) => {
+    console.log("updated allOverriddenDates in Availability.vue: ", newVal);
 });
 
 function timeItems() {
@@ -39,6 +45,7 @@ function timeItems() {
 
 function saveAvailability() {
     updateWeeklyAvailability(days.value);
+    addDateOverrides(overriddenDates.value)
 }
 
 
@@ -81,6 +88,7 @@ function saveAvailability() {
                 class="tw-border-l-2 tw-border-gray-100"
             >
                 <DateAvailability
+                    :overriddenDates = "overriddenDates"
                     :timeItems="timeItems"
                 />
             </v-col>
@@ -105,7 +113,7 @@ function saveAvailability() {
                     color="black"
                     class=""
                     variant="tonal"
-                    @click="saveAvailability(days)"
+                    @click="saveAvailability()"
                     type="submit"
                 >
                     Save
