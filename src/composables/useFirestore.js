@@ -231,37 +231,16 @@ export function useFirestore() {
         console.log("weekObject in updateWeeklyAvailability: ", weeks);
     }
 
-    function addDateOverrides(dates) {
-        // get the day of week of dateObject
-        // overerrides weekAvailability on that day
-        // overriddenDates = [
-        //     [
-        //         [
-        //             getDay(date), getMonth(date), getYear(date)],
-        //             getDay(date), getMonth(date), getYear(date)]
-        //         ],
-        //         [
-        //             getDay(date), getMonth(date), getYear(date)],
-        //             getDay(date), getMonth(date), getYear(date)]
-        //         ],
-        //         ...
-        //     ]
-        // ]
+    async function addDateOverrides(dates) {
         console.log("dates in addDateOverrides: ", dates);
-        const overriddenDates = [];
-        dates.forEach(date => {
-            const startEnd = [];
-            
-
+        console.log("uid of currentUser: ", auth.currentUser.uid);
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        await dates.forEach(date => {
+            updateDoc(docRef, {
+                dateOverrides: arrayUnion(Timestamp.fromDate(date))
+            });
         })
-        
-
-        console.log("overriddenDates: ", overriddenDates);
     }
-
-
-// dateExample: Timestamp.fromDate(new Date("December 10, 1815"))
-
 
     return {
         userSearchResult,
