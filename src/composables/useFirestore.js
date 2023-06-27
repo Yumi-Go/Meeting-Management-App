@@ -20,7 +20,7 @@ import { useDateTime } from '../composables/useDateTime'
     // timezone: '',
     // etc: []
 
-const { formatDate, getDay, getMonth, getYear } = useDateTime();
+const { formatDate } = useDateTime();
 const userSearchResult = ref([]);
 
 export function useFirestore() {
@@ -231,15 +231,19 @@ export function useFirestore() {
         console.log("weekObject in updateWeeklyAvailability: ", weeks);
     }
 
-    async function addDateOverrides(dates) {
-        console.log("dates in addDateOverrides: ", dates);
-        console.log("uid of currentUser: ", auth.currentUser.uid);
+    async function addDateOverrides(pickedDateTimeObjsArr) {
         const docRef = doc(db, "users", auth.currentUser.uid);
-        await dates.forEach(date => {
+        await pickedDateTimeObjsArr.forEach(fromUntilTimePair => {
+            // console.log("fromUntilTimePair: ", fromUntilTimePair);
             updateDoc(docRef, {
-                dateOverrides: arrayUnion(Timestamp.fromDate(date))
+                dateOverrides: arrayUnion(
+                    {
+                        from: Timestamp.fromDate(fromUntilTimePair[0]),
+                        until: Timestamp.fromDate(fromUntilTimePair[1])
+                    }
+                )
             });
-        })
+        });
     }
 
     return {

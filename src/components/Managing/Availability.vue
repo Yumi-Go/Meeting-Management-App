@@ -20,7 +20,8 @@ const days = ref({
     sunday: [false, timeItems()[36], timeItems()[20], true, true]
 }); // [unavailable true/false, 09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
-const overriddenDates = ref([]);
+const overriddenDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
+const fromUntilTime = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
 watch(days.value, (newDays) => {
     console.log("newDays: ", newDays);
@@ -43,10 +44,54 @@ function timeItems() {
     return times;
 }
 
+function mergePickedDateTime() {
+    // piekced From/Until times from combobox
+    const times = fromUntilTime.value.map((timeArr) => {
+        let fromHour = Number(timeArr[0].split(":")[0]);
+        if (timeArr[2] === false) { // PM
+            fromHour += 12;
+        }
+        let fromMinute = Number(timeArr[0].split(":")[1]);
+        let untilHour = Number(timeArr[1].split(":")[0]);
+        if (timeArr[3] === false) { // PM
+            untilHour += 12;
+        }
+        let untilMinute = Number(timeArr[1].split(":")[1]);
+        return [fromHour, fromMinute, untilHour, untilMinute];
+    });
+    console.log("times: ", times);
+
+    // picked date from Date picker
+    const dates = overriddenDates.value.map((date) => {
+        console.log("date before getYear, getMonth, getDay: ", date);
+        return [date.getFullYear(), date.getMonth(), date.getDate()]
+    });
+    console.log("dates: ", dates);
+
+    // merge date(from date picker) and time(from combobox)
+    // here, convert time from Irish Standard Time to GMT (+1 hour) with getTimeezondOffset
+    const datesTimesMerged = dates.map((date, i) => {
+        const fromObj = () => {
+            const dateObj = new Date(date[0], date[1], date[2], times[i][0], times[i][1]);
+            const tzOffset = dateObj.getTimezoneOffset() * 60 * 1000;
+            return new Date(dateObj.getTime() - tzOffset);
+        }
+        const untilObj = () => {
+            const dateObj = new Date(date[0], date[1], date[2], times[i][2], times[i][3]);
+            const tzOffset = dateObj.getTimezoneOffset() * 60 * 1000;
+            return new Date(dateObj.getTime() - tzOffset);
+        }
+        return [fromObj(), untilObj()];
+    });
+    console.log("date&time merging result: ", datesTimesMerged);
+    return datesTimesMerged;
+}
+
 function saveAvailability() {
     updateWeeklyAvailability(days.value);
-    addDateOverrides(overriddenDates.value)
+    addDateOverrides(mergePickedDateTime());
 }
+
 
 
 </script>
@@ -89,6 +134,7 @@ function saveAvailability() {
             >
                 <DateAvailability
                     :overriddenDates = "overriddenDates"
+                    :fromUntilTime = "fromUntilTime"
                     :timeItems="timeItems"
                 />
             </v-col>
