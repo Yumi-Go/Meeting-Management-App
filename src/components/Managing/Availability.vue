@@ -48,14 +48,10 @@ function mergePickedDateTime() {
     // piekced From/Until times from combobox
     const times = fromUntilTime.value.map((timeArr) => {
         let fromHour = Number(timeArr[0].split(":")[0]);
-        if (timeArr[2] === false) { // PM
-            fromHour += 12;
-        }
+        fromHour = timeArr[2] === false ? fromHour += 12 : fromHour; // PM
         let fromMinute = Number(timeArr[0].split(":")[1]);
         let untilHour = Number(timeArr[1].split(":")[0]);
-        if (timeArr[3] === false) { // PM
-            untilHour += 12;
-        }
+        untilHour = timeArr[3] === false ? untilHour += 12 : untilHour; // PM
         let untilMinute = Number(timeArr[1].split(":")[1]);
         return [fromHour, fromMinute, untilHour, untilMinute];
     });
