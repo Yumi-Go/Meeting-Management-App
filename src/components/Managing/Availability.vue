@@ -20,15 +20,15 @@ const days = ref({
     sunday: [false, timeItems()[36], timeItems()[20], true, true]
 }); // [unavailable true/false, 09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
-const overriddenDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
-const fromUntilTime = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
+const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
+const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
 watch(days.value, (newDays) => {
     console.log("newDays: ", newDays);
 });
 
-watch(overriddenDates.value, (newVal) => {
-    console.log("updated allOverriddenDates in Availability.vue: ", newVal);
+watch(overrideDates.value, (newVal) => {
+    console.log("updated overrideDates in Availability.vue: ", newVal);
 });
 
 function timeItems() {
@@ -44,9 +44,43 @@ function timeItems() {
     return times;
 }
 
-function mergePickedDateTime() {
+function weeklyDaysTimes() {
+    // const dayOfWeek = [];
+    // Object.values(days.value).forEach(value => {
+    //     if (value[0] === true) {
+    //         let fromHour = Number(value[1].split(":")[0]);
+    //         fromHour = value[3] === false ? fromHour += 12 : fromHour; // PM
+    //         let fromMinute = Number(value[1].split(":")[1]);
+    //         let untilHour = Number(value[2].split(":")[0]);
+    //         untilHour = value[4] === false ? untilHour += 12 : untilHour; // PM
+    //         let untilMinute = Number(value[2].split(":")[1]);
+    //         dayOfWeek.push([fromHour, fromMinute, untilHour, untilMinute]);
+    //     } else {
+    //         dayOfWeek.push(null);
+    //     }
+    // });
+    // console.log("dayOfWeek: ", dayOfWeek);    
+    const dayOfWeek = {};
+    for (const [key, value] of Object.entries(days.value)) {
+        if (value[0] === true) {
+            let fromHour = Number(value[1].split(":")[0]);
+            fromHour = value[3] === false ? fromHour += 12 : fromHour; // PM
+            let fromMinute = Number(value[1].split(":")[1]);
+            let untilHour = Number(value[2].split(":")[0]);
+            untilHour = value[4] === false ? untilHour += 12 : untilHour; // PM
+            let untilMinute = Number(value[2].split(":")[1]);
+            dayOfWeek[key] = [fromHour, fromMinute, untilHour, untilMinute];
+        } else {
+            dayOfWeek[key] = null;
+        }
+    }
+    return dayOfWeek;
+}
+
+
+function overrideDatesTimes() {
     // piekced From/Until times from combobox
-    const times = fromUntilTime.value.map((timeArr) => {
+    const times = overrideTimes.value.map((timeArr) => {
         let fromHour = Number(timeArr[0].split(":")[0]);
         fromHour = timeArr[2] === false ? fromHour += 12 : fromHour; // PM
         let fromMinute = Number(timeArr[0].split(":")[1]);
@@ -58,7 +92,7 @@ function mergePickedDateTime() {
     console.log("times: ", times);
 
     // picked date from Date picker
-    const dates = overriddenDates.value.map((date) => {
+    const dates = overrideDates.value.map((date) => {
         console.log("date before getYear, getMonth, getDay: ", date);
         return [date.getFullYear(), date.getMonth(), date.getDate()]
     });
@@ -84,8 +118,8 @@ function mergePickedDateTime() {
 }
 
 function saveAvailability() {
-    updateWeeklyAvailability(days.value);
-    addDateOverrides(mergePickedDateTime());
+    updateWeeklyAvailability(weeklyDaysTimes());
+    addDateOverrides(overrideDatesTimes());
 }
 
 
@@ -129,8 +163,8 @@ function saveAvailability() {
                 class="tw-border-l-2 tw-border-gray-100"
             >
                 <DateAvailability
-                    :overriddenDates = "overriddenDates"
-                    :fromUntilTime = "fromUntilTime"
+                    :overrideDates = "overrideDates"
+                    :overrideTimes = "overrideTimes"
                     :timeItems="timeItems"
                 />
             </v-col>

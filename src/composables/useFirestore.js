@@ -51,7 +51,15 @@ export function useFirestore() {
                 meetings: [], // meeting ID list (linked to meetings collection)
                 meetingRequestsSent: [],
                 meetingRequestsReceived: [],
-                weeklyAvailability: [], // [[mon], [tues], [wednes], [thurs], [fri], [sat], [sun]]
+                weeklyAvailability: {
+                    monday: null,
+                    tuesday: null,
+                    wednesday: null,
+                    thursday: null,
+                    friday: null,
+                    saturday: null,
+                    sunday: null
+                }, // index 0~6 = mon~sun
                 dateOverrides: [] // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
             });
             console.log("New user added!");
@@ -222,18 +230,17 @@ export function useFirestore() {
 
 
 
-    function updateWeeklyAvailability(weeks) {
-        // weekObj = [
-        // {mon: [from, until], ...},
-        // {tues: [from, until], ...},
-        // ...wednes, thurs, fri, sat, sun
-        // ]
-        console.log("weekObject in updateWeeklyAvailability: ", weeks);
+    async function updateWeeklyAvailability(days) {
+        console.log("days in updateWeeklyAvailability: ", days);
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        await updateDoc(docRef, {
+            weeklyAvailability: days
+        });
     }
 
-    async function addDateOverrides(pickedDateTimeObjsArr) {
+    async function addDateOverrides(overrideObjsArr) {
         const docRef = doc(db, "users", auth.currentUser.uid);
-        await pickedDateTimeObjsArr.forEach(fromUntilTimePair => {
+        await overrideObjsArr.forEach(fromUntilTimePair => {
             // console.log("fromUntilTimePair: ", fromUntilTimePair);
             updateDoc(docRef, {
                 dateOverrides: arrayUnion(

@@ -25,14 +25,21 @@ const props = defineProps({
             v-for="(day, i) in Object.keys(days)"
             no-gutters
         >
-            <v-col cols="3" class="d-flex align-center" align-self="center">
+            <v-col cols="3"
+                class="d-flex align-center"
+                align-self="center"
+            >
                 <v-checkbox
                     v-model="days[day][0]"
                     :label="capitalize(day)"
                     hide-details="auto"
                 />
             </v-col>
-            <v-col v-if="days[day][0]" cols="9" class="d-flex align-center flex-row">
+            <v-col
+                v-if="days[day][0]"
+                cols="9"
+                class="d-flex align-center flex-row"
+            >
                 <v-combobox
                     v-model="days[day][1]"
                     :items="timeItems()"
@@ -85,7 +92,11 @@ const props = defineProps({
                     </span>
                 </v-chip>
             </v-col>
-            <v-col v-else cols="9" class="d-flex align-center tw-text-gray-400 tw-font-semibold">
+            <v-col
+                v-else
+                cols="9"
+                class="d-flex align-center tw-text-gray-400 tw-font-semibold"
+            >
                 Unavailable
             </v-col>
         </v-row>

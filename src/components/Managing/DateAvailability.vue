@@ -11,8 +11,8 @@ const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
 const { formatDate } = useDateTime();
 
 const props = defineProps({
-    overriddenDates: Array,
-    fromUntilTime: Array,
+    overrideDates: Array,
+    overrideTimes: Array,
     timeItems: Function
 });
 
@@ -20,15 +20,15 @@ const props = defineProps({
 const pickedDate = ref(new Date());
 
 watch(pickedDate, (newDate) => {
-    props.overriddenDates.push(newDate);
-    console.log("props.overriddenDates: ", props.overriddenDates);
-    props.fromUntilTime.push([props.timeItems()[36], props.timeItems()[20], true, true]);
-    console.log("props.fromUntilTime: ", props.fromUntilTime);
+    props.overrideDates.push(newDate);
+    console.log("props.overrideDates: ", props.overrideDates);
+    props.overrideTimes.push([props.timeItems()[36], props.timeItems()[20], true, true]);
+    console.log("props.overrideTimes: ", props.overrideTimes);
 });
 
-watch(props.fromUntilTime, (newTime) => {
-    console.log("props.fromUntilTime: ", newTime);
-});
+// watch(props.overrideTimes, (newTime) => {
+//     console.log("props.overrideTimes: ", newTime);
+// });
 
 
 
@@ -50,11 +50,11 @@ watch(props.fromUntilTime, (newTime) => {
             </template>
         </VueDatePicker>
         <v-list
-            v-if="overriddenDates.length > 0"
+            v-if="overrideDates.length > 0"
             width="100%"
         >
             <v-list-item
-                v-for="(date, i) in overriddenDates"
+                v-for="(date, i) in overrideDates"
                 base-color=""
                 class="mb-1"
                 :acitve="true"
@@ -68,7 +68,7 @@ watch(props.fromUntilTime, (newTime) => {
                         <div class="d-flex flex-row ml-5">
                             <div class="d-flex align-center mr-0">
                                 <v-combobox
-                                    v-model="fromUntilTime[i][0]"
+                                    v-model="overrideTimes[i][0]"
                                     :items="timeItems()"
                                     label="From"
                                     variant="outlined"
@@ -83,13 +83,13 @@ watch(props.fromUntilTime, (newTime) => {
                             <div class="d-flex align-center ml-0">
                                 <v-chip
                                     class="ml-1 mr-5 px-1"
-                                    :color="fromUntilTime[i][2] ? 'pink' : 'purple'"
-                                    @click="fromUntilTime[i][2] = !(fromUntilTime[i][2])"
+                                    :color="overrideTimes[i][2] ? 'pink' : 'purple'"
+                                    @click="overrideTimes[i][2] = !(overrideTimes[i][2])"
                                     variant="text"
                                     label
                                     :ripple="false"
                                 >
-                                    <span v-if="fromUntilTime[i][2]" class="">
+                                    <span v-if="overrideTimes[i][2]" class="">
                                         am
                                     </span>
                                     <span v-else class="">
@@ -99,7 +99,7 @@ watch(props.fromUntilTime, (newTime) => {
                             </div>
                             <div class="d-flex align-center mr-0">
                                 <v-combobox
-                                    v-model="fromUntilTime[i][1]"
+                                    v-model="overrideTimes[i][1]"
                                     :items="timeItems()"
                                     label="Until"
                                     variant="outlined"
@@ -114,13 +114,13 @@ watch(props.fromUntilTime, (newTime) => {
                             <div class="d-flex align-center ml-0">
                                 <v-chip
                                     class="ml-1 mr-5 px-1"
-                                    :color="fromUntilTime[i][3] ? 'pink' : 'purple'"
-                                    @click="fromUntilTime[i][3] = !(fromUntilTime[i][3])"
+                                    :color="overrideTimes[i][3] ? 'pink' : 'purple'"
+                                    @click="overrideTimes[i][3] = !(overrideTimes[i][3])"
                                     variant="text"
                                     label
                                     :ripple="false"
                                 >
-                                    <span v-if="fromUntilTime[i][3]" class="">
+                                    <span v-if="overrideTimes[i][3]" class="">
                                         am
                                     </span>
                                     <span v-else class="">
