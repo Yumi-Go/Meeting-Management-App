@@ -6,7 +6,7 @@
 <template>
     <div>
 
-        <h1>this is calendar</h1>
+        <h1>this is Chart</h1>
 
     </div>
 

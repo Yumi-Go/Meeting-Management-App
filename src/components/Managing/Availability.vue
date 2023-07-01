@@ -23,14 +23,6 @@ const days = ref({
 const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
 const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
-watch(days.value, (newDays) => {
-    console.log("newDays: ", newDays);
-});
-
-watch(overrideDates.value, (newVal) => {
-    console.log("updated overrideDates in Availability.vue: ", newVal);
-});
-
 function timeItems() {
     var interval = 15;
     var times = [];
@@ -45,21 +37,6 @@ function timeItems() {
 }
 
 function weeklyDaysTimes() {
-    // const dayOfWeek = [];
-    // Object.values(days.value).forEach(value => {
-    //     if (value[0] === true) {
-    //         let fromHour = Number(value[1].split(":")[0]);
-    //         fromHour = value[3] === false ? fromHour += 12 : fromHour; // PM
-    //         let fromMinute = Number(value[1].split(":")[1]);
-    //         let untilHour = Number(value[2].split(":")[0]);
-    //         untilHour = value[4] === false ? untilHour += 12 : untilHour; // PM
-    //         let untilMinute = Number(value[2].split(":")[1]);
-    //         dayOfWeek.push([fromHour, fromMinute, untilHour, untilMinute]);
-    //     } else {
-    //         dayOfWeek.push(null);
-    //     }
-    // });
-    // console.log("dayOfWeek: ", dayOfWeek);    
     const dayOfWeek = {};
     for (const [key, value] of Object.entries(days.value)) {
         if (value[0] === true) {
@@ -76,7 +53,6 @@ function weeklyDaysTimes() {
     }
     return dayOfWeek;
 }
-
 
 function overrideDatesTimes() {
     // piekced From/Until times from combobox

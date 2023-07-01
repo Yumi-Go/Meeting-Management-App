@@ -24,12 +24,10 @@ const { formatDate } = useDateTime();
 const userSearchResult = ref([]);
 
 export function useFirestore() {
-
     async function addUser(uid, email) {
         console.log("currentUser in addUser(): ", uid);
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
-
         if (docSnap.exists()) {
             console.log("existing user");
             console.log("existing user data:", docSnap.data());
@@ -130,7 +128,6 @@ export function useFirestore() {
     }
 
     async function requestConnection(senderUid, receiverUid) {
-
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
             connectionRequestsSent: arrayUnion(receiverUid)
