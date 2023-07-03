@@ -1,4 +1,13 @@
 <script setup>
+import { Calendar } from '@fullcalendar/core';
+import listPlugin from '@fullcalendar/list';
+
+let calendar = new Calendar(calendarEl, {
+  plugins: [ listPlugin ],
+  initialView: 'listWeek'
+});
+
+
 
 
 </script>
