@@ -5,16 +5,18 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat';
+import { useDateTime } from '../../composables/useDateTime'
+
 import DateAvailability from './DateAvailability.vue'
 import { mdiCalendarClock, mdiCalendarEdit } from '@mdi/js';
 
 const router = useRouter();
 const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
+const { timeItems } = useDateTime();
 const { capitalize } = useFormat();
 
 const props = defineProps({
-    days: Object,
-    timeItems: Function,
+    days: Object
 });
 
 </script>

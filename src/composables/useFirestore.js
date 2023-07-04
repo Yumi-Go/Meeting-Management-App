@@ -127,6 +127,8 @@ export function useFirestore() {
         // return result;
     }
 
+
+    //// Connection
     async function requestConnection(senderUid, receiverUid) {
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
@@ -162,34 +164,38 @@ export function useFirestore() {
         });
     }
 
-    async function requestMeeting(senderUid, receiverUid, meeting) {
+
+    //// Meeting
+    async function requestMeeting(senderUid, receiverUid, meetingObj) {
+        console.log("meetingObj: ", meetingObj);
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
-            meetingRequestsSent: arrayUnion(meeting)
+            meetingRequestsSent: arrayUnion(meetingObj)
         });
         const receiverRef = doc(db, "users", receiverUid);
         await updateDoc(receiverRef, {
-            meetingRequestsReceived: arrayUnion(meeting)
+            meetingRequestsReceived: arrayUnion(meetingObj)
         });
     }
 
-    async function acceptMeetingRequest(senderUid, receiverUid, meeting) {
+    async function acceptMeetingRequest(senderUid, receiverUid, meetingObj) {
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
-            meetings: arrayUnion(meeting.id),
-            meetingRequestsSent: arrayRemove(meeting)
+            meetings: arrayUnion(meetingObj.id),
+            meetingRequestsSent: arrayRemove(meetingObj)
         });
         const receiverRef = doc(db, "users", receiverUid);
         await updateDoc(receiverRef, {
-            meetings: arrayUnion(meeting.id),
-            meetingRequestsReceived: arrayRemove(meeting)
+            meetings: arrayUnion(meetingObj.id),
+            meetingRequestsReceived: arrayRemove(meetingObj)
         });
-        const meetingRef = doc(db, "meetings", meeting.id);
-        await setDoc(meetingRef, {
-            status: '',
+
+        const meetingRef = await addDoc(collection(db, "meetings"), {
+            status: '', // Boolean, Default: false(Pending), Only Accepted meetings(=true) are displayed on the calendar
             title: '',
             link: '',
-            type: true,
+            location: '',
+            type: true, // Boolean, Default: true(internal), internal(=true, via this app) / external(=false, from external platform such as Google Calendar or manually added meetings)
             category: '',
             organizer: [],
             participants: [],

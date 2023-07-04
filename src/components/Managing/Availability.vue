@@ -3,12 +3,14 @@ import { ref, watch } from 'vue'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router'
 import { useFirestore } from '../../composables/useFirestore';
+import { useDateTime } from '../../composables/useDateTime'
 import WeeklyAvailability from './WeeklyAvailability.vue';
 import DateAvailability from './DateAvailability.vue'
 import { mdiCalendarClock, mdiCalendarEdit } from '@mdi/js';
 
 const router = useRouter();
 const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
+const { timeItems } = useDateTime();
 
 const days = ref({
     monday: [true, timeItems()[36], timeItems()[20], true, true],
@@ -23,24 +25,24 @@ const days = ref({
 const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
 const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
-function timeItems() {
-    var interval = 15;
-    var times = [];
-    var minuteSum = 0;
-    for (var i = 0; minuteSum < 60*12; i++) {
-        var hour = Math.floor(minuteSum / 60);
-        var minute = (minuteSum % 60);
-        times[i] = ("0" + (hour % 12)).slice(-2) + ':' + ("0" + minute).slice(-2);
-        minuteSum = minuteSum + interval;
-    }
-    return times;
-}
+// function timeItems() {
+//     var interval = 15;
+//     var times = [];
+//     var minuteSum = 0;
+//     for (var i = 0; minuteSum < 60*12; i++) {
+//         var hour = Math.floor(minuteSum / 60);
+//         var minute = (minuteSum % 60);
+//         times[i] = ("0" + (hour % 12)).slice(-2) + ':' + ("0" + minute).slice(-2);
+//         minuteSum = minuteSum + interval;
+//     }
+//     return times;
+// }
 
 function weeklyDaysTimes() {
     const dayOfWeek = {};
     for (const [key, value] of Object.entries(days.value)) {
         if (value[0] === true) {
-            let fromHour = Number(value[1].split(":")[0]);
+            let fromHour = Number(vsalue[1].split(":")[0]);
             fromHour = value[3] === false ? fromHour += 12 : fromHour; // PM
             let fromMinute = Number(value[1].split(":")[1]);
             let untilHour = Number(value[2].split(":")[0]);
@@ -130,7 +132,6 @@ function saveAvailability() {
             <v-col cols="7" class="">
                 <WeeklyAvailability
                     :days="days"
-                    :timeItems="timeItems"
                     @saveAvailability="saveAvailability" 
                 />
             </v-col>
@@ -141,7 +142,6 @@ function saveAvailability() {
                 <DateAvailability
                     :overrideDates = "overrideDates"
                     :overrideTimes = "overrideTimes"
-                    :timeItems="timeItems"
                 />
             </v-col>
         </v-row>

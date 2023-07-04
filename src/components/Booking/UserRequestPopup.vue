@@ -5,6 +5,7 @@ import { auth } from '../../firebaseConfig'
 // import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat'
+import MeetingRequestPopup from './MeetingRequestPopup.vue';
 
 const props = defineProps({
     user: Object,
@@ -18,8 +19,34 @@ const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const isConnected = ref(false);
 
-console.log("currentUser.uid: ", auth.currentUser.uid);
-console.log("viewed user uid: ", popupUser.value.uid);
+// console.log("currentUser.uid: ", auth.currentUser.uid);
+// console.log("viewed user uid: ", popupUser.value.uid);
+
+const openMeetingRequestPopup = ref(false);
+
+// const meetingRequested = ref({
+//     status: '', // Boolean, Default: false(Pending), Only Accepted meetings(=true) are displayed on the calendar
+//     title: '',
+//     link: '',
+//     type: true, // Boolean, Default: true(internal), internal(=true, via this app) / external(=false, from external platform such as Google Calendar or manually added meetings)
+//     category: '',
+//     organizer: [],
+//     participants: [],
+//     start: '',
+//     end: '',
+//     duration: 0,
+//     timezone: '',
+//     etc: []
+// });
+
+// function sendMeetingRequest() {
+
+//     requestMeeting(auth.currentUser.uid, popupUser.value.uid, meetingRequested);
+// }
+
+function closeMeetingRequestPopup() {
+    openMeetingRequestPopup.value = false;
+}
 
 </script>
 
@@ -109,9 +136,6 @@ console.log("viewed user uid: ", popupUser.value.uid);
                 <v-col cols="12" lg="9">
                     <v-sheet class="pa-2 ma-2">
                         calendar
-                        <!-- I'm waiting for v-calendar launching for Vuetify3
-                            see below
-                            https://vuetifyjs.com/en/labs/introduction/ -->
                     </v-sheet>
                 </v-col>
             </v-row>
@@ -120,12 +144,22 @@ console.log("viewed user uid: ", popupUser.value.uid);
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-                @click="requestMeeting"
+                @click="openMeetingRequestPopup = true"
                 variant="text"
                 color="indigo"
             >
                 Send a Meeting Request
             </v-btn>
+
+            <v-dialog
+                v-model="openMeetingRequestPopup"
+                width="auto"
+            >
+                <MeetingRequestPopup
+                    @closeMeetingRequestPopup="closeMeetingRequestPopup"
+                    width="auto"/>
+            </v-dialog>
+
         </v-card-actions>
     </v-card>
 

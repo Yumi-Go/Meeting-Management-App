@@ -8,21 +8,19 @@ import { addDays } from 'date-fns';
 import { mdiCheckboxMarkedCirclePlusOutline, mdiCalendarBlank, mdiCalendarBlankOutline, mdiCalendarStart, mdiCalendarStartOutline, mdiCalendarEnd, mdiCalendarEndOutline, mdiDelete, mdiTrashCanOutline } from '@mdi/js';
 
 const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
-const { formatDate } = useDateTime();
+const { timeItems, formatDate } = useDateTime();
 
 const props = defineProps({
     overrideDates: Array,
     overrideTimes: Array,
-    timeItems: Function
 });
-
 
 const pickedDate = ref(new Date());
 
 watch(pickedDate, (newDate) => {
     props.overrideDates.push(newDate);
     console.log("props.overrideDates: ", props.overrideDates);
-    props.overrideTimes.push([props.timeItems()[36], props.timeItems()[20], true, true]);
+    props.overrideTimes.push([timeItems()[36], timeItems()[20], true, true]);
     console.log("props.overrideTimes: ", props.overrideTimes);
 });
 
