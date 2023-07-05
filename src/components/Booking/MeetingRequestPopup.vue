@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
 // import { useAuth } from '../../composables/useAuth'
@@ -18,7 +18,7 @@ function closeBtnClick() {
     console.log("Meeting Request popup closed!");
 }
 
-const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
+const { userSearchResult, getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const { timeItems } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
@@ -39,13 +39,27 @@ const meetingRequested = ref({
 });
 
 const selected = ref([]);
-const items = [
-    { name: 'yumi-1', email: 'yumi-1@google.com' },
-    { name: 'yumi-2', email: 'yumi-2@google.com' },
-    { name: 'yumi-3', email: 'yumi-3@google.com' },
-    { name: 'yumi-4', email: 'yumi-4@google.com' },
-    { name: 'yumi-5', email: 'yumi-5@google.com' },
-];
+
+function getAutocompleteItems() {
+    // let result = [];
+    if (selected.value.length > 0) {
+        getUserInfoByName(selected.value.toLowerCase());
+    } else {
+        getAllUserInfo();
+    }
+}
+
+// watch(selected, (newSelected) => {
+//     getAutocompleteItems(newSelected);
+// });
+
+// const items = [
+//     { name: 'yumi-1', email: 'yumi-1@google.com' },
+//     { name: 'yumi-2', email: 'yumi-2@google.com' },
+//     { name: 'yumi-3', email: 'yumi-3@google.com' },
+//     { name: 'yumi-4', email: 'yumi-4@google.com' },
+//     { name: 'yumi-5', email: 'yumi-5@google.com' },
+// ];
 
 
 
@@ -99,25 +113,25 @@ function sendMeetingRequest() {
 
                         <v-autocomplete
                             v-model="selected"
-                            :items="items"
+                            :items="userSearchResult"
                             chips
                             closable-chips
                             color="blue-grey-lighten-2"
-                            item-title="name"
-                            item-value="name"
+                            item-title="fName"
+                            item-value="fName"
                             label="Participants"
                             multiple
                         >
                             <template v-slot:chip="{ props, item }">
                                 <v-chip
                                     v-bind="props"
-                                    :text="item.raw.name"
+                                    :text="item.raw.fName"
                                 />
                             </template>
                             <template v-slot:item="{ props, item }">
                                 <v-list-item
                                     v-bind="props"
-                                    :title="item?.raw?.name"
+                                    :title="item?.raw?.fName"
                                     :subtitle="item?.raw?.email"
                                 />
                             </template>
