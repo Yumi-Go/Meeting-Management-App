@@ -24,20 +24,18 @@ export function useAuth() {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser.value = user;
-                console.log("current uid: ", user.uid);
-                console.log("current user:", currentUser.value);
+                // console.log("current uid: ", user.uid);
+                // console.log("current user:", currentUser.value);
                 getUserInfoByUID(user.uid)
                 .then(info => {
-                    console.log("info: ", info);
                     currentUserInfo.value = info;
-                    console.log("currentUserInfo.value: ", currentUserInfo.value);
+                    // console.log("currentUserInfo.value: ", currentUserInfo.value);
                 });
             } else {
                 console.log("The logged in user does not exist.");
             }
         });
-        console.log("currentUserInfo: ", currentUserInfo.value);
-        // return currentUserInfo.value;
+        // console.log("currentUserInfo: ", currentUserInfo.value);
     }
 
     function logOut() {
@@ -49,7 +47,7 @@ export function useAuth() {
     }
 
     function reAuthentication(passwordInput) {
-        // const user = auth.currentUser;
+        const user = auth.currentUser;
         const currentProvider = currentUser.value.providerData[0].providerId;
         console.log("provider: ", currentProvider);
         if (currentProvider === "password") {

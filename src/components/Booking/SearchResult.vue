@@ -1,28 +1,62 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onBeforeMount, watch } from 'vue'
 import UserRequestPopup from './UserRequestPopup.vue';
 import { mdiOpenInNew } from '@mdi/js';
+import { useLocalStorage, StorageSerializers } from '@vueuse/core'
+import { useSearch } from '../../composables/useSearch';
+import { useFirestore } from '../../composables/useFirestore';
+
+const searchedUsersInfo = useLocalStorage('searchedUsers', []);
+// const searchResultToDisplay = ref([]);
+
+// const props = defineProps({
+//     searchResultToDisplay: Array
+// });
+
+// const emit = defineEmits(['clickSearch']);
 
 
-const props = defineProps({
-    userSearchResult: Array,
+const { userSearch, getUserSearchResult, getUserSearchResultToDisplay } = useSearch();
+const { getAllUserInfo, getUserInfoByName } = useFirestore();
+
+getUserSearchResultToDisplay();
+
+// onBeforeMount(async() => {
+//     await getUserSearchResultToDisplay();
+// });
+
+
+
+
+// onBeforeMount(async() => {
+//     await getUserSearchResult();
+//     searchResultToDisplay.value = searchedUsersInfo.value;
+//     searchResultToDisplay.value.forEach(user => {
+//         console.log("user: ", user);
+//         user['checked'] = false;
+//     });
+// });
+
+// async function users() {
+//     await getUserSearchResult();
+//     userSearchResult.value.forEach(user => {
+//         console.log("user: ", user);
+//         user['checked'] = false;
+//     });
+//     console.log("userSearchResult in users(): ", userSearchResult.value);
+//     // return userSearchResult.value;
+// }
+
+
+watch(userSearch, async() => {
+    await getUserSearchResultToDisplay();
 });
 
-function users() {
-    props.userSearchResult.forEach(user => {
-        user['checked'] = false;
-    });
-    return props.userSearchResult;
-}
-
-console.log("users(): ", users());
-
 const openUserPopup = ref(false);
-
 const popupUser = ref();
 
 function getSelectedUsers() {
-    return props.userSearchResult.filter(user => user.checked);
+    return searchedUsersInfo.value.filter(user => user.checked);
 }
 
 function clickUser(user) {
@@ -36,9 +70,9 @@ function clickUser(user) {
 
 <template>
     <v-container fluid class="">
-        <!-- <v-row>
-            {{ userSearchResult }}
-        </v-row> -->
+        <v-row>
+            {{ searchedUsersInfo }}
+        </v-row>
         <v-row>
             <v-list
                 class="tw-w-full"
@@ -47,22 +81,11 @@ function clickUser(user) {
                 <v-list-subheader class="tw-text-black">
                     Users Search Result
                 </v-list-subheader>
+
+
                 <v-list-item
-                    v-if="userSearchResult.length < 1"
-                    class="tw-p-5 tw-font-bold"
-                >
-                    <div
-                        class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-h-[500px]"
-                    >
-                        <div>
-                            No Result
-                            <!-- icon -->
-                        </div>
-                    </div>
-                </v-list-item>
-                <v-list-item
-                    v-else
-                    v-for="user in users()"
+                    v-if="searchedUsersInfo.length > 0"
+                    v-for="user in searchedUsersInfo"
                     :value="user"
                     :key="user.uid"
                 >
@@ -102,6 +125,21 @@ function clickUser(user) {
                             width="80vw"/>
                     </v-dialog>
                 </v-list-item>
+
+
+                <v-list-item
+                    v-else
+                    class="tw-p-5 tw-font-bold"
+                >
+                    <div
+                        class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-h-[500px]"
+                    >
+                        <div>
+                            No Result
+                        </div>
+                    </div>
+                </v-list-item>
+
             </v-list>
         </v-row>
         <v-row>

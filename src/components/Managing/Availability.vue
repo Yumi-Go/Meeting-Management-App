@@ -42,7 +42,7 @@ function weeklyDaysTimes() {
     const dayOfWeek = {};
     for (const [key, value] of Object.entries(days.value)) {
         if (value[0] === true) {
-            let fromHour = Number(vsalue[1].split(":")[0]);
+            let fromHour = Number(value[1].split(":")[0]);
             fromHour = value[3] === false ? fromHour += 12 : fromHour; // PM
             let fromMinute = Number(value[1].split(":")[1]);
             let untilHour = Number(value[2].split(":")[0]);
@@ -81,13 +81,15 @@ function overrideDatesTimes() {
     const datesTimesMerged = dates.map((date, i) => {
         const fromObj = () => {
             const dateObj = new Date(date[0], date[1], date[2], times[i][0], times[i][1]);
-            const tzOffset = dateObj.getTimezoneOffset() * 60 * 1000;
-            return new Date(dateObj.getTime() - tzOffset);
+            // const tzOffset = dateObj.getTimezoneOffset() * 60 * 1000;
+            // return new Date(dateObj.getTime() - tzOffset);
+            return new Date(dateObj.getTime());
         }
         const untilObj = () => {
             const dateObj = new Date(date[0], date[1], date[2], times[i][2], times[i][3]);
-            const tzOffset = dateObj.getTimezoneOffset() * 60 * 1000;
-            return new Date(dateObj.getTime() - tzOffset);
+            // const tzOffset = dateObj.getTimezoneOffset() * 60 * 1000;
+            // return new Date(dateObj.getTime() - tzOffset);
+            return new Date(dateObj.getTime());
         }
         return [fromObj(), untilObj()];
     });

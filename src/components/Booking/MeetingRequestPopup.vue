@@ -18,7 +18,7 @@ function closeBtnClick() {
     console.log("Meeting Request popup closed!");
 }
 
-const { userSearchResult, getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
+const { getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const { timeItems } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
@@ -38,16 +38,27 @@ const meetingRequested = ref({
     etc: []
 });
 
-const selected = ref([]);
+// const selected = ref([]);
+const autocompleteItems = ref([]);
 
 function getAutocompleteItems() {
-    // let result = [];
-    if (selected.value.length > 0) {
-        getUserInfoByName(selected.value.toLowerCase());
-    } else {
-        getAllUserInfo();
-    }
+    getAllUserInfo()
+    .then(users => {
+        console.log("users: ", users);
+        autocompleteItems.value = users;
+    })
+    console.log("autocompleteItems.value: ", autocompleteItems.value);
 }
+getAutocompleteItems();
+
+// function getAutocompleteItems() {
+//     // let result = [];
+//     if (selected.value.length > 0) {
+//         return getUserInfoByName(selected.value.toLowerCase());
+//     } else {
+//         return getAllUserInfo();
+//     }
+// }
 
 // watch(selected, (newSelected) => {
 //     getAutocompleteItems(newSelected);
@@ -113,7 +124,7 @@ function sendMeetingRequest() {
 
                         <v-autocomplete
                             v-model="selected"
-                            :items="userSearchResult"
+                            :items="autocompleteItems"
                             chips
                             closable-chips
                             color="blue-grey-lighten-2"

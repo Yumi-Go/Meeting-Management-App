@@ -23,11 +23,11 @@ const confirmNewPassword = ref('');
 
 function reAuthenticationBtnClick() {
     reAuthentication(currentPassword.value);
-        console.log("isUserReAuthenticated in popup: ", isUserReAuthenticated.value);
-        if (isUserReAuthenticated.value !== true) {
-            alert("Password is not correct!");
-            currentPassword.value = "";
-        }
+    console.log("isUserReAuthenticated in popup: ", isUserReAuthenticated.value);
+    if (isUserReAuthenticated.value !== true) {
+        alert("Password is not correct!");
+        currentPassword.value = "";
+    }
 }
 
 function changePasswordBtnClick() {

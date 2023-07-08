@@ -1,25 +1,11 @@
-import { ref } from 'vue'
+import { ref } from "vue"
 import { auth, db } from '../firebaseConfig';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
     query, where, arrayUnion, arrayRemove, serverTimestamp, Timestamp } from "firebase/firestore";
 import { useDateTime } from '../composables/useDateTime'
+import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
-
-// each meeting db format
-    // id: '',
-    // status: '',
-    // title: '',
-    // link: '',
-    // type: true,
-    // category: '',
-    // organizer: [],
-    // participants: [],
-    // start: '',
-    // end: '',
-    // duration: '',
-    // timezone: '',
-    // etc: []
-
+// const searchedUsersInfo = useLocalStorage('searchedUsers', []);
 const { formatDate } = useDateTime();
 const userSearchResult = ref([]);
 
@@ -87,7 +73,7 @@ export function useFirestore() {
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log("Document data:", docSnap.data());
+        //   console.log("Document data:", docSnap.data());
           return docSnap.data();
         } else {
           console.log("No such document!");
@@ -99,16 +85,15 @@ export function useFirestore() {
         userSearchResult.value = [];
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((doc) => {
-            console.log(doc.id, " => ", doc.data());
+            // console.log(doc.id, " => ", doc.data());
             const docObj = doc.data();
             docObj['uid'] = doc.id;
             userSearchResult.value.push(docObj);
         });
-        console.log("allUsers in useFirestore: ", userSearchResult.value);
+        console.log("result all users in useFirestore: ", userSearchResult.value);
     }
 
     async function getUserInfoByName(name) {
-        // const result = [];
         userSearchResult.value = [];
         const fNameQuery = query(collection(db, "users"), where("fName", "==", name));
         const mNameQuery = query(collection(db, "users"), where("mName", "==", name));
@@ -123,8 +108,7 @@ export function useFirestore() {
                 userSearchResult.value.push(docObj);
             });
         });
-        // console.log("userSearchResult in useFirestore: ", userSearchResult.value);
-        // return result;
+        console.log("result by name in useFirestore: ", userSearchResult.value);
     }
 
 
@@ -212,7 +196,11 @@ export function useFirestore() {
     }
 
 
-    // used in Inbox
+
+
+
+
+    // Inbox
     // 이거 여기에서 직접 말고, 로컬스토리지에서 꺼내오면 될듯. 그거 다 해결되면 이 두 펑션 지우기
     async function getAllReceivedList(receiverUid) {
         const docRef = doc(db, "users", receiverUid);
@@ -232,7 +220,7 @@ export function useFirestore() {
 
 
 
-
+    // Availability
     async function updateWeeklyAvailability(days) {
         console.log("days in updateWeeklyAvailability: ", days);
         const docRef = doc(db, "users", auth.currentUser.uid);
