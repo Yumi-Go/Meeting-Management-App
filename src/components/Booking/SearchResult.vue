@@ -19,38 +19,11 @@ const searchedUsersInfo = useLocalStorage('searchedUsers', []);
 const { userSearch, getUserSearchResult, getUserSearchResultToDisplay } = useSearch();
 const { getAllUserInfo, getUserInfoByName } = useFirestore();
 
-getUserSearchResultToDisplay();
+// getUserSearchResultToDisplay();
 
-// onBeforeMount(async() => {
+// watch(userSearch, async() => {
 //     await getUserSearchResultToDisplay();
 // });
-
-
-
-
-// onBeforeMount(async() => {
-//     await getUserSearchResult();
-//     searchResultToDisplay.value = searchedUsersInfo.value;
-//     searchResultToDisplay.value.forEach(user => {
-//         console.log("user: ", user);
-//         user['checked'] = false;
-//     });
-// });
-
-// async function users() {
-//     await getUserSearchResult();
-//     userSearchResult.value.forEach(user => {
-//         console.log("user: ", user);
-//         user['checked'] = false;
-//     });
-//     console.log("userSearchResult in users(): ", userSearchResult.value);
-//     // return userSearchResult.value;
-// }
-
-
-watch(userSearch, async() => {
-    await getUserSearchResultToDisplay();
-});
 
 const openUserPopup = ref(false);
 const popupUser = ref();

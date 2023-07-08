@@ -10,50 +10,27 @@ const userSearch = ref('');
 
 export function useSearch() {
 
-    // async function users() {
-    //     console.log("userSearchResult in users() before: ", userSearchResult.value);    
-    //     await getUserSearchResult();
-    //     userSearchResult.value.forEach(user => {
-    //         console.log("user: ", user);
-    //         user['checked'] = false;
-    //     });
-    //     console.log("userSearchResult in users(): ", userSearchResult.value);
-    //     // return userSearchResult.value;
-    // }
-
-
-
     async function getUserSearchResult() {
         // searchedUsersInfo.value = [];
         if (userSearch.value.length > 0) {
             await getUserInfoByName(userSearch.value.toLowerCase());
-            // .then(result => {
-            //     console.log("result: ", result);
-            //     searchedUsersInfo.value.push(result);
-            //     console.log("searchedUsersInfo.value: ", searchedUsersInfo.value);
-            // })
         } else {
             await getAllUserInfo();
-            // .then(result => {
-            //     console.log("result: ", result);
-            //     searchedUsersInfo.value = result;
-            //     console.log("searchedUsersInfo.value: ", searchedUsersInfo.value);
-            // })
         }
-
-        // return userSearchResult.value;
     }
-
 
     //// Booking -> User Search
     async function getUserSearchResultToDisplay() {
         await getUserSearchResult();
         console.log("userSearchResult: ", userSearchResult.value);
-        userSearchResult.value.forEach(user => {
+        searchedUsersInfo.value = userSearchResult.value;
+
+        // 여기가 문제임. 네임 입력시 checked가 로컬에 안들어감.
+        searchedUsersInfo.value.forEach(user => {
             console.log("user: ", user);
             user['checked'] = false;
         });
-        searchedUsersInfo.value = userSearchResult.value;
+
         console.log("searchedUsersInfo: ", searchedUsersInfo.value);
     }
 
