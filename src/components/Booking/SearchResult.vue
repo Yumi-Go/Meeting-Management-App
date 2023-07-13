@@ -7,29 +7,23 @@ import { useSearch } from '../../composables/useSearch';
 import { useFirestore } from '../../composables/useFirestore';
 
 const searchedUsersInfo = useLocalStorage('searchedUsers', []);
-// const searchResultToDisplay = ref([]);
 
-// const props = defineProps({
-//     searchResultToDisplay: Array
-// });
-
-// const emit = defineEmits(['clickSearch']);
-
-
-const { userSearch, getUserSearchResult, getUserSearchResultToDisplay } = useSearch();
+const { userSearch, userSearchResult, getUserSearchResult } = useSearch();
 const { getAllUserInfo, getUserInfoByName } = useFirestore();
 
-// getUserSearchResultToDisplay();
+watch(userSearch, async() => {
+    await getUserSearchResult();
+});
 
-// watch(userSearch, async() => {
-//     await getUserSearchResultToDisplay();
-// });
+onBeforeMount(async() => {
+    await getUserSearchResult();
+});
 
 const openUserPopup = ref(false);
 const popupUser = ref();
 
 function getSelectedUsers() {
-    return searchedUsersInfo.value.filter(user => user.checked);
+    return searchedUsersInfo.value.filter(user => user.selected);
 }
 
 function clickUser(user) {
@@ -54,18 +48,16 @@ function clickUser(user) {
                 <v-list-subheader class="tw-text-black">
                     Users Search Result
                 </v-list-subheader>
-
-
                 <v-list-item
                     v-if="searchedUsersInfo.length > 0"
                     v-for="user in searchedUsersInfo"
                     :value="user"
                     :key="user.uid"
                 >
-                    {{ user.checked }}
+                    {{ user.selected }}
                     <template #prepend="{ isActive }">
                         <v-list-item-action start>
-                            <v-checkbox-btn :model-value="isActive" v-model="user.checked">
+                            <v-checkbox-btn :model-value="isActive" v-model="user.selected">
                             </v-checkbox-btn>
                         </v-list-item-action>
                     </template>
@@ -98,8 +90,6 @@ function clickUser(user) {
                             width="80vw"/>
                     </v-dialog>
                 </v-list-item>
-
-
                 <v-list-item
                     v-else
                     class="tw-p-5 tw-font-bold"
@@ -137,7 +127,5 @@ function clickUser(user) {
             </div>
 
         </v-row>
-
     </v-container>
-
 </template>

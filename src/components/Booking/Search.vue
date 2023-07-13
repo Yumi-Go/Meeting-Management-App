@@ -7,16 +7,16 @@ import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 import SearchBar from "./SearchBar.vue";
 import SearchResult from "./SearchResult.vue";
 
-const { userSearch, getUserSearchResult, getUserSearchResultToDisplay } = useSearch();
+const { userSearch, getUserSearchResult } = useSearch();
 const searchedUsersInfo = useLocalStorage('searchedUsers', []);
 
-watch(userSearch, async() => {
-    await getUserSearchResultToDisplay();
-});
+// watch(userSearch, async() => {
+//     await getUserSearchResultToDisplay();
+// });
 
-onBeforeMount(async() => {
-    await getUserSearchResultToDisplay();
-});
+// onBeforeMount(async() => {
+//     await getUserSearchResultToDisplay();
+// });
 
 </script>
 

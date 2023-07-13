@@ -1,13 +1,13 @@
 import { ref } from "vue"
 import { auth, db } from '../firebaseConfig';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
-    query, where, arrayUnion, arrayRemove, serverTimestamp, Timestamp } from "firebase/firestore";
+    query, where, arrayUnion, arrayRemove, serverTimestamp, Timestamp, documentId } from "firebase/firestore";
 import { useDateTime } from '../composables/useDateTime'
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
-// const searchedUsersInfo = useLocalStorage('searchedUsers', []);
+const searchedUsersInfo = useLocalStorage('searchedUsers', []);
 const { formatDate } = useDateTime();
-const userSearchResult = ref([]);
+// const userSearchResult = ref([]);
 
 export function useFirestore() {
     async function addUser(uid, email) {
@@ -82,36 +82,34 @@ export function useFirestore() {
     }
 
     async function getAllUserInfo() {
-        userSearchResult.value = [];
+        searchedUsersInfo.value = [];
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((doc) => {
-            // console.log(doc.id, " => ", doc.data());
-            const docObj = doc.data();
-            docObj['uid'] = doc.id;
-            userSearchResult.value.push(docObj);
+            searchedUsersInfo.value.push({...doc.data(), uid: doc.id, selected: false});
         });
-        console.log("result all users in useFirestore: ", userSearchResult.value);
+        console.log("result all users in useFirestore: ", searchedUsersInfo.value);
+        // return searchedUsersInfo.value;
     }
 
     async function getUserInfoByName(name) {
-        userSearchResult.value = [];
-        const fNameQuery = query(collection(db, "users"), where("fName", "==", name));
-        const mNameQuery = query(collection(db, "users"), where("mName", "==", name));
-        const lNameQuery = query(collection(db, "users"), where("lName", "==", name));
-        const queries = [fNameQuery, mNameQuery, lNameQuery];
+        const userDocRef = collection(db, "users");
+        const fNameRef = query(userDocRef, where("fName", "==", name));
+        const mNameRef = query(userDocRef, where("mName", "==", name));
+        const lNameRef = query(userDocRef, where("lName", "==", name));
+        const queries = [fNameRef, mNameRef, lNameRef];
+        // const users = [];
+        searchedUsersInfo.value = [];
         queries.forEach(async (query) => {
             const querySnapshot = await getDocs(query);
             querySnapshot.forEach((doc) => {
-                console.log(doc.id, " => ", doc.data());
-                const docObj = doc.data();
-                docObj['uid'] = doc.id;
-                userSearchResult.value.push(docObj);
+                searchedUsersInfo.value.push({...doc.data(), uid: doc.id, selected: false});
             });
         });
-        console.log("result by name in useFirestore: ", userSearchResult.value);
-    }
+        console.log("result by name in useFirestore: ", searchedUsersInfo.value);
+        // return searchedUsersInfo.value;
+   }
 
-
+   
     //// Connection
     async function requestConnection(senderUid, receiverUid) {
         const senderRef = doc(db, "users", senderUid);
@@ -245,7 +243,6 @@ export function useFirestore() {
     }
 
     return {
-        userSearchResult,
         addUser,
         updateUserInfo,
         getUserInfoByUID,

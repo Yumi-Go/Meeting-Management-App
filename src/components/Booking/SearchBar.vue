@@ -1,11 +1,13 @@
 <script setup>
 import { ref, watch, onBeforeMount } from "vue"
 import { useSearch } from '../../composables/useSearch';
+import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
-const { userSearch, getUserSearchResult, getUserSearchResultToDisplay } = useSearch();
+const { userSearch, getUserSearchResult } = useSearch();
+const searchedUsersInfo = useLocalStorage('searchedUsers', []);
 
 async function clickSearch() {
-    await getUserSearchResultToDisplay();
+    await getUserSearchResult();
 }
 
 </script>
