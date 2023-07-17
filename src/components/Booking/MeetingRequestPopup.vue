@@ -49,8 +49,16 @@ const autocompleteItems = ref([]);
 async function getAutocompleteItems() {
     // await getAllUserInfo();
     // console.log("userSearchResult: ", userSearchResult.value);
+    // autocompleteItems.value = searchedUsers.value.map(
+    //     user => capitalize(user.fName) + " " + capitalize(user.lName) + " // " + user.email
+    // );
     autocompleteItems.value = searchedUsers.value.map(
-        user => user.fName + " " + user.lName + " // " + user.email
+        user => {
+            return {
+                name: capitalize(user.fName) + " " + capitalize(user.lName),
+                email: user.email
+            }
+        }
     );
     console.log("autocompleteItems.value: ", autocompleteItems.value);
 }
@@ -120,16 +128,16 @@ function sendMeetingRequest() {
                             <template v-slot:chip="{ props, item }">
                                 <v-chip
                                     v-bind="props"
-                                    :text="item.raw.fName"
+                                    :text="item.raw.name"
                                 />
                             </template>
-                            <!-- <template v-slot:item="{ props, item }">
+                            <template v-slot:item="{ props, item }">
                                 <v-list-item
                                     v-bind="props"
-                                    :title="item?.raw?.fName"
+                                    :title="item?.raw?.name"
                                     :subtitle="item?.raw?.email"
                                 />
-                            </template> -->
+                            </template>
                         </v-autocomplete>
 
 
