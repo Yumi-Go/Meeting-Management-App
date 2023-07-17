@@ -19,30 +19,10 @@ const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const isConnected = ref(false);
 
-// console.log("currentUser.uid: ", auth.currentUser.uid);
-// console.log("viewed user uid: ", popupUser.value.uid);
+console.log("currentUser: ", auth.currentUser);
+console.log("viewed user: ", popupUser.value);
 
 const openMeetingRequestPopup = ref(false);
-
-// const meetingRequested = ref({
-//     status: '', // Boolean, Default: false(Pending), Only Accepted meetings(=true) are displayed on the calendar
-//     title: '',
-//     link: '',
-//     type: true, // Boolean, Default: true(internal), internal(=true, via this app) / external(=false, from external platform such as Google Calendar or manually added meetings)
-//     category: '',
-//     organizer: [],
-//     participants: [],
-//     start: '',
-//     end: '',
-//     duration: 0,
-//     timezone: '',
-//     etc: []
-// });
-
-// function sendMeetingRequest() {
-
-//     requestMeeting(auth.currentUser.uid, popupUser.value.uid, meetingRequested);
-// }
 
 function closeMeetingRequestPopup() {
     openMeetingRequestPopup.value = false;
@@ -157,7 +137,8 @@ function closeMeetingRequestPopup() {
             >
                 <MeetingRequestPopup
                     @closeMeetingRequestPopup="closeMeetingRequestPopup"
-                    width="auto"/>
+                    width="auto"
+                />
             </v-dialog>
 
         </v-card-actions>

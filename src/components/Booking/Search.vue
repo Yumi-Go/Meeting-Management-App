@@ -8,14 +8,14 @@ import SearchBar from "./SearchBar.vue";
 import SearchResult from "./SearchResult.vue";
 
 const { userSearch, getUserSearchResult } = useSearch();
-const searchedUsersInfo = useLocalStorage('searchedUsers', []);
+const searchedUsers = useLocalStorage('searchedUsers', []);
 
 // watch(userSearch, async() => {
-//     await getUserSearchResultToDisplay();
+//     await getUserSearchResult();
 // });
 
 // onBeforeMount(async() => {
-//     await getUserSearchResultToDisplay();
+//     await getUserSearchResult();
 // });
 
 </script>

@@ -5,9 +5,9 @@ import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
 import { useDateTime } from '../composables/useDateTime'
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
-const searchedUsersInfo = useLocalStorage('searchedUsers', []);
+const searchedUsers = useLocalStorage('searchedUsers', []);
 const { formatDate } = useDateTime();
-// const userSearchResult = ref([]);
+const userSearchResult = ref([]);
 
 export function useFirestore() {
     async function addUser(uid, email) {
@@ -82,13 +82,15 @@ export function useFirestore() {
     }
 
     async function getAllUserInfo() {
-        searchedUsersInfo.value = [];
+        searchedUsers.value = [];
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((doc) => {
-            searchedUsersInfo.value.push({...doc.data(), uid: doc.id, selected: false});
+            searchedUsers.value.push({...doc.data(), uid: doc.id, selected: false});
         });
-        console.log("result all users in useFirestore: ", searchedUsersInfo.value);
-        // return searchedUsersInfo.value;
+        console.log("result all users in useFirestore: ", searchedUsers.value);
+        // userSearchResult.value = searchedUsers.value;
+        // console.log("userSearchResult: ", userSearchResult.value);
+        // return searchedUsers.value;
     }
 
     async function getUserInfoByName(name) {
@@ -98,15 +100,15 @@ export function useFirestore() {
         const lNameRef = query(userDocRef, where("lName", "==", name));
         const queries = [fNameRef, mNameRef, lNameRef];
         // const users = [];
-        searchedUsersInfo.value = [];
+        searchedUsers.value = [];
         queries.forEach(async (query) => {
             const querySnapshot = await getDocs(query);
             querySnapshot.forEach((doc) => {
-                searchedUsersInfo.value.push({...doc.data(), uid: doc.id, selected: false});
+                searchedUsers.value.push({...doc.data(), uid: doc.id, selected: false});
             });
         });
-        console.log("result by name in useFirestore: ", searchedUsersInfo.value);
-        // return searchedUsersInfo.value;
+        console.log("result by name in useFirestore: ", searchedUsers.value);
+        // return searchedUsers.value;
    }
 
    
@@ -243,6 +245,7 @@ export function useFirestore() {
     }
 
     return {
+        userSearchResult,
         addUser,
         updateUserInfo,
         getUserInfoByUID,

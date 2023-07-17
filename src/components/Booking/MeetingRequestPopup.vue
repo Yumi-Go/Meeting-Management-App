@@ -1,12 +1,16 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onBeforeMount } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
 // import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from '../../composables/useFirestore';
+import { useSearch } from '../../composables/useSearch';
 import { useFormat } from '../../composables/useFormat'
 import { useDateTime } from '../../composables/useDateTime'
 import { mdiGmail } from '@mdi/js';
+
+const searchedUsers = useLocalStorage('searchedUsers', []);
+// const users = ref([]);
 
 const props = defineProps({
 });
@@ -18,7 +22,8 @@ function closeBtnClick() {
     console.log("Meeting Request popup closed!");
 }
 
-const { getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
+const { userSearchResult, getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
+const { getUserSearchResult } = useSearch();
 const { capitalize } = useFormat();
 const { timeItems } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
@@ -38,41 +43,22 @@ const meetingRequested = ref({
     etc: []
 });
 
-// const selected = ref([]);
+const selected = ref([]);
 const autocompleteItems = ref([]);
 
-function getAutocompleteItems() {
-    getAllUserInfo()
-    .then(users => {
-        console.log("users: ", users);
-        autocompleteItems.value = users;
-    })
+async function getAutocompleteItems() {
+    // await getAllUserInfo();
+    // console.log("userSearchResult: ", userSearchResult.value);
+    autocompleteItems.value = searchedUsers.value.map(
+        user => user.fName + " " + user.lName + " // " + user.email
+    );
     console.log("autocompleteItems.value: ", autocompleteItems.value);
 }
 getAutocompleteItems();
-
-// function getAutocompleteItems() {
-//     // let result = [];
-//     if (selected.value.length > 0) {
-//         return getUserInfoByName(selected.value.toLowerCase());
-//     } else {
-//         return getAllUserInfo();
-//     }
-// }
-
-// watch(selected, (newSelected) => {
-//     getAutocompleteItems(newSelected);
+// onBeforeMount(() => {
+//     getAutocompleteItems();
+//     console.log("autocompleteItems.value: ", autocompleteItems.value);
 // });
-
-// const items = [
-//     { name: 'yumi-1', email: 'yumi-1@google.com' },
-//     { name: 'yumi-2', email: 'yumi-2@google.com' },
-//     { name: 'yumi-3', email: 'yumi-3@google.com' },
-//     { name: 'yumi-4', email: 'yumi-4@google.com' },
-//     { name: 'yumi-5', email: 'yumi-5@google.com' },
-// ];
-
-
 
 function sendMeetingRequest() {
     console.log("auth.currentUser.uid: ", auth.currentUser.uid);
@@ -90,8 +76,6 @@ function sendMeetingRequest() {
         class="mx-auto"
         color="blue-grey-lighten-5"
     >
-
-
         <v-sheet width="800" class="mx-auto">
             <v-form ref="form" @submit.prevent>
                 <v-container>
@@ -139,13 +123,13 @@ function sendMeetingRequest() {
                                     :text="item.raw.fName"
                                 />
                             </template>
-                            <template v-slot:item="{ props, item }">
+                            <!-- <template v-slot:item="{ props, item }">
                                 <v-list-item
                                     v-bind="props"
                                     :title="item?.raw?.fName"
                                     :subtitle="item?.raw?.email"
                                 />
-                            </template>
+                            </template> -->
                         </v-autocomplete>
 
 

@@ -4,7 +4,7 @@ import { useSearch } from '../../composables/useSearch';
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const { userSearch, getUserSearchResult } = useSearch();
-const searchedUsersInfo = useLocalStorage('searchedUsers', []);
+const searchedUsers = useLocalStorage('searchedUsers', []);
 
 async function clickSearch() {
     await getUserSearchResult();

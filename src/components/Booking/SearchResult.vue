@@ -6,9 +6,9 @@ import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 import { useSearch } from '../../composables/useSearch';
 import { useFirestore } from '../../composables/useFirestore';
 
-const searchedUsersInfo = useLocalStorage('searchedUsers', []);
+const searchedUsers = useLocalStorage('searchedUsers', []);
 
-const { userSearch, userSearchResult, getUserSearchResult } = useSearch();
+const { userSearch, getUserSearchResult } = useSearch();
 const { getAllUserInfo, getUserInfoByName } = useFirestore();
 
 watch(userSearch, async() => {
@@ -23,7 +23,7 @@ const openUserPopup = ref(false);
 const popupUser = ref();
 
 function getSelectedUsers() {
-    return searchedUsersInfo.value.filter(user => user.selected);
+    return searchedUsers.value.filter(user => user.selected);
 }
 
 function clickUser(user) {
@@ -38,7 +38,7 @@ function clickUser(user) {
 <template>
     <v-container fluid class="">
         <v-row>
-            {{ searchedUsersInfo }}
+            {{ searchedUsers }}
         </v-row>
         <v-row>
             <v-list
@@ -49,8 +49,8 @@ function clickUser(user) {
                     Users Search Result
                 </v-list-subheader>
                 <v-list-item
-                    v-if="searchedUsersInfo.length > 0"
-                    v-for="user in searchedUsersInfo"
+                    v-if="searchedUsers.length > 0"
+                    v-for="user in searchedUsers"
                     :value="user"
                     :key="user.uid"
                 >
