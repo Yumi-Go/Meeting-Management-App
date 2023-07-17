@@ -10,23 +10,15 @@ import { useDateTime } from '../../composables/useDateTime'
 import { mdiGmail } from '@mdi/js';
 
 const searchedUsers = useLocalStorage('searchedUsers', []);
-// const users = ref([]);
-
-const props = defineProps({
-});
 
 const emit = defineEmits(['closeMeetingRequestPopup']);
 
-function closeBtnClick() {
-    emit('closeMeetingRequestPopup');
-    console.log("Meeting Request popup closed!");
-}
-
-const { userSearchResult, getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
+const { allUsers, getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
 const { getUserSearchResult } = useSearch();
 const { capitalize } = useFormat();
 const { timeItems } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
+const selected = ref([]);
 const meetingRequested = ref({
     status: false, // Boolean, Default: false(Pending), Only Accepted meetings(=true) are displayed on the calendar
     title: '',
@@ -43,43 +35,29 @@ const meetingRequested = ref({
     etc: []
 });
 
-const selected = ref([]);
-const autocompleteItems = ref([]);
+watch(selected, async(newSelected) => {
+    console.log("selected: ", newSelected);
+});
 
-async function getAutocompleteItems() {
-    // await getAllUserInfo();
-    // console.log("userSearchResult: ", userSearchResult.value);
-    // autocompleteItems.value = searchedUsers.value.map(
-    //     user => capitalize(user.fName) + " " + capitalize(user.lName) + " // " + user.email
-    // );
-    autocompleteItems.value = searchedUsers.value.map(
-        user => {
-            return {
-                name: capitalize(user.fName) + " " + capitalize(user.lName),
-                email: user.email
-            }
-        }
-    );
-    console.log("autocompleteItems.value: ", autocompleteItems.value);
+function getParticipantUids() {
+    return selected.value.map(user => user.uid);
 }
-getAutocompleteItems();
-// onBeforeMount(() => {
-//     getAutocompleteItems();
-//     console.log("autocompleteItems.value: ", autocompleteItems.value);
-// });
 
 function sendMeetingRequest() {
     console.log("auth.currentUser.uid: ", auth.currentUser.uid);
     console.log("popupUser.value.uid: ", popupUser.value.uid);
+    meetingRequested.value.participants = getParticipantUids();
     requestMeeting(auth.currentUser.uid, popupUser.value.uid, meetingRequested.value);
 }
 
-
+function closeBtnClick() {
+    emit('closeMeetingRequestPopup');
+    console.log("Meeting Request popup closed!");
+}
 
 </script>
 
 <template>
-
     <v-card
         class="mx-auto"
         color="blue-grey-lighten-5"
@@ -116,25 +94,23 @@ function sendMeetingRequest() {
 
                         <v-autocomplete
                             v-model="selected"
-                            :items="autocompleteItems"
+                            :items="allUsers"
                             chips
                             closable-chips
                             color="blue-grey-lighten-2"
-                            item-title="fName"
-                            item-value="fName"
                             label="Participants"
                             multiple
                         >
                             <template v-slot:chip="{ props, item }">
                                 <v-chip
                                     v-bind="props"
-                                    :text="item.raw.name"
+                                    :text="item?.raw?.fName + ' ' + item?.raw?.lName"
                                 />
                             </template>
                             <template v-slot:item="{ props, item }">
                                 <v-list-item
                                     v-bind="props"
-                                    :title="item?.raw?.name"
+                                    :title="item?.raw?.fName + ' ' + item?.raw?.lName"
                                     :subtitle="item?.raw?.email"
                                 />
                             </template>
@@ -239,8 +215,6 @@ function sendMeetingRequest() {
                 </v-container>
             </v-form>
         </v-sheet>
-
-
         <v-card-actions>
             <v-spacer/>
             <v-btn
@@ -250,11 +224,7 @@ function sendMeetingRequest() {
             >
                 Cancel
             </v-btn>
-
-
-
         </v-card-actions>
     </v-card>
-
 </template>
 

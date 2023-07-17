@@ -7,7 +7,7 @@ import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const searchedUsers = useLocalStorage('searchedUsers', []);
 const { formatDate } = useDateTime();
-const userSearchResult = ref([]);
+const allUsers = ref([]);
 
 export function useFirestore() {
     async function addUser(uid, email) {
@@ -88,8 +88,8 @@ export function useFirestore() {
             searchedUsers.value.push({...doc.data(), uid: doc.id, selected: false});
         });
         console.log("result all users in useFirestore: ", searchedUsers.value);
-        // userSearchResult.value = searchedUsers.value;
-        // console.log("userSearchResult: ", userSearchResult.value);
+        allUsers.value = searchedUsers.value;
+        console.log("allUsers: ", allUsers.value);
         // return searchedUsers.value;
     }
 
@@ -245,7 +245,7 @@ export function useFirestore() {
     }
 
     return {
-        userSearchResult,
+        allUsers,
         addUser,
         updateUserInfo,
         getUserInfoByUID,
