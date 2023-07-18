@@ -2,11 +2,13 @@ import { ref, watch } from "vue"
 import { useFirestore } from "./useFirestore";
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
-const { getAllUserInfo, getUserInfoByName } = useFirestore();
+const currentUser = useLocalStorage('currentUser', []);
 
-const searchedUsers = useLocalStorage('searchedUsers', []);
+const { getAllUserInfo, getUserInfoByName } = useFirestore();
 const userSearch = ref('');
 // const userSearchResult = ref([]);
+
+// const inboxSearch = ref('');
 
 export function useSearch() {
 
@@ -20,18 +22,22 @@ export function useSearch() {
         // console.log("userSearchResult: ", userSearchResult.value);
     }
     
-    // async function getUserSearchResult(search) {
-    //     if (search) {
-    //         await getUserInfoByName(userSearch.value.toLowerCase());
+
+    // function getInboxSearchResult() {
+    //     if (currentUser.value.meetingRequestsReceived.length > 0) {
+    //         if (inboxSearch.value.length > 0) {
+    //             const input = inboxSearch.value.toLowerCase();
+    //             inboxSearchResult.value = currentUserInfo.meetingRequestsReceived.filter(
+    //                 request => request.toLowerCase().match(input));
+    //         } else {
+    //             inboxSearchResult.value = currentUserInfo.meetingRequestsReceived;
+    //         }
     //     } else {
-    //         await getAllUserInfo();
+    //         inboxSearchResult.value = [];
     //     }
-    //     userSearchResult.value = searchedUsers.value;
-    //     console.log("userSearchResult: ", userSearchResult.value);
     // }
 
 
 
-    // return { userSearch, userSearchResult, getUserSearchResult }
     return { userSearch, getUserSearchResult }
 }

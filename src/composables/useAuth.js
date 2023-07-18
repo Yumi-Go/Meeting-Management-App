@@ -39,7 +39,9 @@ export function useAuth() {
     }
 
     function logOut() {
-        signOut(auth).then(() => { 
+        signOut(auth).then(() => {
+            currentUserInfo.value = [];
+            currentUser.value = [];
             console.log("Sign Out successful!");
         }).catch((error) => {
             console.log("SignOut Error: ", error);

@@ -201,7 +201,6 @@ export function useFirestore() {
 
 
     // Inbox
-    // 이거 여기에서 직접 말고, 로컬스토리지에서 꺼내오면 될듯. 그거 다 해결되면 이 두 펑션 지우기
     async function getAllReceivedList(receiverUid) {
         const docRef = doc(db, "users", receiverUid);
         const docSnap = await getDoc(docRef);
@@ -217,6 +216,48 @@ export function useFirestore() {
 
 
     }
+
+    // async function getUserInfoByUID(uid) {
+    //     const docRef = doc(db, "users", uid);
+    //     const docSnap = await getDoc(docRef);
+    //     if (docSnap.exists()) {
+    //     //   console.log("Document data:", docSnap.data());
+    //       return docSnap.data();
+    //     } else {
+    //       console.log("No such document!");
+    //     //   return null;
+    //     }
+    // }
+
+    // async function getAllUserInfo() {
+    //     searchedUsers.value = [];
+    //     const querySnapshot = await getDocs(collection(db, "users"));
+    //     querySnapshot.forEach((doc) => {
+    //         searchedUsers.value.push({...doc.data(), uid: doc.id, selected: false});
+    //     });
+    //     console.log("result all users in useFirestore: ", searchedUsers.value);
+    //     allUsers.value = searchedUsers.value;
+    //     console.log("allUsers: ", allUsers.value);
+    //     // return searchedUsers.value;
+    // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

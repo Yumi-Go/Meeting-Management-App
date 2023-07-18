@@ -1,7 +1,5 @@
 <script setup>
 import { ref, watch, onBeforeMount } from "vue"
-// import { useMemberSearch } from '../../composables/useMemberSearch';
-import { useFirestore } from '../../composables/useFirestore';
 import { useSearch } from '../../composables/useSearch';
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 import SearchBar from "./SearchBar.vue";

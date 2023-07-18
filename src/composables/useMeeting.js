@@ -4,7 +4,7 @@ import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const { getAllUserInfo, getUserInfoByName } = useFirestore();
 
-const searchedUsers = useLocalStorage('searchedUsers', []);
+const currentUser = useLocalStorage('currentUser', []);
 
 export function useMeeting() {
 
@@ -12,6 +12,13 @@ export function useMeeting() {
 
     }
     
+    // function getAllRequestsReceived() {
+    //     return currentUser.value.meetingRequestsReceived;
 
-    return {  }
+
+    // }
+
+
+
+    // return { getAllRequestsReceived }
 }

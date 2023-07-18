@@ -84,7 +84,6 @@ function clickChartBtn() {
         <Inbox v-if="showInbox"/>
         <Availability v-else-if="showAvailability"/>
         <div v-else>
-
             <div class="d-flex justify-space-between">
                 <div class="">
                     <v-btn

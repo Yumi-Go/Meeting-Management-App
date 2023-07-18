@@ -55,10 +55,9 @@ function clickUser(user) {
                     :key="user.uid"
                 >
                     {{ user.selected }}
-                    <template #prepend="{ isActive }">
+                    <template #prepend>
                         <v-list-item-action start>
-                            <v-checkbox-btn :model-value="isActive" v-model="user.selected">
-                            </v-checkbox-btn>
+                            <v-checkbox-btn v-model="user.selected"/>
                         </v-list-item-action>
                     </template>
                     <v-list-item-title

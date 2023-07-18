@@ -25,19 +25,6 @@ const days = ref({
 const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
 const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
-// function timeItems() {
-//     var interval = 15;
-//     var times = [];
-//     var minuteSum = 0;
-//     for (var i = 0; minuteSum < 60*12; i++) {
-//         var hour = Math.floor(minuteSum / 60);
-//         var minute = (minuteSum % 60);
-//         times[i] = ("0" + (hour % 12)).slice(-2) + ':' + ("0" + minute).slice(-2);
-//         minuteSum = minuteSum + interval;
-//     }
-//     return times;
-// }
-
 function weeklyDaysTimes() {
     const dayOfWeek = {};
     for (const [key, value] of Object.entries(days.value)) {
