@@ -32,7 +32,8 @@ const meetingRequested = ref({
     end: [timeItems()[0], false], // e.g. [03:30, false]
     duration: 0,
     timezone: '',
-    etc: []
+    etc: [],
+    isRead: false
 });
 
 watch(selected, async(newSelected) => {

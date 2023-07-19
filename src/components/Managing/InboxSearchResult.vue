@@ -1,24 +1,44 @@
 <script setup>
 import { ref, computed } from "vue"
+import { useFirestore } from "../../composables/useFirestore";
 import { useMeeting } from "../../composables/useMeeting";
 import { useLocalStorage } from '@vueuse/core';
 import ReceivedRequestsPopup from './ReceivedRequestsPopup.vue';
+import InboxMessagePopup from "./InboxMessagePopup.vue";
 
-const currentUser = useLocalStorage('currentUser', []);
+const currentUser = useLocalStorage('currentUser', {});
+const { getUserInfoByUID } = useFirestore();
 const openRequestPopup = ref(false);
-// const allRequestsReceived = computed(() => {
-//     if (currentUser.value.meetingRequestsReceived.length > 0) {
-//         return currentUser.value.meetingRequestsReceived.map(
-//             request => request.title
-//         );
-//     } else {
-//         return [];
-//     }
-// });
-const allRequestsReceived = currentUser.value.meetingRequestsReceived;
+const allRequestsReceived = computed(() => currentUser.value.meetingRequestsReceived);
 const chosenRequest = ref();
 
-console.log("allRequestsReceived: ", allRequestsReceived);
+console.log("allRequestsReceived: ", allRequestsReceived.value);
+
+function getParticipants(uidsArr) {
+    let participantObjs = [];
+    console.log("uidsArr: ", uidsArr);
+    if (uidsArr.length > 0) {
+        uidsArr.forEach(uid => {
+            console.log("uid: ", uid);
+            getUserInfoByUID(uid)
+            .then(obj => {
+                console.log("obj: ", obj);
+                participantObjs = obj;
+            });
+        });
+    }
+    return participantObjs;
+}
+
+// async function getParticipants(uid) {
+//     const result = [];
+//     getUserInfoByUID(uid)
+//     .then(obj => {
+//         console.log("obj: ", obj);
+//         result.value.push(obj);
+//     });
+//     return result;
+// }
 
 function clickRequest(request) {
     openRequestPopup.value = true;
@@ -41,24 +61,30 @@ function clickRequest(request) {
                 </v-list-subheader>
                 <v-list-item
                     v-if="allRequestsReceived.length > 0"
-                    v-for="request in allRequestsReceived"
+                    v-for="request in Object.values(allRequestsReceived)"
                 >
-                    {{ request.title }}
+                    {{ Object.values(request)[0].title }}
                     <template #prepend>
                         <v-list-item-action start>
-                            <v-checkbox-btn v-model="allRequestsReceived.status">
+                            <v-checkbox-btn v-model="Object.values(request)[0].status">
                             </v-checkbox-btn>
                         </v-list-item-action>
                     </template>
                     <v-list-item-title
                         class="tw-w-[50%]"
                     >
-                        {{ request.start }}
+                        {{ Object.values(request)[0].start }}
                     </v-list-item-title>
                     <v-list-item-subtitle
                         class=""
                     >
-                        {{ request.participants }}
+                        <!-- {{ getParticipants(Object.values(request)[0].participants) }} -->
+                        {{ Object.values(request)[0].participants }}
+                        <!-- <span v-for="uid in Object.values(request)[0].participants">
+                            {{ getParticipants(uid) }}
+                        </span> -->
+
+                        <!-- {{ getParticipants(Object.values(request)[0].participants) }} -->
                     </v-list-item-subtitle>
                     <template #append>
                         <v-btn
@@ -72,6 +98,9 @@ function clickRequest(request) {
                         v-model="openRequestPopup"
                         width="auto"
                     >
+                        <InboxMessagePopup
+                            :requestedMeetingObj="request"
+                        />
                     </v-dialog>
                 </v-list-item>
                 <v-list-item

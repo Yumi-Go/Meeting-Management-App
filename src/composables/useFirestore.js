@@ -77,7 +77,7 @@ export function useFirestore() {
           return docSnap.data();
         } else {
           console.log("No such document!");
-        //   return null;
+          return null;
         }
     }
 
@@ -154,11 +154,11 @@ export function useFirestore() {
         console.log("meetingObj: ", meetingObj);
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
-            meetingRequestsSent: arrayUnion(meetingObj)
+            meetingRequestsSent: arrayUnion({[receiverUid]: meetingObj})
         });
         const receiverRef = doc(db, "users", receiverUid);
         await updateDoc(receiverRef, {
-            meetingRequestsReceived: arrayUnion(meetingObj)
+            meetingRequestsReceived: arrayUnion({[senderUid]: meetingObj})
         });
     }
 
