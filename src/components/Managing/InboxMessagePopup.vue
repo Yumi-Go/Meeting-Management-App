@@ -13,13 +13,14 @@ const temptUser = useLocalStorage('tempUser', {});
 const props = defineProps({
     requestedMeetingObj: Object,
 });
-const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
+const { getUserInfoByUID, acceptMeetingRequest, refuseMeetingRequest } = useFirestore();
 const { capitalize } = useFormat();
 console.log("requestedMeetingObj: ", props.requestedMeetingObj);
 
 const senderUid = Object.keys(props.requestedMeetingObj)[0];
 const meetingObj = Object.values(props.requestedMeetingObj)[0];
 const senderObj = ref({});
+
 function getSenderObj() {
     getUserInfoByUID(senderUid)
     .then(sender => {
@@ -28,6 +29,18 @@ function getSenderObj() {
         console.log("senderObj: ", senderObj.value);
     });
 }
+
+function clickAcceptBtn() {
+    acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
+}
+
+function clickDismissBtn() {
+    refuseMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
+}
+
+
+
+
 
 onBeforeMount(() => {
     getSenderObj();
@@ -53,7 +66,7 @@ onBeforeMount(() => {
                         <span class="tw-text-gray-500 tw-font-semibold tw-text-sm mr-2 ">From |</span> 
                         <v-chip
                             class="ma-0"
-                            color="indigo"
+                            color="default"
                             label
                         >
                             <v-icon start :icon="mdiAccountCircleOutline"/>
@@ -86,7 +99,7 @@ onBeforeMount(() => {
         
         <v-card-actions class="d-flex justify-center mb-10 py-0">
             <v-btn
-                @click=""
+                @click="clickAcceptBtn"
                 color="indigo-darken-3"
                 variant="flat"
                 width="30%"
@@ -94,7 +107,7 @@ onBeforeMount(() => {
                 Accept
             </v-btn>
             <v-btn
-                @click=""
+                @click="clickDismissBtn"
                 color="indigo-darken-3"
                 variant="outlined"
                 width="30%"

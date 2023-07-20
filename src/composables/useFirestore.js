@@ -168,36 +168,30 @@ export function useFirestore() {
     }
 
     async function acceptMeetingRequest(senderUid, receiverUid, meetingObj) {
+        const meetingRef = await addDoc(collection(db, "meetings"), meetingObj);
+        console.log("meeting doc written with ID: ", meetingRef.id);
+
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
-            meetings: arrayUnion(meetingObj.id),
-            meetingRequestsSent: arrayRemove(meetingObj)
+            meetings: arrayUnion(meetingRef.id),
+            meetingRequestsSent: arrayRemove({[receiverUid]: meetingObj})
         });
         const receiverRef = doc(db, "users", receiverUid);
         await updateDoc(receiverRef, {
-            meetings: arrayUnion(meetingObj.id),
-            meetingRequestsReceived: arrayRemove(meetingObj)
-        });
-
-        const meetingRef = await addDoc(collection(db, "meetings"), {
-            status: '', // Boolean, Default: false(Pending), Only Accepted meetings(=true) are displayed on the calendar
-            title: '',
-            link: '',
-            location: '',
-            type: true, // Boolean, Default: true(internal), internal(=true, via this app) / external(=false, from external platform such as Google Calendar or manually added meetings)
-            category: '',
-            organizer: [],
-            participants: [],
-            start: '',
-            end: '',
-            duration: 0,
-            timezone: '',
-            etc: []
+            meetings: arrayUnion(meetingRef.id),
+            meetingRequestsReceived: arrayRemove({[senderUid]: meetingObj})
         });
     }
 
-    function refuseMeetingRequest(senderUid, receiverUid, meeting) {
-
+    async function refuseMeetingRequest(senderUid, receiverUid, meetingObj) {
+        const senderRef = doc(db, "users", senderUid);
+        await updateDoc(senderRef, {
+            meetingRequestsSent: arrayRemove({[receiverUid]: meetingObj})
+        });
+        const receiverRef = doc(db, "users", receiverUid);
+        await updateDoc(receiverRef, {
+            meetingRequestsReceived: arrayRemove({[senderUid]: meetingObj})
+        });
     }
 
 
