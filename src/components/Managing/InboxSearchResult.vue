@@ -1,43 +1,65 @@
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed, onBeforeMount } from "vue"
 import { useFirestore } from "../../composables/useFirestore";
 import { useMeeting } from "../../composables/useMeeting";
 import { useLocalStorage } from '@vueuse/core';
 import ReceivedRequestsPopup from './ReceivedRequestsPopup.vue';
 import InboxMessagePopup from "./InboxMessagePopup.vue";
+import { mdiTrashCanOutline } from '@mdi/js';
 
 const currentUser = useLocalStorage('currentUser', {});
+const userById = useLocalStorage('userById', {});
+// const participants = useLocalStorage('participants', []);
 const { getUserInfoByUID } = useFirestore();
 const openRequestPopup = ref(false);
 const allRequestsReceived = computed(() => currentUser.value.meetingRequestsReceived);
 const chosenRequest = ref();
 
+
 console.log("allRequestsReceived: ", allRequestsReceived.value);
 
-function getParticipants(uidsArr) {
-    let participantObjs = [];
-    console.log("uidsArr: ", uidsArr);
-    if (uidsArr.length > 0) {
-        uidsArr.forEach(uid => {
-            console.log("uid: ", uid);
-            getUserInfoByUID(uid)
-            .then(obj => {
-                console.log("obj: ", obj);
-                participantObjs = obj;
-            });
-        });
-    }
-    return participantObjs;
-}
 
-// async function getParticipants(uid) {
-//     const result = [];
+////// fix this later.. (showing sender's name on the list in Inbox)
+
+// const senderObj = ref({});
+// function getSenderObj(requestObj) {
+//     const senderUid = Object.keys(requestObj);
+//     // const meetingObj = Object.values(requestObj)[0];
+//     getUserInfoByUID(senderUid)
+//     .then(sender => {
+//         console.log("sender: ", sender);
+//         senderObj.value = sender;
+//         console.log("senderObj: ", senderObj.value);
+//     });
+//     return senderObj.value;
+// }
+
+// async function getParticipants(uidsArr) {
+//     const participants = [];
+//     console.log("uidsArr: ", uidsArr);
+//     if (uidsArr.length > 0) {
+//         await uidsArr.forEach((uid) => {
+//             console.log("uid: ", uid);
+//             getUserInfoByUID(uid)
+//             .then((obj) => {
+//                 console.log("obj: ", obj);
+//                 participants.push(obj);
+//             })
+//         });
+//     }
+//     console.log("participants: ", participants);
+//     return participants;
+// }
+
+// const participants = ref({});
+// function getParticipant(uid) {
+//     participants.value = {};
 //     getUserInfoByUID(uid)
 //     .then(obj => {
 //         console.log("obj: ", obj);
-//         result.value.push(obj);
+//         participants.value = obj;
+//         console.log("participants: ", participants.value);
 //     });
-//     return result;
 // }
 
 function clickRequest(request) {
@@ -62,6 +84,7 @@ function clickRequest(request) {
                 <v-list-item
                     v-if="allRequestsReceived.length > 0"
                     v-for="request in Object.values(allRequestsReceived)"
+                    @click="clickRequest(request)"
                 >
                     {{ Object.values(request)[0].title }}
                     <template #prepend>
@@ -79,20 +102,14 @@ function clickRequest(request) {
                         class=""
                     >
                         <!-- {{ getParticipants(Object.values(request)[0].participants) }} -->
-                        {{ Object.values(request)[0].participants }}
+                        <!-- {{ Object.values(request)[0].participants }} -->
                         <!-- <span v-for="uid in Object.values(request)[0].participants">
-                            {{ getParticipants(uid) }}
+                            {{ getParticipant(uid) }}
                         </span> -->
-
-                        <!-- {{ getParticipants(Object.values(request)[0].participants) }} -->
+                        <!-- {{ getSenderObj(request) }} -->
                     </v-list-item-subtitle>
                     <template #append>
-                        <v-btn
-                            @click="clickRequest(request)"
-                            variant="tonal"
-                        >
-                            Open Dialog
-                        </v-btn>
+                        <v-icon start :icon="mdiTrashCanOutline"/>
                     </template>
                     <v-dialog
                         v-model="openRequestPopup"
@@ -100,6 +117,8 @@ function clickRequest(request) {
                     >
                         <InboxMessagePopup
                             :requestedMeetingObj="request"
+                            width="600px"
+                            height="400px"
                         />
                     </v-dialog>
                 </v-list-item>
