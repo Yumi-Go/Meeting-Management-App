@@ -2,6 +2,7 @@
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import { useCalendar } from '../../composables/useCalendar'
 
 const calendarOptions = {
     plugins: [ dayGridPlugin, interactionPlugin ],
@@ -12,6 +13,17 @@ const calendarOptions = {
         { title: 'event 2', date: '2023-07-20' }
     ]
 }
+
+function addEvent() {
+
+}
+
+function deleteEvent() {
+
+
+}
+
+
 
 function handleDateClick(arg) {
       alert('date click! ' + arg.dateStr)

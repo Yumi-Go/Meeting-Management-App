@@ -1,14 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 import Inbox from '../components/Managing/Inbox.vue'
 import Availability from '../components/Managing/Availability.vue';
 import Calendar from '../components/Managing/Calendar.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter();
 const showAvailability = ref(false);
 const showInbox = ref(false);
 const showCalendar = ref(false);
 const showList = ref(false);
 const showChart = ref(false);
+
+function reloadInbox() {
+    // location.reload();
+    router.push('/managing');
+    showInbox.value = true;
+    console.log("showInbox: ", showInbox.value);
+}
+provide('refreshInbox', {showInbox, reloadInbox});
 
 function clickAvailabilityBtn() {
     showAvailability.value = !showAvailability.value;
@@ -37,6 +47,7 @@ function clickChartBtn() {
     showList.value = false;
     showChart.value = !showChart.value;
 }
+
 
 
 </script>

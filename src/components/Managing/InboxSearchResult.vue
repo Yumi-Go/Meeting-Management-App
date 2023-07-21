@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onBeforeMount } from "vue"
+import { ref, watch, computed, onBeforeMount } from "vue"
 import { useFirestore } from "../../composables/useFirestore";
 import { useMeeting } from "../../composables/useMeeting";
 import { useLocalStorage } from '@vueuse/core';
@@ -9,11 +9,16 @@ import { mdiTrashCanOutline } from '@mdi/js';
 const currentUser = useLocalStorage('currentUser', {});
 const userById = useLocalStorage('userById', {});
 const { getUserInfoByUID } = useFirestore();
-const openRequestPopup = ref(false);
-const allRequestsReceived = computed(() => currentUser.value.meetingRequestsReceived);
+const openInboxMessagePopup = ref(false);
+const allRequestsReceived = computed(() => {
+    return currentUser.value.meetingRequestsReceived;
+});
 const chosenRequest = ref();
-console.log("allRequestsReceived: ", allRequestsReceived.value);
+// console.log("allRequestsReceived: ", allRequestsReceived.value);
 
+function closeInboxMessagePopup() {
+    openInboxMessagePopup.value = false;
+}
 
 ////// leave below codes for now to fix later.. (showing sender's name on the list in Inbox)
 
@@ -59,7 +64,7 @@ console.log("allRequestsReceived: ", allRequestsReceived.value);
 // }
 
 function clickRequest(request) {
-    openRequestPopup.value = true;
+    openInboxMessagePopup.value = true;
     chosenRequest.value = request;
     console.log("chosenRequest: ", chosenRequest.value);
 }
@@ -84,7 +89,6 @@ function clickRequest(request) {
                     @click="clickRequest(request)"
                     class=""
                 >
-
                     <template #prepend>
                         <v-list-item-action start>
                             <v-checkbox-btn v-model="Object.values(request)[0].status">
@@ -102,6 +106,7 @@ function clickRequest(request) {
                     <v-list-item-subtitle
                         class=""
                     >
+                    {{ Object.values(request)[0] }}
                         <!-- {{ getParticipants(Object.values(request)[0].participants) }} -->
                         <!-- {{ Object.values(request)[0].participants }} -->
                         <!-- <span v-for="uid in Object.values(request)[0].participants">
@@ -113,11 +118,12 @@ function clickRequest(request) {
                         <v-icon start :icon="mdiTrashCanOutline"/>
                     </template>
                     <v-dialog
-                        v-model="openRequestPopup"
+                        v-model="openInboxMessagePopup"
                         width="auto"
                     >
                         <InboxMessagePopup
-                            :requestedMeetingObj="request"
+                            :requestedMeetingObj="chosenRequest"
+                            @closeInboxMessagePopup="closeInboxMessagePopup"
                             width="600px"
                             height="400px"
                         />

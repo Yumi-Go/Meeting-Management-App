@@ -1,20 +1,24 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue'
+import { ref, inject, onBeforeMount } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
+import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat'
 import { mdiAccountCircleOutline } from '@mdi/js';
 
 const temptUser = useLocalStorage('tempUser', {});
-
+const { showInbox, reloadInbox } = inject('refreshInbox');
+const { userStateObserver } = useAuth();
 
 const props = defineProps({
     requestedMeetingObj: Object,
 });
+const emit = defineEmits(['closeInboxMessagePopup']);
+
 const { getUserInfoByUID, acceptMeetingRequest, refuseMeetingRequest } = useFirestore();
 const { capitalize } = useFormat();
-console.log("requestedMeetingObj: ", props.requestedMeetingObj);
+// console.log("requestedMeetingObj: ", props.requestedMeetingObj);
 
 const senderUid = Object.keys(props.requestedMeetingObj)[0];
 const meetingObj = Object.values(props.requestedMeetingObj)[0];
@@ -29,12 +33,18 @@ function getSenderObj() {
     });
 }
 
-function clickAcceptBtn() {
-    acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
+async function clickAcceptBtn() {
+    await acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
+    emit('closeInboxMessagePopup');
+    userStateObserver();
+    reloadInbox();
 }
 
-function clickDismissBtn() {
-    refuseMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
+async function clickDismissBtn() {
+    await refuseMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
+    emit('closeInboxMessagePopup');
+    userStateObserver();
+    reloadInbox();
 }
 
 onBeforeMount(() => {
