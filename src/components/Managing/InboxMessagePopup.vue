@@ -5,7 +5,6 @@ import { auth } from '../../firebaseConfig'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat'
 import { mdiAccountCircleOutline } from '@mdi/js';
-import { mdiMonitorAccount } from '@mdi/js';
 
 const temptUser = useLocalStorage('tempUser', {});
 
@@ -38,14 +37,9 @@ function clickDismissBtn() {
     refuseMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
 }
 
-
-
-
-
 onBeforeMount(() => {
     getSenderObj();
 });
-
 
 </script>
 

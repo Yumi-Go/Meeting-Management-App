@@ -45,10 +45,9 @@ function getParticipantUids() {
 }
 
 function sendMeetingRequest() {
-    // console.log("auth.currentUser.uid: ", auth.currentUser.uid);
-    // console.log("popupUser.value.uid: ", popupUser.value.uid);
     meetingRequested.value.participants = getParticipantUids();
     requestMeeting(auth.currentUser.uid, popupUser.value.uid, meetingRequested.value);
+    closeBtnClick();
 }
 
 function closeBtnClick() {

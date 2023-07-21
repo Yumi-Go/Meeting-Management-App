@@ -3,23 +3,19 @@ import { ref, computed, onBeforeMount } from "vue"
 import { useFirestore } from "../../composables/useFirestore";
 import { useMeeting } from "../../composables/useMeeting";
 import { useLocalStorage } from '@vueuse/core';
-import ReceivedRequestsPopup from './ReceivedRequestsPopup.vue';
 import InboxMessagePopup from "./InboxMessagePopup.vue";
 import { mdiTrashCanOutline } from '@mdi/js';
 
 const currentUser = useLocalStorage('currentUser', {});
 const userById = useLocalStorage('userById', {});
-// const participants = useLocalStorage('participants', []);
 const { getUserInfoByUID } = useFirestore();
 const openRequestPopup = ref(false);
 const allRequestsReceived = computed(() => currentUser.value.meetingRequestsReceived);
 const chosenRequest = ref();
-
-
 console.log("allRequestsReceived: ", allRequestsReceived.value);
 
 
-////// fix this later.. (showing sender's name on the list in Inbox)
+////// leave below codes for now to fix later.. (showing sender's name on the list in Inbox)
 
 // const senderObj = ref({});
 // function getSenderObj(requestObj) {
@@ -81,18 +77,23 @@ function clickRequest(request) {
                 <v-list-subheader class="tw-text-black">
                     Requests I received
                 </v-list-subheader>
+
                 <v-list-item
                     v-if="allRequestsReceived.length > 0"
-                    v-for="request in Object.values(allRequestsReceived)"
+                    v-for="(request, index) in Object.values(allRequestsReceived)"
                     @click="clickRequest(request)"
+                    class=""
                 >
-                    {{ Object.values(request)[0].title }}
+
                     <template #prepend>
                         <v-list-item-action start>
                             <v-checkbox-btn v-model="Object.values(request)[0].status">
                             </v-checkbox-btn>
                         </v-list-item-action>
                     </template>
+                    <span class="tw-text-lg tw-text-indigo-900 tw-font-semibold">
+                        {{ Object.values(request)[0].title }}
+                    </span>
                     <v-list-item-title
                         class="tw-w-[50%]"
                     >
@@ -121,6 +122,10 @@ function clickRequest(request) {
                             height="400px"
                         />
                     </v-dialog>
+                    <v-divider
+                        color="red-darken-4"
+                        class="tw-border-indigo-900"
+                    />
                 </v-list-item>
                 <v-list-item
                     v-else
@@ -134,6 +139,8 @@ function clickRequest(request) {
                         </div>
                     </div>
                 </v-list-item>
+
+
 
             </v-list>
         </v-row>
