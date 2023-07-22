@@ -8,6 +8,7 @@ import { useSearch } from '../../composables/useSearch';
 import { useFormat } from '../../composables/useFormat'
 import { useDateTime } from '../../composables/useDateTime'
 import { mdiGmail } from '@mdi/js';
+import { mdiEmailArrowRight } from '@mdi/js';
 
 const searchedUsers = useLocalStorage('searchedUsers', []);
 
@@ -59,10 +60,17 @@ function closeBtnClick() {
 
 <template>
     <v-card
-        class="mx-auto"
+        class="mx-auto pa-5"
         color="blue-grey-lighten-5"
     >
-        <v-sheet width="800" class="mx-auto">
+        <v-card-title class="">
+            <v-icon start :icon="mdiEmailArrowRight" class="mr-2"/>
+            Request a Meeting
+        </v-card-title>
+        <v-sheet
+            width="800"
+            class="mx-auto mt-5 pa-10"
+        >
             <v-form ref="form" @submit.prevent>
                 <v-container>
                     <v-row>
@@ -118,7 +126,7 @@ function closeBtnClick() {
 
 
                     </v-row>
-                    <v-row>
+                    <v-row align-content="center" class="mb-5">
                         <div class="d-flex flex-row justify-space-between w-100">
                             <div class="d-flex flex-row tw-w-[50%]">
                                 <v-combobox
@@ -187,12 +195,13 @@ function closeBtnClick() {
                         />
                     </v-row>
 
-                    <v-row>
+                    <!-- <v-row>
                         <v-col class="mr-1 pa-0">
                             <v-btn
                                 width="100%"
                                 height="40"
-                                color="error"
+                                color="indigo-darken-3"
+                                variant="outlined"
                                 class=""
                                 @click="closeBtnClick"
                             >
@@ -203,7 +212,8 @@ function closeBtnClick() {
                             <v-btn
                                 width="100%"
                                 height="40"
-                                color="success"
+                                color="indigo-darken-3"
+                                variant="flat"
                                 class=""
                                 @click="sendMeetingRequest"
                                 type="submit"
@@ -211,19 +221,38 @@ function closeBtnClick() {
                                 Save
                             </v-btn>
                         </v-col>
-                    </v-row>
+                    </v-row> -->
                 </v-container>
             </v-form>
         </v-sheet>
         <v-card-actions>
             <v-spacer/>
-            <v-btn
-                color="blue-darken-1"
-                variant="text"
-                @click="closeBtnClick"
-            >
-                Cancel
-            </v-btn>
+            <v-container fluid class="ma-3">
+                <v-row>
+                    <v-col class="mr-1 pa-0">
+                        <v-btn
+                            width="100%"
+                            color="indigo-darken-3"
+                            variant="outlined"
+                            class=""
+                            @click="closeBtnClick"
+                        >
+                            Cancel
+                        </v-btn>
+                    </v-col>
+                    <v-col class="ml-1 pa-0">
+                        <v-btn
+                            width="100%"
+                            color="indigo-darken-3"
+                            variant="flat"
+                            class=""
+                            @click="sendMeetingRequest"
+                        >
+                            Save
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-container>
         </v-card-actions>
     </v-card>
 </template>

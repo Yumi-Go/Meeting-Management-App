@@ -159,7 +159,7 @@ function closePasswordResetPopup() {
     <strong> {{ error.$message }} </strong>
     </p>
     <p v-if="currentUser === null">No exist user logged in</p>
-    <v-sheet v-else width="800" class="mx-auto">
+    <v-sheet v-else width="800" class="mx-auto ma-10 pa-5">
         <v-form ref="form" @submit.prevent>
             <v-container>
                 <v-row>
@@ -256,7 +256,8 @@ function closePasswordResetPopup() {
                         <v-btn
                             width="100%"
                             height="40"
-                            color="error"
+                            color="indigo-darken-3"
+                            variant="outlined"
                             class=""
                             @click="router.push('/')"
                         >
@@ -267,7 +268,8 @@ function closePasswordResetPopup() {
                         <v-btn
                             width="100%"
                             height="40"
-                            color="success"
+                            color="indigo-darken-3"
+                            variant="flat"
                             class=""
                             @click="submit"
                             type="submit"

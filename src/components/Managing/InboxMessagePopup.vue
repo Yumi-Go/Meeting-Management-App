@@ -5,20 +5,22 @@ import { auth } from '../../firebaseConfig'
 import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat'
+import { useDateTime } from '../../composables/useDateTime';
 import { mdiAccountCircleOutline } from '@mdi/js';
 
 const temptUser = useLocalStorage('tempUser', {});
 const { showInbox, reloadInbox } = inject('refreshInbox');
 const { userStateObserver } = useAuth();
+const { getTimeApm, getDuration } = useDateTime();
+const { getUserInfoByUID, acceptMeetingRequest, refuseMeetingRequest } = useFirestore();
+const { capitalize } = useFormat();
 
 const props = defineProps({
     requestedMeetingObj: Object,
 });
 const emit = defineEmits(['closeInboxMessagePopup']);
 
-const { getUserInfoByUID, acceptMeetingRequest, refuseMeetingRequest } = useFirestore();
-const { capitalize } = useFormat();
-// console.log("requestedMeetingObj: ", props.requestedMeetingObj);
+console.log("requestedMeetingObj: ", props.requestedMeetingObj);
 
 const senderUid = Object.keys(props.requestedMeetingObj)[0];
 const meetingObj = Object.values(props.requestedMeetingObj)[0];
@@ -32,6 +34,28 @@ function getSenderObj() {
         console.log("senderObj: ", senderObj.value);
     });
 }
+
+console.log("meetingObj: ", meetingObj);
+
+function getMeetingObjToDisplay() {
+    const result = {};
+    for (const [key, value] of Object.entries(meetingObj)) {
+        if (key === 'start' || key === 'end') {
+            if (value.length > 0) {
+                result[key] = getTimeApm(value);
+            }
+        }
+        if (key === 'duration') {
+
+        }
+        if (key === 'organizer' && value.length > 0) {
+            result[key] = value;
+        }
+    }
+
+}
+
+getMeetingObjToDisplay();
 
 async function clickAcceptBtn() {
     await acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);

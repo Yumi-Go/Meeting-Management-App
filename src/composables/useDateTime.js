@@ -37,5 +37,9 @@ export function useDateTime() {
         }
     }
 
-    return { timeItems, formatDate, getTimeApm }
+    function getDuration(startArr, endArr) {
+
+    }
+
+    return { timeItems, formatDate, getTimeApm, getDuration }
 }
