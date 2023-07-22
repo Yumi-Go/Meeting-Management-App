@@ -1,3 +1,10 @@
+import { useLocalStorage } from '@vueuse/core';
+
+const currentUser = useLocalStorage('currentUser', {});
+
+
+
+
 export function useDateTime() {
 
     function timeItems() {
@@ -12,14 +19,23 @@ export function useDateTime() {
         }
         return times;
     }
-
-
-
     
-    function formatDate(date) {
+    function formatDate(date) { // e.g. 2023-07-12
         const tzOffset = date.getTimezoneOffset() * 60 * 1000;
         return new Date(date.getTime() - tzOffset).toISOString().split('T')[0];;
     }
 
-    return { timeItems, formatDate }
+    function formatStartEndTime(time) { // e.g. 09:00 am - 05:00 pm
+ 
+    }
+
+    function getTimeApm(timeArr) {
+        if (timeArr[1] === true) {
+            return timeArr[0] + ' am';
+        } else {
+            return timeArr[0] + ' pm';
+        }
+    }
+
+    return { timeItems, formatDate, getTimeApm }
 }

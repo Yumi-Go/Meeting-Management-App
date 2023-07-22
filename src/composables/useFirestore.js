@@ -7,7 +7,6 @@ import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const { formatDate } = useDateTime();
 const searchedUsers = useLocalStorage('searchedUsers', []);
-const userById = useLocalStorage('userById', {});
 const allUsers = ref([]);
 
 export function useFirestore() {
@@ -71,19 +70,15 @@ export function useFirestore() {
     }
 
     async function getUserInfoByUID(uid) {
-        userById.value = {};
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-        //   console.log("Document data:", docSnap.data());
-            userById.value = docSnap.data();
-            console.log("userById: ", userById.value);
-        //   return docSnap.data();
+            console.log("Document data:", docSnap.data());
+            return docSnap.data();
         } else {
-          console.log("No such document!");
-        //   return null;
+            console.log("No such document!");
+            return null;
         }
-        return userById.value;
     }
 
     async function getAllUserInfo() {

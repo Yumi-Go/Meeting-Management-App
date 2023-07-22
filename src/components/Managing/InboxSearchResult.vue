@@ -2,66 +2,37 @@
 import { ref, watch, computed, onBeforeMount } from "vue"
 import { useFirestore } from "../../composables/useFirestore";
 import { useMeeting } from "../../composables/useMeeting";
+import { useDateTime } from '../../composables/useDateTime';
+import { useFormat } from "../../composables/useFormat";
 import { useLocalStorage } from '@vueuse/core';
 import InboxMessagePopup from "./InboxMessagePopup.vue";
 import { mdiTrashCanOutline } from '@mdi/js';
 
 const currentUser = useLocalStorage('currentUser', {});
-const userById = useLocalStorage('userById', {});
 const { getUserInfoByUID } = useFirestore();
+const { getTimeApm } = useDateTime();
+const { capitalize } = useFormat();
 const openInboxMessagePopup = ref(false);
 const allRequestsReceived = computed(() => {
     return currentUser.value.meetingRequestsReceived;
 });
 const chosenRequest = ref();
-// console.log("allRequestsReceived: ", allRequestsReceived.value);
+console.log("allRequestsReceived: ", allRequestsReceived.value);
 
 function closeInboxMessagePopup() {
     openInboxMessagePopup.value = false;
 }
 
-////// leave below codes for now to fix later.. (showing sender's name on the list in Inbox)
-
-// const senderObj = ref({});
-// function getSenderObj(requestObj) {
-//     const senderUid = Object.keys(requestObj);
-//     // const meetingObj = Object.values(requestObj)[0];
-//     getUserInfoByUID(senderUid)
-//     .then(sender => {
-//         console.log("sender: ", sender);
-//         senderObj.value = sender;
-//         console.log("senderObj: ", senderObj.value);
-//     });
-//     return senderObj.value;
-// }
-
-// async function getParticipants(uidsArr) {
-//     const participants = [];
-//     console.log("uidsArr: ", uidsArr);
-//     if (uidsArr.length > 0) {
-//         await uidsArr.forEach((uid) => {
-//             console.log("uid: ", uid);
-//             getUserInfoByUID(uid)
-//             .then((obj) => {
-//                 console.log("obj: ", obj);
-//                 participants.push(obj);
-//             })
-//         });
-//     }
-//     console.log("participants: ", participants);
-//     return participants;
-// }
-
-// const participants = ref({});
-// function getParticipant(uid) {
-//     participants.value = {};
-//     getUserInfoByUID(uid)
-//     .then(obj => {
-//         console.log("obj: ", obj);
-//         participants.value = obj;
-//         console.log("participants: ", participants.value);
-//     });
-// }
+let senderObj = {};
+function getSenderObj(senderUid) {
+    getUserInfoByUID(senderUid)
+    .then(sender => {
+        console.log("sender: ", sender);
+        senderObj = sender;
+        console.log("senderObj: ", senderObj);
+    });
+    return senderObj;
+}
 
 function clickRequest(request) {
     openInboxMessagePopup.value = true;
@@ -101,18 +72,15 @@ function clickRequest(request) {
                     <v-list-item-title
                         class="tw-w-[50%]"
                     >
-                        {{ Object.values(request)[0].start }}
+                        {{ getTimeApm(Object.values(request)[0].start) }} - {{ getTimeApm(Object.values(request)[0].end) }}
                     </v-list-item-title>
                     <v-list-item-subtitle
                         class=""
                     >
-                    {{ Object.values(request)[0] }}
-                        <!-- {{ getParticipants(Object.values(request)[0].participants) }} -->
-                        <!-- {{ Object.values(request)[0].participants }} -->
-                        <!-- <span v-for="uid in Object.values(request)[0].participants">
-                            {{ getParticipant(uid) }}
-                        </span> -->
-                        <!-- {{ getSenderObj(request) }} -->
+                        from
+                        {{ capitalize(getSenderObj(Object.keys(request)[0]).fName) }}
+                        {{ capitalize(getSenderObj(Object.keys(request)[0]).lName) }}
+
                     </v-list-item-subtitle>
                     <template #append>
                         <v-icon start :icon="mdiTrashCanOutline"/>
