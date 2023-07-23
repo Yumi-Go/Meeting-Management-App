@@ -7,19 +7,21 @@ import { useFirestore } from '../../composables/useFirestore';
 import { useSearch } from '../../composables/useSearch';
 import { useFormat } from '../../composables/useFormat'
 import { useDateTime } from '../../composables/useDateTime'
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+import { addDays } from 'date-fns';
 import { mdiGmail } from '@mdi/js';
 import { mdiEmailArrowRight } from '@mdi/js';
 
 const searchedUsers = useLocalStorage('searchedUsers', []);
-
 const emit = defineEmits(['closeMeetingRequestPopup']);
-
 const { allUsers, getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
 const { getUserSearchResult } = useSearch();
 const { capitalize } = useFormat();
 const { timeItems } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
-const selected = ref([]);
+const selectedParticipant = ref([]);
+const selectedDate = ref(new Date());
 const meetingRequested = ref({
     status: false, // Boolean, Default: false(Pending), Only Accepted meetings(=true) are displayed on the calendar
     title: '',
@@ -37,12 +39,12 @@ const meetingRequested = ref({
     isRead: false
 });
 
-watch(selected, async(newSelected) => {
+watch(selectedParticipant, async(newSelected) => {
     console.log("selected: ", newSelected);
 });
 
 function getParticipantUids() {
-    return selected.value.map(user => user.uid);
+    return selectedParticipant.value.map(user => user.uid);
 }
 
 function sendMeetingRequest() {
@@ -99,9 +101,8 @@ function closeBtnClick() {
                         />
                     </v-row>
                     <v-row>
-
                         <v-autocomplete
-                            v-model="selected"
+                            v-model="selectedParticipant"
                             :items="allUsers"
                             chips
                             closable-chips
@@ -123,12 +124,24 @@ function closeBtnClick() {
                                 />
                             </template>
                         </v-autocomplete>
-
-
+                    </v-row>
+                    <v-row class="mb-5">
+                        <VueDatePicker
+                            v-model="selectedDate"
+                            placeholder="Select Date"
+                            :enable-time-picker="false"
+                            calendar-cell-class-name="dp-custom-cell"
+                        >
+                            <template #calendar-header="{ index, day }">
+                                <div :class="index === 5 || index === 6 ? 'tw-text-red-800' : 'tw-text-blue-800'">
+                                    {{ day }}
+                                </div>
+                            </template>
+                        </VueDatePicker>
                     </v-row>
                     <v-row align-content="center" class="mb-5">
                         <div class="d-flex flex-row justify-space-between w-100">
-                            <div class="d-flex flex-row tw-w-[50%]">
+                            <div class="d-flex flex-row tw-w-[50%] pr-2">
                                 <v-combobox
                                     v-model="meetingRequested.start[0]"
                                     :items="timeItems()"
@@ -157,7 +170,7 @@ function closeBtnClick() {
                                     </span>
                                 </v-chip>
                             </div>
-                            <div class="d-flex flex-row tw-w-[50%]">
+                            <div class="d-flex flex-row tw-w-[50%] pl-2">
                                 <v-combobox
                                     v-model="meetingRequested.end[0]"
                                     :items="timeItems()"
@@ -257,3 +270,6 @@ function closeBtnClick() {
     </v-card>
 </template>
 
+<sytle lang="scss">
+    @import "./src/assets/scss/datePicker.scss";
+</sytle>

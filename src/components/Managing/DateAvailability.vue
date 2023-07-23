@@ -15,9 +15,9 @@ const props = defineProps({
     overrideTimes: Array,
 });
 
-const pickedDate = ref(new Date());
+const selectedDate = ref(new Date());
 
-watch(pickedDate, (newDate) => {
+watch(selectedDate, (newDate) => {
     props.overrideDates.push(newDate);
     console.log("props.overrideDates: ", props.overrideDates);
     props.overrideTimes.push([timeItems()[36], timeItems()[20], true, true]);
@@ -36,7 +36,7 @@ watch(pickedDate, (newDate) => {
 <template>
     <v-container fluid class="ma-0 pa-0 tw-h-full">
         <VueDatePicker
-            v-model="pickedDate"
+            v-model="selectedDate"
             placeholder="Select Date"
             :enable-time-picker="false"
             calendar-cell-class-name="dp-custom-cell"
@@ -138,30 +138,5 @@ watch(pickedDate, (newDate) => {
 </template>
 
 <sytle lang="scss">
-.dp-custom-cell {
-    border-radius: 100%;
-}
-.dp__theme_light {
-   --dp-background-color: #ffffff;
-   --dp-text-color: #212121;
-   --dp-hover-color: #f3f3f3;
-   --dp-hover-text-color: #212121;
-   --dp-hover-icon-color: #959595;
-   --dp-primary-color: lightgray;
-   --dp-primary-text-color: red;
-   --dp-secondary-color: #c0c4cc;
-   --dp-border-color: #ddd;
-   --dp-menu-border-color: #ddd;
-   --dp-border-color-hover: #aaaeb7;
-   --dp-disabled-color: #f6f6f6;
-   --dp-scroll-bar-background: #f3f3f3;
-   --dp-scroll-bar-color: #959595;
-   --dp-success-color: #76d275;
-   --dp-success-color-disabled: #a3d9b1;
-   --dp-icon-color: #959595;
-   --dp-danger-color: #ff6f60;
-   --dp-highlight-color: rgba(25, 118, 210, 0.1);
-}
-
-
+@import "./src/assets/scss/datePicker.scss";
 </sytle>

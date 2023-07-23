@@ -37,6 +37,9 @@ function getSenderObj() {
 
 console.log("meetingObj: ", meetingObj);
 
+
+
+// 여기 하다 말음.. 
 function getMeetingObjToDisplay() {
     const result = {};
     for (const [key, value] of Object.entries(meetingObj)) {
@@ -56,6 +59,7 @@ function getMeetingObjToDisplay() {
 }
 
 getMeetingObjToDisplay();
+
 
 async function clickAcceptBtn() {
     await acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
