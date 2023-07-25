@@ -27,9 +27,7 @@ let senderObj = {};
 function getSenderObj(senderUid) {
     getUserInfoByUID(senderUid)
     .then(sender => {
-        console.log("sender: ", sender);
         senderObj = sender;
-        console.log("senderObj: ", senderObj);
     });
     return senderObj;
 }
@@ -72,7 +70,7 @@ function clickRequest(request) {
                     <v-list-item-title
                         class="tw-w-[50%]"
                     >
-                        {{ getTimeApm(Object.values(request)[0].start) }} - {{ getTimeApm(Object.values(request)[0].end) }}
+                        {{ getTimeApm(Object.values(request)[0].startTime) }} - {{ getTimeApm(Object.values(request)[0].endTime) }}
                     </v-list-item-title>
                     <v-list-item-subtitle
                         class=""

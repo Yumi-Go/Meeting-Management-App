@@ -29,9 +29,9 @@ const senderObj = ref({});
 function getSenderObj() {
     getUserInfoByUID(senderUid)
     .then(sender => {
-        console.log("sender: ", sender);
+        // console.log("sender: ", sender);
         senderObj.value = sender;
-        console.log("senderObj: ", senderObj.value);
+        // console.log("senderObj: ", senderObj.value);
     });
 }
 
@@ -43,7 +43,7 @@ console.log("meetingObj: ", meetingObj);
 function getMeetingObjToDisplay() {
     const result = {};
     for (const [key, value] of Object.entries(meetingObj)) {
-        if (key === 'start' || key === 'end') {
+        if (key === 'startTime' || key === 'endTime') {
             if (value.length > 0) {
                 result[key] = getTimeApm(value);
             }
@@ -61,7 +61,46 @@ function getMeetingObjToDisplay() {
 getMeetingObjToDisplay();
 
 
+
+// async function getParticipants(uidsArr) {
+//     const participants = [];
+//     console.log("uidsArr: ", uidsArr);
+//     if (uidsArr.length > 0) {
+//         await uidsArr.forEach((uid) => {
+//             console.log("uid: ", uid);
+//             getUserInfoByUID(uid)
+//             .then((obj) => {
+//                 console.log("obj: ", obj);
+//                 participants.push(obj);
+//             })
+//         });
+//     }
+//     console.log("participants: ", participants);
+//     return participants;
+// }
+
+// const participants = ref({});
+// function getParticipant(uid) {
+//     participants.value = {};
+//     getUserInfoByUID(uid)
+//     .then(obj => {
+//         console.log("obj: ", obj);
+//         participants.value = obj;
+//         console.log("participants: ", participants.value);
+//     });
+// }
+
+
+
+
+
+
+
+
+
+
 async function clickAcceptBtn() {
+    console.log("meetingObj before storing: ", meetingObj);
     await acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
     emit('closeInboxMessagePopup');
     userStateObserver();

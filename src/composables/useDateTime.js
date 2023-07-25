@@ -37,7 +37,7 @@ export function useDateTime() {
         }
     }
 
-    function getDuration(startArr, endArr) {
+    function getDuration(startTimeArr, endTimeArr) {
 
     }
 

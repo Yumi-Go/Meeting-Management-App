@@ -31,8 +31,9 @@ const meetingRequested = ref({
     category: '',
     organizer: [],
     participants: [],
-    start: [timeItems()[0], true], // e.g. [03:30, true] => AM(true)/PM(false)
-    end: [timeItems()[0], false], // e.g. [03:30, false]
+    date: null,
+    startTime: [timeItems()[0], true], // e.g. [03:30, true] => AM(true)/PM(false)
+    endTime: [timeItems()[0], false], // e.g. [03:30, false]
     duration: 0,
     timezone: '',
     etc: [],
@@ -41,6 +42,11 @@ const meetingRequested = ref({
 
 watch(selectedParticipant, async(newSelected) => {
     console.log("selected: ", newSelected);
+});
+
+watch(selectedDate, (newDate) => {
+    meetingRequested.value.date = newDate;
+    console.log("meetingRequested.value.date: ", meetingRequested.value.date);
 });
 
 function getParticipantUids() {
@@ -143,7 +149,7 @@ function closeBtnClick() {
                         <div class="d-flex flex-row justify-space-between w-100">
                             <div class="d-flex flex-row tw-w-[50%] pr-2">
                                 <v-combobox
-                                    v-model="meetingRequested.start[0]"
+                                    v-model="meetingRequested.startTime[0]"
                                     :items="timeItems()"
                                     label="From"
                                     variant="outlined"
@@ -156,13 +162,13 @@ function closeBtnClick() {
                                 />
                                 <v-chip
                                     class="ml-1 px-1"
-                                    :color="meetingRequested.start[1] ? 'pink' : 'purple'"
-                                    @click="meetingRequested.start[1] = !(meetingRequested.start[1])"
+                                    :color="meetingRequested.startTime[1] ? 'pink' : 'purple'"
+                                    @click="meetingRequested.startTime[1] = !(meetingRequested.startTime[1])"
                                     variant="text"
                                     label
                                     :ripple="false"
                                 >
-                                    <span v-if="meetingRequested.start[1]" class="">
+                                    <span v-if="meetingRequested.startTime[1]" class="">
                                         am
                                     </span>
                                     <span v-else class="">
@@ -172,7 +178,7 @@ function closeBtnClick() {
                             </div>
                             <div class="d-flex flex-row tw-w-[50%] pl-2">
                                 <v-combobox
-                                    v-model="meetingRequested.end[0]"
+                                    v-model="meetingRequested.endTime[0]"
                                     :items="timeItems()"
                                     label="From"
                                     variant="outlined"
@@ -185,13 +191,13 @@ function closeBtnClick() {
                                 />
                                 <v-chip
                                     class="ml-1 px-1"
-                                    :color="meetingRequested.end[1] ? 'pink' : 'purple'"
-                                    @click="meetingRequested.end[1] = !(meetingRequested.end[1])"
+                                    :color="meetingRequested.endTime[1] ? 'pink' : 'purple'"
+                                    @click="meetingRequested.endTime[1] = !(meetingRequested.endTime[1])"
                                     variant="text"
                                     label
                                     :ripple="false"
                                 >
-                                    <span v-if="meetingRequested.end[1]" class="">
+                                    <span v-if="meetingRequested.endTime[1]" class="">
                                         am
                                     </span>
                                     <span v-else class="">
@@ -207,7 +213,6 @@ function closeBtnClick() {
                             label="Other References / Links"
                         />
                     </v-row>
-
                     <!-- <v-row>
                         <v-col class="mr-1 pa-0">
                             <v-btn
