@@ -13,14 +13,14 @@ const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
 const { timeItems } = useDateTime();
 
 const days = ref({
-    monday: [true, timeItems()[36], timeItems()[20], true, true],
-    tuesday: [true, timeItems()[36], timeItems()[20], true, true],
-    wednesday: [true, timeItems()[36], timeItems()[20], true, true],
-    thursday: [true, timeItems()[36], timeItems()[20], true, true],
-    friday: [true, timeItems()[36], timeItems()[20], true, true],
-    saturday: [false, timeItems()[36], timeItems()[20], true, true],
-    sunday: [false, timeItems()[36], timeItems()[20], true, true]
-}); // [unavailable true/false, 09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
+    monday: [true, timeItems()[36], true, timeItems()[20], false], // [checked true/false, from, am(true), until, pm(false)]
+    tuesday: [true, timeItems()[36], true, timeItems()[20], false],
+    wednesday: [true, timeItems()[36], true, timeItems()[20], false],
+    thursday: [true, timeItems()[36], true, timeItems()[20], false],
+    friday: [true, timeItems()[36], true, timeItems()[20], false],
+    saturday: [false, timeItems()[36], true, timeItems()[20], false],
+    sunday: [false, timeItems()[36], true, timeItems()[20], false]
+});
 
 const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
 const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
@@ -28,16 +28,12 @@ const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initi
 function weeklyDaysTimes() {
     const dayOfWeek = {};
     for (const [key, value] of Object.entries(days.value)) {
-        if (value[0] === true) {
-            let fromHour = Number(value[1].split(":")[0]);
-            fromHour = value[3] === false ? fromHour += 12 : fromHour; // PM
-            let fromMinute = Number(value[1].split(":")[1]);
-            let untilHour = Number(value[2].split(":")[0]);
-            untilHour = value[4] === false ? untilHour += 12 : untilHour; // PM
-            let untilMinute = Number(value[2].split(":")[1]);
-            dayOfWeek[key] = [fromHour, fromMinute, untilHour, untilMinute];
-        } else {
-            dayOfWeek[key] = null;
+        if (value[0]) {
+            const valArr = [];
+            for (let i = 1; i < 5; i++) {
+                valArr.push(value[i]);
+            }
+            dayOfWeek[key] = valArr;
         }
     }
     return dayOfWeek;
@@ -88,8 +84,6 @@ function saveAvailability() {
     updateWeeklyAvailability(weeklyDaysTimes());
     addDateOverrides(overrideDatesTimes());
 }
-
-
 
 </script>
 

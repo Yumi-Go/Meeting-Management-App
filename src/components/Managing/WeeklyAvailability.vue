@@ -18,6 +18,16 @@ const props = defineProps({
     days: Object
 });
 
+
+// const days = ref({
+//     monday: [true, timeItems()[36], true, timeItems()[20], false],
+//     tuesday: [true, timeItems()[36], true, timeItems()[20], false],
+//     wednesday: [true, timeItems()[36], true, timeItems()[20], false],
+//     thursday: [true, timeItems()[36], true, timeItems()[20], false],
+//     friday: [true, timeItems()[36], true, timeItems()[20], false],
+//     saturday: [false, timeItems()[36], true, timeItems()[20], false],
+//     sunday: [false, timeItems()[36], true, timeItems()[20], false]
+// });
 </script>
 
 <template>
@@ -55,13 +65,13 @@ const props = defineProps({
                 />
                 <v-chip
                     class="ml-1 mr-5 px-1"
-                    :color="days[day][3] ? 'pink' : 'purple'"
-                    @click="days[day][3] = !(days[day][3])"
+                    :color="days[day][2] ? 'pink' : 'purple'"
+                    @click="days[day][2] = !(days[day][2])"
                     variant="text"
                     label
                     :ripple="false"
                 >
-                    <span v-if="days[day][3]" class="">
+                    <span v-if="days[day][2]" class="">
                         am
                     </span>
                     <span v-else class="">
@@ -69,7 +79,7 @@ const props = defineProps({
                     </span>
                 </v-chip>
                 <v-combobox
-                    v-model="days[day][2]"
+                    v-model="days[day][3]"
                     :items="timeItems()"
                     label="Until"
                     variant="outlined"

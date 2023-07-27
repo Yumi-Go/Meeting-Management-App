@@ -18,7 +18,9 @@ export function useDateTime() {
     }
     
     function formatDate(date) { // e.g. 2023-07-12
+        console.log("date: ", date);
         const tzOffset = date.getTimezoneOffset() * 60 * 1000;
+        console.log("tzOffset: ", tzOffset);
         return new Date(date.getTime() - tzOffset).toISOString().split('T')[0];;
     }
 
