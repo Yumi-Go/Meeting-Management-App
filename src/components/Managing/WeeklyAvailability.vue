@@ -6,7 +6,6 @@ import { useRouter } from 'vue-router'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat';
 import { useDateTime } from '../../composables/useDateTime'
-
 import DateAvailability from './DateAvailability.vue'
 import { mdiCalendarClock, mdiCalendarEdit } from '@mdi/js';
 

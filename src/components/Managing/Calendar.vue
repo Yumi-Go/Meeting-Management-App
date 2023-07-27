@@ -4,14 +4,34 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useCalendar } from '../../composables/useCalendar'
 
+const { addWeeklyEvent, deleteWeeklyEvent, editWeeklyEvent } = useCalendar();
+
+console.log("addWeeklyEvent: ", addWeeklyEvent());
+
 const calendarOptions = {
     plugins: [ dayGridPlugin, interactionPlugin ],
     initialView: 'dayGridMonth',
     dateClick: handleDateClick,
     events: [
-        { title: 'event 1', date: '2023-07-10' },
-        { title: 'event 2', date: '2023-07-20' }
-    ]
+        {
+            groupId: 'blueEvents', // recurrent events in this group move together
+            daysOfWeek: [ '4' ],
+            startTime: '18:45:00',
+            endTime: '19:30:00'
+        },
+        {
+            daysOfWeek: [ '2' ], // these recurrent events move separately
+            startTime: '11:00:00',
+            endTime: '11:30:00',
+            color: 'orange'
+        },
+        {
+            daysOfWeek: [ '6' ], // these recurrent events move separately
+            startTime: '15:00:00',
+            endTime: '16:30:00',
+            color: 'purple'
+        }
+    ],
 }
 
 function addEvent() {
@@ -33,7 +53,7 @@ function handleDateClick(arg) {
 
 <template>
     <div>
-
+        <p>{{ addWeeklyEvent() }}</p>
         <h1>this is calendar</h1>
 
         <FullCalendar :options="calendarOptions"/>

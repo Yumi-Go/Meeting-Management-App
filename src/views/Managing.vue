@@ -4,6 +4,11 @@ import Inbox from '../components/Managing/Inbox.vue'
 import Availability from '../components/Managing/Availability.vue';
 import Calendar from '../components/Managing/Calendar.vue'
 import { useRouter } from 'vue-router'
+import { useAuth } from '../composables/useAuth'
+
+const { userStateObserver } = useAuth();
+
+userStateObserver();
 
 const router = useRouter();
 const showAvailability = ref(false);

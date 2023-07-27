@@ -2,9 +2,6 @@ import { useLocalStorage } from '@vueuse/core';
 
 const currentUser = useLocalStorage('currentUser', {});
 
-
-
-
 export function useDateTime() {
 
     function timeItems() {
