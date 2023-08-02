@@ -213,6 +213,22 @@ export function useFirestore() {
         });
     }
 
+    // Calendar
+    async function getMeetingByDocID(id) {
+        const docRef = doc(db, "meetings", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            // console.log("Document data:", docSnap.data());
+            return docSnap.data();
+        } else {
+            console.log("No such document!");
+            return null;
+        }
+    }
+
+
+
+
     return {
         allUsers,
         addUser,
@@ -227,6 +243,7 @@ export function useFirestore() {
         acceptMeetingRequest,
         refuseMeetingRequest,
         updateWeeklyAvailability,
-        addDateOverrides
+        addDateOverrides,
+        getMeetingByDocID
     }
 }
