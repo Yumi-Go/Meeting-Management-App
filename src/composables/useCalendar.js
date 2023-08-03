@@ -5,10 +5,6 @@ import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const currentUser = useLocalStorage('currentUser', {});
 
-
-
-
-
 export function useCalendar() {
     
     function sortWeek(obj) {
@@ -35,20 +31,13 @@ export function useCalendar() {
 
     }
 
-
-// weeklyAvailability: {
-//     tuesday: ["09:00", true, "03:00", false],
-//     monday: ["09:45", true, "05:00", false]
-// }
-
-    function addWeeklyEvent() {
+    function getWeeklyEventForCalendar() {
         const weeklyAvailability = sortWeek(currentUser.value.weeklyAvailability);
-        console.log("weeklyAvailability: ", weeklyAvailability);
+        // console.log("weeklyAvailability: ", weeklyAvailability);
         const result = {};
         for (const [key, value] of Object.entries(weeklyAvailability)) {
             if (value) {
                 const newKey = key.slice(0, 2);
-                console.log("newKey: ", newKey);
                 result[newKey] = value;
             }
         }
@@ -65,9 +54,12 @@ export function useCalendar() {
     }
 
 
+    function getDateOverridesForCalendar() {
+        const dateOverrides = currentUser.value.dateOverrides;
+        dateOverrides.forEach(fromUntilPairObj => {
 
-
-    function addDateOverrides() {
+        }
+        )
 
     }
 
@@ -81,5 +73,5 @@ export function useCalendar() {
 
 
 
-    return { addWeeklyEvent, deleteWeeklyEvent, editWeeklyEvent }
+    return { getWeeklyEventForCalendar, deleteWeeklyEvent, editWeeklyEvent }
 }

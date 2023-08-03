@@ -10,7 +10,7 @@ import { mdiCalendarClock, mdiCalendarEdit } from '@mdi/js';
 
 const router = useRouter();
 const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
-const { timeItems, removeAmPm } = useDateTime();
+const { timeItems, removeApmFromTimeArr } = useDateTime();
 
 const days = ref({
     monday: [true, timeItems()[36], true, timeItems()[20], false], // [checked true/false, from, am(true), until, pm(false)]
@@ -38,9 +38,9 @@ function weeklyDaysTimes() {
     // }
     for (const [key, value] of Object.entries(days.value)) {
         if (value[0]) {
-            let from = removeAmPm([value[1], value[2]]); // e.g. [14, 30]
+            let from = removeApmFromTimeArr([value[1], value[2]]); // e.g. [14, 30]
             from = `${from[0]}:${from[1]}`; // e.g. 14:30
-            let until = removeAmPm([value[3], value[4]]);
+            let until = removeApmFromTimeArr([value[3], value[4]]);
             until = `${until[0]}:${until[1]}`;
             const valArr = [from, until]; // e.g. ['14:30', '16:00']
             dayOfWeek[key] = valArr;
@@ -61,12 +61,11 @@ function overrideDatesTimes() {
     //     return [fromHour, fromMinute, untilHour, untilMinute];
     // });
 
-    
     // pickced From/Until times from combobox
     // props.overrideTimes.push([timeItems()[36], timeItems()[20], true, true]);
     const times = overrideTimes.value.map((timeArr) => {
-        let from = removeAmPm([timeArr[0], timeArr[2]]);
-        let until = removeAmPm([timeArr[1], timeArr[3]]);
+        let from = removeApmFromTimeArr([timeArr[0], timeArr[2]]);
+        let until = removeApmFromTimeArr([timeArr[1], timeArr[3]]);
         return from.concat(until);
     });
     console.log("times: ", times);

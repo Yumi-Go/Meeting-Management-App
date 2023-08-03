@@ -22,7 +22,7 @@ export function useDateTime() {
         return times;
     }
 
-    function removeAmPm(timeArr) { // e.g. [03:00, false] -> 15:00
+    function removeApmFromTimeArr(timeArr) { // e.g. ['03:00', false] => '15:00'
         let hour = Number(timeArr[0].split(":")[0]);
         hour = timeArr[1] === false ? hour += 12 : hour; // PM
         hour = format2digits(hour);
@@ -31,7 +31,15 @@ export function useDateTime() {
         return [hour, minute];
     }
 
-    function addAmPm() {
+    function removeApmFromTimeStr(timeStr) { // e.g. '03:00 pm' => '15:00'
+
+    }
+
+    function generateApmFromTimeArr(timeArr) { // e.g. '15:00' => ['03:00', false]
+        
+    }
+
+    function generateApmFromTimeStr(timeStr) { // e.g. '15:00' => '03:00 pm'
         
     }
 
@@ -56,5 +64,5 @@ export function useDateTime() {
 
     }
 
-    return { timeItems, removeAmPm, formatDate, getTimeApm, getDuration }
+    return { format2digits, timeItems, removeApmFromTimeArr, formatDate, getTimeApm, getDuration }
 }

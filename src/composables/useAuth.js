@@ -24,18 +24,19 @@ export function useAuth() {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser.value = user;
-                // console.log("current uid: ", user.uid);
-                // console.log("current user:", currentUser.value);
                 getUserInfoByUID(user.uid)
                 .then(info => {
+                    info.dateOverrides.forEach(fromUntilPairObj => {
+                        fromUntilPairObj.from = fromUntilPairObj.from.toDate();
+                        fromUntilPairObj.until = fromUntilPairObj.until.toDate();
+                    });
+                    console.log("info.dateOverride: ", info.dateOverrides);
                     currentUserInfo.value = info;
-                    // console.log("currentUserInfo.value: ", currentUserInfo.value);
                 });
             } else {
                 console.log("The logged in user does not exist.");
             }
         });
-        // console.log("currentUserInfo: ", currentUserInfo.value);
     }
 
     function logOut() {

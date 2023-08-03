@@ -4,19 +4,27 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import rrulePlugin from '@fullcalendar/rrule'
 import interactionPlugin from '@fullcalendar/interaction'
+import { useAuth } from '../../composables/useAuth'
 import { useCalendar } from '../../composables/useCalendar'
+import { useDateTime } from '../../composables/useDateTime'
 import { useFirestore } from '../../composables/useFirestore'
 import { useLocalStorage } from '@vueuse/core';
 
 const currentUser = useLocalStorage('currentUser', {});
-const { addWeeklyEvent, deleteWeeklyEvent, editWeeklyEvent } = useCalendar();
+const { getWeeklyEventForCalendar, deleteWeeklyEvent, editWeeklyEvent } = useCalendar();
+const { format2digits } = useDateTime();
+const { userStateObserver } = useAuth();
 
-console.log("addWeeklyEvent: ", addWeeklyEvent());
+userStateObserver();
+
+watch(currentUser, (updatedCurrentUser) => {
+    console.log("updatedCurrentUser: ", updatedCurrentUser);
+    addEventToCalendar();
+});
 
 const testExDate = new Date('August 11, 2023 08:30:00');
-// const today = new Date();
 
-const calendarOptions = {
+const calendarOptions = ref({
     plugins: [ dayGridPlugin, interactionPlugin, rrulePlugin ],
     initialView: 'dayGridMonth',
     dateClick: handleDateClick,
@@ -47,15 +55,15 @@ const calendarOptions = {
             exdate: ['2023-08-18T10:30:00']
         }
     ],
-}
+})
 
-function today() { // e.g. 2023-01-01
+function getToday() { // e.g. 2023-01-01
     const date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
-    let result = `${year}-${month}-${day}`;
-    console.log(result);
+    let result = `${year}-${format2digits(month)}-${format2digits(day)}`;
+    console.log("today result: ", result);
     return result;
 }
 
@@ -70,41 +78,33 @@ function getTimeFromIsoString(isoString) {
 //     monday: ["09:45", true, "05:00", false]
 // }
 
-// result of addWeeklyEvent()
+// result of getWeeklyEventForCalendar()
 // {
-//     tu: ["09:00", true, "03:00", false],
-//     mo: ["09:45", true, "05:00", false]
+//     tu: ["09:00", "17:00"],
+//     mo: ["12:15", "17:05"]
 // }
-function addEvent() {
-    const weekly = {};
-    for (const [key, value] of Object.entries(addWeeklyEvent())) {
+function addEventToCalendar() {
+    calendarOptions.value.events = [];
+    //// weekly events
+    for (const [key, value] of Object.entries(getWeeklyEventForCalendar())) {
         const weekly = {
-        color: 'pink',
-        rrule: {
-            freq: 'weekly',
-            byweekday: [key],
-            dtstart: `${today()}T10:30:00`,
-            until: '2023-10-25'
-        },
-        exdate: ['2023-08-18T10:30:00']
+            title: 'added recurring event',
+            color: 'pink',
+            rrule: {
+                freq: 'weekly',
+                byweekday: [key],
+                dtstart: `${getToday()}T${value[0]}:00`,
+                until: '2023-10-25'
+            },
+            exdate: [`2023-08-15T${value[0]}:00`]
+        }
+        calendarOptions.value.events.push(weekly);
     }
 
-
-
-
-
-
-    }
-    calendarOptions.events.push();
-    
-
+    //// date overrides
 }
 
-function deleteEvent() {
-
-
-}
-
+addEventToCalendar();
 
 
 function handleDateClick(arg) {
@@ -115,7 +115,8 @@ function handleDateClick(arg) {
 
 <template>
     <div>
-        <p>{{ addWeeklyEvent() }}</p>
+        <p>getWeeklyEventForCalendar(): {{ getWeeklyEventForCalendar() }}</p>
+        <p>calendarOptions: {{ calendarOptions.events }}</p>
         <h1>this is calendar</h1>
 
         <FullCalendar :options="calendarOptions"/>

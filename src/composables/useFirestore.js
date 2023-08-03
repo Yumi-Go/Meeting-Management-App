@@ -44,7 +44,7 @@ export function useFirestore() {
                     saturday: null,
                     sunday: null
                 }, // index 0~6 = mon~sun
-                dateOverrides: [] // [{from(e.g. 31052023(31th May, 2023)), until}, {from, until}...]
+                dateOverrides: [] // [{from, until}, {from, until}...]
             });
             console.log("New user added!");
             location.reload();
@@ -212,6 +212,7 @@ export function useFirestore() {
             });
         });
     }
+
 
     // Calendar
     async function getMeetingByDocID(id) {
