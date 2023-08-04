@@ -30,7 +30,6 @@ export function useAuth() {
                         fromUntilPairObj.from = fromUntilPairObj.from.toDate();
                         fromUntilPairObj.until = fromUntilPairObj.until.toDate();
                     });
-                    console.log("info.dateOverride: ", info.dateOverrides);
                     currentUserInfo.value = info;
                 });
             } else {

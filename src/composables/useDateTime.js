@@ -43,7 +43,7 @@ export function useDateTime() {
         
     }
 
-    function formatDate(date) { // e.g. 2023-07-12
+    function formatDateStrWithTimezone(date) { // e.g. Date object => '2023-07-12'
         const tzOffset = date.getTimezoneOffset() * 60 * 1000;
         return new Date(date.getTime() - tzOffset).toISOString().split('T')[0];;
     }
@@ -64,5 +64,5 @@ export function useDateTime() {
 
     }
 
-    return { format2digits, timeItems, removeApmFromTimeArr, formatDate, getTimeApm, getDuration }
+    return { format2digits, timeItems, removeApmFromTimeArr, formatDateStrWithTimezone, getTimeApm, getDuration }
 }

@@ -5,7 +5,7 @@ import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
 import { useDateTime } from '../composables/useDateTime'
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
-const { formatDate } = useDateTime();
+const { formatDateStrWithTimezone } = useDateTime();
 const searchedUsers = useLocalStorage('searchedUsers', []);
 const allUsers = ref([]);
 

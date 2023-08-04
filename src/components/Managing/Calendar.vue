@@ -11,7 +11,7 @@ import { useFirestore } from '../../composables/useFirestore'
 import { useLocalStorage } from '@vueuse/core';
 
 const currentUser = useLocalStorage('currentUser', {});
-const { getWeeklyEventForCalendar, deleteWeeklyEvent, editWeeklyEvent } = useCalendar();
+const { getWeeklyEventsForCalendar, deleteWeeklyEvent, editWeeklyEvent, getDateOverridesForCalendar } = useCalendar();
 const { format2digits } = useDateTime();
 const { userStateObserver } = useAuth();
 
@@ -57,7 +57,7 @@ const calendarOptions = ref({
     ],
 })
 
-function getToday() { // e.g. 2023-01-01
+function getToday() { // e.g. '2023-01-01'
     const date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
@@ -73,20 +73,11 @@ function getTimeFromIsoString(isoString) {
     return result[0];
 }
 
-// weeklyAvailability: {
-//     tuesday: ["09:00", true, "03:00", false],
-//     monday: ["09:45", true, "05:00", false]
-// }
-
-// result of getWeeklyEventForCalendar()
-// {
-//     tu: ["09:00", "17:00"],
-//     mo: ["12:15", "17:05"]
-// }
 function addEventToCalendar() {
     calendarOptions.value.events = [];
+
     //// weekly events
-    for (const [key, value] of Object.entries(getWeeklyEventForCalendar())) {
+    for (const [key, value] of Object.entries(getWeeklyEventsForCalendar())) {
         const weekly = {
             title: 'added recurring event',
             color: 'pink',
@@ -96,33 +87,41 @@ function addEventToCalendar() {
                 dtstart: `${getToday()}T${value[0]}:00`,
                 until: '2023-10-25'
             },
-            exdate: [`2023-08-15T${value[0]}:00`]
+            exdate: []
         }
+        
+        //// date overrides: corresponding to 'exdate' in above weekly obj
+        const dateOverrides = currentUser.value.dateOverrides;
+        const dateOverridesFromTimes = dateOverrides.map(fromUntilPairObj => 
+            `${format2digits(new Date(fromUntilPairObj.from).getHours())}
+            :${format2digits(new Date(fromUntilPairObj.from).getMinutes())}`
+        );
+        console.log("dateOverridesFromTimes: ", dateOverridesFromTimes);
+        for (let i in dateOverridesFromTimes) {
+            weekly.exdate.push(`${getDateOverridesForCalendar()[i]}T${value[0]}:00`);
+            console.log("weekly.exdate: ", weekly.exdate);
+        }
+        // leave below codes for later
+        // dateOverridesFromTimes.forEach((fromTime, index) => {
+        //     weekly.exdate.push(`${getDateOverridesForCalendar()[index]}T${fromTime}:00`);
+        //     console.log("weekly.exdate: ", weekly.exdate);
+        // });
+        console.log("weekly: ", weekly);
         calendarOptions.value.events.push(weekly);
     }
-
-    //// date overrides
+    console.log("calendarOptions.value.events: ", calendarOptions.value.events);
 }
 
 addEventToCalendar();
 
-
 function handleDateClick(arg) {
-      alert('date click! ' + arg.dateStr)
-    }
+    alert('date click! ' + arg.dateStr);
+}
 
 </script>
 
 <template>
     <div>
-        <p>getWeeklyEventForCalendar(): {{ getWeeklyEventForCalendar() }}</p>
-        <p>calendarOptions: {{ calendarOptions.events }}</p>
-        <h1>this is calendar</h1>
-
         <FullCalendar :options="calendarOptions"/>
     </div>
-
-
-
-
 </template>

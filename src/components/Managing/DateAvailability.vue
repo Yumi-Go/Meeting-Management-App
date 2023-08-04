@@ -8,7 +8,7 @@ import { addDays } from 'date-fns';
 import { mdiCheckboxMarkedCirclePlusOutline, mdiCalendarBlank, mdiCalendarBlankOutline, mdiCalendarStart, mdiCalendarStartOutline, mdiCalendarEnd, mdiCalendarEndOutline, mdiDelete, mdiTrashCanOutline } from '@mdi/js';
 
 const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
-const { timeItems, formatDate } = useDateTime();
+const { timeItems, formatDateStrWithTimezone } = useDateTime();
 
 const props = defineProps({
     overrideDates: Array,
@@ -61,7 +61,7 @@ watch(selectedDate, (newDate) => {
                 <v-list-item-title>
                     <div class="d-flex flex-row align-center">
                         <div class="tw-text-red-900">
-                            {{ formatDate(date) }}
+                            {{ formatDateStrWithTimezone(date) }}
                         </div>
                         <div class="d-flex flex-row ml-5">
                             <div class="d-flex align-center mr-0">

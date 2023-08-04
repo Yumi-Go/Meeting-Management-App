@@ -4,6 +4,7 @@ import { useDateTime } from '../composables/useDateTime'
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const currentUser = useLocalStorage('currentUser', {});
+const { format2digits } = useDateTime();
 
 export function useCalendar() {
     
@@ -31,9 +32,8 @@ export function useCalendar() {
 
     }
 
-    function getWeeklyEventForCalendar() {
+    function getWeeklyEventsForCalendar() {
         const weeklyAvailability = sortWeek(currentUser.value.weeklyAvailability);
-        // console.log("weeklyAvailability: ", weeklyAvailability);
         const result = {};
         for (const [key, value] of Object.entries(weeklyAvailability)) {
             if (value) {
@@ -41,7 +41,6 @@ export function useCalendar() {
                 result[newKey] = value;
             }
         }
-        console.log("result weeklyEvent: ", result);
         return result;
     }
 
@@ -56,11 +55,15 @@ export function useCalendar() {
 
     function getDateOverridesForCalendar() {
         const dateOverrides = currentUser.value.dateOverrides;
+        const yearMonthDate = [];
         dateOverrides.forEach(fromUntilPairObj => {
-
-        }
-        )
-
+            const year = new Date(fromUntilPairObj.from).getFullYear();
+            const month = new Date(fromUntilPairObj.from).getMonth();
+            const date = new Date(fromUntilPairObj.from).getDate();
+            yearMonthDate.push(`${year}-${format2digits(month+1)}-${format2digits(date)}`);
+        });
+        console.log("yearMonthDate: ", yearMonthDate);
+        return yearMonthDate;
     }
 
     function deleteDateOverrides() {
@@ -73,5 +76,5 @@ export function useCalendar() {
 
 
 
-    return { getWeeklyEventForCalendar, deleteWeeklyEvent, editWeeklyEvent }
+    return { getWeeklyEventsForCalendar, deleteWeeklyEvent, editWeeklyEvent, getDateOverridesForCalendar }
 }

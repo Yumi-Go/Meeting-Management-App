@@ -18,7 +18,7 @@ const emit = defineEmits(['closeMeetingRequestPopup']);
 const { allUsers, getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
 const { getUserSearchResult } = useSearch();
 const { capitalize } = useFormat();
-const { timeItems, formatDate } = useDateTime();
+const { timeItems, formatDateStrWithTimezone } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
 const selectedParticipant = ref([]);
 const selectedDate = ref(new Date());
@@ -45,7 +45,7 @@ watch(selectedParticipant, async(newSelected) => {
 });
 
 watch(selectedDate, (newDate) => {
-    meetingRequested.value.date = formatDate(newDate);
+    meetingRequested.value.date = formatDateStrWithTimezone(newDate);
     console.log("meetingRequested.value.date: ", meetingRequested.value.date);
 });
 
