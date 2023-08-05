@@ -7,7 +7,26 @@ const currentUser = useLocalStorage('currentUser', {});
 const { format2digits } = useDateTime();
 
 export function useCalendar() {
-    
+
+    function getToday() { // e.g. '2023-01-01'
+        const date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let result = `${year}-${format2digits(month)}-${format2digits(day)}`;
+        return result;
+    }
+
+    function getDurationMinutesFromISOstrings(startISOstr, endISOstr) {
+        const start = new Date(startISOstr);
+        console.log("start: ", start);
+        const end = new Date(endISOstr);
+        console.log("end: ", end);
+        const duration = (end.getTime() - start.getTime()) / 60000; // in minutes
+        console.log("duration: ", duration);
+        return duration;
+    }
+
     function sortWeek(obj) {
         const sortedDays = {
             monday: null,
@@ -31,6 +50,13 @@ export function useCalendar() {
         const result = timeArr[0] + ":" + timeArr[1]
 
     }
+
+
+
+    function getWeeklyAvailabilityForCalendar() {
+        
+    }
+
 
     function getWeeklyEventsForCalendar() {
         const weeklyAvailability = sortWeek(currentUser.value.weeklyAvailability);
@@ -76,5 +102,5 @@ export function useCalendar() {
 
 
 
-    return { getWeeklyEventsForCalendar, deleteWeeklyEvent, editWeeklyEvent, getDateOverridesForCalendar }
+    return { getToday, getDurationMinutesFromISOstrings, getWeeklyEventsForCalendar, deleteWeeklyEvent, editWeeklyEvent, getDateOverridesForCalendar }
 }
