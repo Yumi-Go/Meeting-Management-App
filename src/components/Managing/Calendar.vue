@@ -41,18 +41,7 @@ const calendarOptions = ref({
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
     dateClick: handleDateClick,
-    businessHours: [
-        {
-            daysOfWeek: [ 1, 2, 3 ],
-            startTime: '08:00',
-            endTime: '18:00'
-        },
-        {
-            daysOfWeek: [ 4, 5 ],
-            startTime: '10:00',
-            endTime: '16:00'
-        }
-    ],
+    businessHours: [],
     events: [
         // {
         //     groupId: 'blueEvents',
@@ -61,12 +50,6 @@ const calendarOptions = ref({
         //     startTime: '18:45:00',
         //     endTime: '19:30:00',
         //     color: 'red'
-        // },
-        // {
-        //     daysOfWeek: [ '6' ],
-        //     startTime: '15:00:00',
-        //     endTime: '16:30:00',
-        //     color: 'purple'
         // },
         // {
         //     title: 'test recurring event',
@@ -88,13 +71,70 @@ function getTimeFromIsoString(isoString) {
     return result[0];
 }
 
-function addEventToCalendar() {
+// weeklyAvailability: {
+//     tuesday: ["09:30", "20:00"],
+//     monday: ["14:00", "17:00"]
+// }
+
+function addWeeklyAvailabilityToCalendar() {
+    calendarOptions.value.businessHours = [];
+    for (const [key, value] of Object.entries(currentUser.value.weeklyAvailability)) {
+        const weeklyAvailability = {
+            daysOfWeek: [],
+            startTime: '',
+            endTime: '',
+        };
+        switch(key) {
+            case 'sunday':
+                weeklyAvailability.daysOfWeek = [0];
+                break;
+            case 'monday':
+                weeklyAvailability.daysOfWeek = [1];
+                break;
+            case 'tuesday':
+                weeklyAvailability.daysOfWeek = [2];
+                break;
+            case 'wednesday':
+                weeklyAvailability.daysOfWeek = [3];
+                break;
+            case 'thursday':
+                weeklyAvailability.daysOfWeek = [4];
+                break;
+            case 'friday':
+                weeklyAvailability.daysOfWeek = [5];
+                break;
+            case 'saturday':
+                weeklyAvailability.daysOfWeek = [6];
+        }
+        weeklyAvailability.startTime = value[0];
+        weeklyAvailability.endTime = value[1];
+        console.log("weeklyAvailability: ", weeklyAvailability);
+        calendarOptions.value.businessHours.push(weeklyAvailability);
+    }
+
+    // businessHours: [
+        // {
+        //     daysOfWeek: [ 4, 5 ], // thurs, fri
+        //     startTime: '10:00',
+        //     endTime: '16:00'
+        // }
+    // ]
+
+
+
+}
+
+addWeeklyAvailabilityToCalendar();
+
+function addDateOverridesToCalendar() {
+    
+}
+
+
+
+function addEventToCalendar() { // 이건 미팅 스케쥴 추가하는 함수로 바뀌어야함.
     calendarOptions.value.events = [];
 
-// weeklyAvailability: {
-//     tuesday: ["09:00", true, "03:00", false],
-//     monday: ["09:45", true, "05:00", false]
-// }
 
 // result of getWeeklyEventForCalendar()
 // {
@@ -102,7 +142,7 @@ function addEventToCalendar() {
 //     mo: ["12:15", "17:05"]
 // }
 
-    //// weekly events
+    //// weekly events: 이거 recurring 이벤트로 바꿔야 함!!!!!!!!!!!!!!!
     console.log("getWeeklyEventsForCalendar(): ", getWeeklyEventsForCalendar());
     for (const [key, value] of Object.entries(getWeeklyEventsForCalendar())) {
         //// used getToday() arbitrarily for date to get time (time without date is unavailable in vanilla js)
@@ -122,8 +162,10 @@ function addEventToCalendar() {
         }
         console.log("durationHrsMins: ", durationHrsMins());
         const weekly = {
-            title: 'added recurring event',
-            color: 'pink',
+            title: 'weekly recurring event',
+            color: '#993333',
+            textColor: '#ffffe6',
+            borderColor: 'red',
             rrule: {
                 freq: 'weekly',
                 byweekday: [key],
@@ -155,7 +197,7 @@ function addEventToCalendar() {
     console.log("calendarOptions.value.events: ", calendarOptions.value.events);
 }
 
-addEventToCalendar();
+// addEventToCalendar();
 
 function handleDateClick(arg) {
     alert('date click! ' + arg.dateStr);
