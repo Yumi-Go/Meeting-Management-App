@@ -10,8 +10,7 @@ import { useDateTime } from '../../composables/useDateTime'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { addDays } from 'date-fns';
-import { mdiGmail } from '@mdi/js';
-import { mdiEmailArrowRight } from '@mdi/js';
+import { mdiEmailArrowRight, mdiRepeat } from '@mdi/js';
 
 const searchedUsers = useLocalStorage('searchedUsers', []);
 const emit = defineEmits(['closeMeetingRequestPopup']);
@@ -22,6 +21,8 @@ const { timeItems, formatDateStrWithTimezone } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
 const selectedParticipant = ref([]);
 const selectedDate = ref(new Date());
+const weeklyRecurring = ref(false);
+const monthlyRecurring = ref(false);
 const meetingRequested = ref({
     status: false, // Boolean, Default: false(Pending), Only Accepted meetings(=true) are displayed on the calendar
     title: '',
@@ -80,7 +81,7 @@ function closeBtnClick() {
             class="mx-auto mt-5 pa-10"
         >
             <v-form ref="form" @submit.prevent>
-                <v-container>
+                <v-container fluid class="ma-0 pa-0">
                     <v-row>
                         <v-text-field
                             v-model="meetingRequested.title"
@@ -131,7 +132,33 @@ function closeBtnClick() {
                             </template>
                         </v-autocomplete>
                     </v-row>
-                    <v-row class="mb-5">
+                    <v-row class="mb-1">
+                        <div>
+                            <v-chip
+                                class="mr-2 pa-2"
+                                color="indigo"
+                                :variant="weeklyRecurring ? 'elevated' : 'default'"
+                                @click="weeklyRecurring = !weeklyRecurring"
+                                :ripple="false"
+                            >
+                                <v-icon start :icon="mdiRepeat"/>
+                                Weekly
+                            </v-chip>
+                        </div>
+                        <div>
+                            <v-chip
+                                class="ma-0 pa-2"
+                                color="indigo"
+                                :variant="monthlyRecurring ? 'elevated' : 'default'"
+                                @click="monthlyRecurring = !monthlyRecurring"
+                                :ripple="false"
+                            >
+                                <v-icon start :icon="mdiRepeat"/>
+                                Monthly
+                            </v-chip>
+                        </div>
+                    </v-row>
+                    <v-row class="mb-5 mt-0">
                         <VueDatePicker
                             v-model="selectedDate"
                             placeholder="Select Date"

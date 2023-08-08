@@ -29,17 +29,16 @@ function getSelectedUsers() {
 function clickUser(user) {
     openUserPopup.value = true;
     popupUser.value = user;
-    console.log("popupUser: ", popupUser.value);
-    // local storage need to hold this chosenUser info for refreshing of the page
+    // console.log("popupUser: ", popupUser.value);
 }
 
 </script>
 
 <template>
     <v-container fluid class="">
-        <v-row>
+        <!-- <v-row>
             {{ searchedUsers }}
-        </v-row>
+        </v-row> -->
         <v-row>
             <v-list
                 class="tw-w-full"
@@ -54,7 +53,7 @@ function clickUser(user) {
                     :value="user"
                     :key="user.uid"
                 >
-                    {{ user.selected }}
+                    <!-- {{ user.selected }} -->
                     <template #prepend>
                         <v-list-item-action start>
                             <v-checkbox-btn v-model="user.selected"/>
@@ -77,7 +76,7 @@ function clickUser(user) {
                             @click="clickUser(user)"
                             variant="tonal"
                         >
-                            Open Dialog
+                            View
                         </v-btn>
                     </template>
                     <v-dialog

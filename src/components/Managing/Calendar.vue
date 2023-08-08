@@ -26,7 +26,7 @@ const { userStateObserver } = useAuth();
 userStateObserver();
 
 watch(currentUser, (updatedCurrentUser) => {
-    console.log("updatedCurrentUser: ", updatedCurrentUser);
+    // console.log("updatedCurrentUser: ", updatedCurrentUser);
     addEventToCalendar();
 });
 
@@ -83,6 +83,7 @@ function addWeeklyAvailabilityToCalendar() {
             daysOfWeek: [],
             startTime: '',
             endTime: '',
+            endRecur: '2023-10-30',
         };
         switch(key) {
             case 'sunday':
@@ -108,33 +109,35 @@ function addWeeklyAvailabilityToCalendar() {
         }
         weeklyAvailability.startTime = value[0];
         weeklyAvailability.endTime = value[1];
-        console.log("weeklyAvailability: ", weeklyAvailability);
+        // console.log("weeklyAvailability: ", weeklyAvailability);
         calendarOptions.value.businessHours.push(weeklyAvailability);
     }
-
-    // businessHours: [
-        // {
-        //     daysOfWeek: [ 4, 5 ], // thurs, fri
-        //     startTime: '10:00',
-        //     endTime: '16:00'
-        // }
-    // ]
-
-
-
 }
 
 addWeeklyAvailabilityToCalendar();
 
-function addDateOverridesToCalendar() {
-    
+function addAvailabilityDateOverridesToCalendar() { // shown as background events on calendar
+    const dateOverrides = currentUser.value.dateOverrides;
+    dateOverrides.forEach((fromUntilPairObj, index) => {
+        const dateStr = getDateOverridesForCalendar()[index];
+        const fromTimeStr = `${format2digits(new Date(fromUntilPairObj.from).getHours())}:${format2digits(new Date(fromUntilPairObj.from).getMinutes())}`;
+        const untilTimeStr = `${format2digits(new Date(fromUntilPairObj.until).getHours())}:${format2digits(new Date(fromUntilPairObj.until).getMinutes())}`;
+        const overrideBgEvent = {
+            groupId: 'availabilityDateOverrides', // date overrides for availability (solved as background event)
+            title: 'Not Available',
+            start: `${dateStr}T${fromTimeStr}`,
+            end: `${dateStr}T${untilTimeStr}`,
+            color: 'grey',
+            display: 'background'
+        }
+        // console.log("overrideBgEvent: ", overrideBgEvent);
+        calendarOptions.value.events.push(overrideBgEvent);
+    });
 }
-
-
 
 function addEventToCalendar() { // 이건 미팅 스케쥴 추가하는 함수로 바뀌어야함.
     calendarOptions.value.events = [];
-
+    addAvailabilityDateOverridesToCalendar(); // 여기까지 했음!!!!!!!!
 
 // result of getWeeklyEventForCalendar()
 // {
@@ -162,7 +165,7 @@ function addEventToCalendar() { // 이건 미팅 스케쥴 추가하는 함수�
         }
         console.log("durationHrsMins: ", durationHrsMins());
         const weekly = {
-            title: 'weekly recurring event',
+            title: 'event from DB',
             color: '#993333',
             textColor: '#ffffe6',
             borderColor: 'red',
@@ -184,20 +187,15 @@ function addEventToCalendar() { // 이건 미팅 스케쥴 추가하는 함수�
         console.log("dateOverridesFromTimes: ", dateOverridesFromTimes);
         for (let i in dateOverridesFromTimes) {
             weekly.exdate.push(`${getDateOverridesForCalendar()[i]}T${value[0]}:00`);
-            console.log("weekly.exdate: ", weekly.exdate);
+            // console.log("weekly.exdate: ", weekly.exdate);
         }
-        //// leave below codes for later
-        // dateOverridesFromTimes.forEach((fromTime, index) => {
-        //     weekly.exdate.push(`${getDateOverridesForCalendar()[index]}T${fromTime}:00`);
-        //     console.log("weekly.exdate: ", weekly.exdate);
-        // });
-        console.log("weekly: ", weekly);
+        // console.log("weekly: ", weekly);
         calendarOptions.value.events.push(weekly);
     }
-    console.log("calendarOptions.value.events: ", calendarOptions.value.events);
+    // console.log("calendarOptions.value.events: ", calendarOptions.value.events);
 }
 
-// addEventToCalendar();
+addEventToCalendar();
 
 function handleDateClick(arg) {
     alert('date click! ' + arg.dateStr);

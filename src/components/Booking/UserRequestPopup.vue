@@ -6,6 +6,7 @@ import { auth } from '../../firebaseConfig'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat'
 import MeetingRequestPopup from './MeetingRequestPopup.vue';
+import UserAvailabilityCalendar from './UserAvailabilityCalendar.vue'
 
 const props = defineProps({
     user: Object,
@@ -115,7 +116,7 @@ function closeMeetingRequestPopup() {
                 </v-col>
                 <v-col cols="12" lg="9">
                     <v-sheet class="pa-2 ma-2">
-                        calendar
+                        <UserAvailabilityCalendar/>
                     </v-sheet>
                 </v-col>
             </v-row>

@@ -5,25 +5,31 @@ import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const currentUser = useLocalStorage('currentUser', {});
 const { format2digits } = useDateTime();
+const weekdayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
 export function useCalendar() {
 
-    function getToday() { // e.g. '2023-01-01'
-        const date = new Date();
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
+    function getYearMonthDayStr(dateObj) { // e.g. '2023-01-01'
+        let day = dateObj.getDate();
+        let month = dateObj.getMonth() + 1;
+        let year = dateObj.getFullYear();
         let result = `${year}-${format2digits(month)}-${format2digits(day)}`;
         return result;
     }
 
+    function getToday() { // e.g. '2023-01-01'
+        const date = new Date();
+        return getYearMonthDayStr(date);
+    }
+
+    function getDayNameOfDateObj(date) {
+        return weekdayNames[date.getDay()];
+    }
+
     function getDurationMinutesFromISOstrings(startISOstr, endISOstr) {
         const start = new Date(startISOstr);
-        console.log("start: ", start);
         const end = new Date(endISOstr);
-        console.log("end: ", end);
         const duration = (end.getTime() - start.getTime()) / 60000; // in minutes
-        console.log("duration: ", duration);
         return duration;
     }
 
@@ -42,7 +48,7 @@ export function useCalendar() {
                 sortedDays[key] = obj[key];
             }
         }
-        console.log("sortedDays: ", sortedDays);
+        // console.log("sortedDays: ", sortedDays);
         return sortedDays;
     }
 
@@ -60,6 +66,7 @@ export function useCalendar() {
 
     function getWeeklyEventsForCalendar() {
         const weeklyAvailability = sortWeek(currentUser.value.weeklyAvailability);
+        // console.log("weeklyAvailability: ", weeklyAvailability);
         const result = {};
         for (const [key, value] of Object.entries(weeklyAvailability)) {
             if (value) {
@@ -67,6 +74,7 @@ export function useCalendar() {
                 result[newKey] = value;
             }
         }
+        // console.log("result: ", result);
         return result;
     }
 
@@ -83,12 +91,9 @@ export function useCalendar() {
         const dateOverrides = currentUser.value.dateOverrides;
         const yearMonthDate = [];
         dateOverrides.forEach(fromUntilPairObj => {
-            const year = new Date(fromUntilPairObj.from).getFullYear();
-            const month = new Date(fromUntilPairObj.from).getMonth();
-            const date = new Date(fromUntilPairObj.from).getDate();
-            yearMonthDate.push(`${year}-${format2digits(month+1)}-${format2digits(date)}`);
+            yearMonthDate.push(getYearMonthDayStr(new Date(fromUntilPairObj.from)));
         });
-        console.log("yearMonthDate: ", yearMonthDate);
+        // console.log("yearMonthDate: ", yearMonthDate);
         return yearMonthDate;
     }
 
@@ -100,7 +105,15 @@ export function useCalendar() {
 
     }
 
-
-
-    return { getToday, getDurationMinutesFromISOstrings, getWeeklyEventsForCalendar, deleteWeeklyEvent, editWeeklyEvent, getDateOverridesForCalendar }
+    return {
+        weekdayNames,
+        getYearMonthDayStr,
+        getToday,
+        getDayNameOfDateObj,
+        getDurationMinutesFromISOstrings,
+        getWeeklyEventsForCalendar,
+        deleteWeeklyEvent,
+        editWeeklyEvent,
+        getDateOverridesForCalendar
+    }
 }
