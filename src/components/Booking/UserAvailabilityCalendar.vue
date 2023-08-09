@@ -32,8 +32,6 @@ watch(currentUser, (updatedCurrentUser) => {
     addEventToCalendar();
 });
 
-const testExDate = new Date('August 11, 2023 08:30:00');
-
 const calendarOptions = ref({
     plugins: [ dayGridPlugin, interactionPlugin, rrulePlugin, timeGridPlugin ],
     initialView: 'timeGridWeek',
@@ -53,7 +51,7 @@ function getTimeFromIsoString(isoString) {
     return result[0];
 }
 
-function addWeeklyAvailabilityToCalendar() {
+function addAvailabilityToCalendar() {
     // console.log("getWeeklyEventsForCalendar(): ", getWeeklyEventsForCalendar());
     for (const [key, value] of Object.entries(getWeeklyEventsForCalendar())) {
         const weeklyStartStr = `${getToday()}T${value[0]}:00`;
@@ -71,8 +69,8 @@ function addWeeklyAvailabilityToCalendar() {
             return `${format2digits(hours)}:${format2digits(minutes)}`;
         }
         const weekly = {
-            title: 'event from DB',
-            color: 'black',
+            title: 'Weekly Availability',
+            color: 'yellow',
             display: 'background',
             rrule: {
                 freq: 'weekly',
@@ -95,10 +93,11 @@ function addWeeklyAvailabilityToCalendar() {
             const fromTimeStr = `${format2digits(new Date(fromUntilPairObj.from).getHours())}:${format2digits(new Date(fromUntilPairObj.from).getMinutes())}:00`;
             const untilTimeStr = `${format2digits(new Date(fromUntilPairObj.until).getHours())}:${format2digits(new Date(fromUntilPairObj.until).getMinutes())}:00`;
             const overrideEvent = {
+                title: 'Overwritten Availability',
                 start: `${dateStr}T${fromTimeStr}`,
                 end: `${dateStr}T${untilTimeStr}`,
                 display: 'background',
-                color: 'black'
+                color: 'yellow'
             }
 
             // 여기 하다말았음. 데이터 더 넣어서 테스트해봐야 함!
@@ -137,7 +136,7 @@ function addAvailabilityDateOverridesToCalendar() { // shown as background event
 
 function addEventToCalendar() {
     calendarOptions.value.events = [];
-    addWeeklyAvailabilityToCalendar();
+    addAvailabilityToCalendar();
     // addAvailabilityDateOverridesToCalendar();
 }
 
