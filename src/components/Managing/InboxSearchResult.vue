@@ -70,7 +70,7 @@ function clickRequest(request) {
                     <v-list-item-title
                         class="tw-w-[50%]"
                     >
-                        {{ getTimeApm(Object.values(request)[0].startTime) }} - {{ getTimeApm(Object.values(request)[0].endTime) }}
+                        {{ Object.values(request)[0].startTime }} - {{ Object.values(request)[0].endTime }}
                     </v-list-item-title>
                     <v-list-item-subtitle
                         class=""

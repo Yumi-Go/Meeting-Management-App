@@ -118,8 +118,8 @@ function addMeetingsToCalendar() {
     meetings.value.forEach(meetingObj => {
         const meeting = {
             title: meetingObj.title,
-            start: `${meetingObj.date}T${meetingObj.startTime[0]}:00`, // am pm 처리해야 함!!!!!
-            end: `${meetingObj.date}T${meetingObj.endTime[0]}:00`, // 여기도!!
+            start: `${meetingObj.date}T${meetingObj.startTime}:00`,
+            end: `${meetingObj.date}T${meetingObj.endTime}:00`,
             color: 'blue'
         }
         calendarOptions.value.events.push(meeting);
