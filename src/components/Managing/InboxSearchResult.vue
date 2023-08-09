@@ -9,7 +9,7 @@ import InboxMessagePopup from "./InboxMessagePopup.vue";
 import { mdiTrashCanOutline } from '@mdi/js';
 
 const currentUser = useLocalStorage('currentUser', {});
-const { getUserInfoByUID } = useFirestore();
+const { getUserInfoByUID, readMessage } = useFirestore();
 const { getTimeApm } = useDateTime();
 const { capitalize } = useFormat();
 const openInboxMessagePopup = ref(false);
@@ -32,16 +32,19 @@ function getSenderObj(senderUid) {
     return senderObj;
 }
 
-function clickRequest(request) {
+async function clickRequest(index) {
     openInboxMessagePopup.value = true;
-    chosenRequest.value = request;
-    console.log("chosenRequest: ", chosenRequest.value);
+    const updatedMeetingRequestsReceived = allRequestsReceived.value;
+    Object.values(updatedMeetingRequestsReceived[index])[0].isRead = true;
+    // console.log("updatedMeetingRequestsReceived[index]: ", updatedMeetingRequestsReceived[index]);
+    chosenRequest.value = updatedMeetingRequestsReceived[index];
+    await readMessage(updatedMeetingRequestsReceived);
+    // console.log("chosenRequest: ", chosenRequest.value);
 }
 
 </script>
 
 <template>
-    <p>{{ allRequestsReceived }}</p>
     <v-container fluid class="tw-px-5">
         <v-row>
             <v-list
@@ -55,7 +58,7 @@ function clickRequest(request) {
                 <v-list-item
                     v-if="allRequestsReceived.length > 0"
                     v-for="(request, index) in Object.values(allRequestsReceived)"
-                    @click="clickRequest(request)"
+                    @click="clickRequest(index)"
                     class=""
                 >
                     <template #prepend>

@@ -8,7 +8,6 @@ import { useFormat } from '../../composables/useFormat'
 import { useDateTime } from '../../composables/useDateTime';
 import { mdiAccountCircleOutline } from '@mdi/js';
 
-const temptUser = useLocalStorage('tempUser', {});
 const { showInbox, reloadInbox } = inject('refreshInbox');
 const { userStateObserver } = useAuth();
 const { getTimeApm, getDuration } = useDateTime();
@@ -20,7 +19,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['closeInboxMessagePopup']);
 
-console.log("requestedMeetingObj: ", props.requestedMeetingObj);
+// console.log("requestedMeetingObj: ", props.requestedMeetingObj);
 
 const senderUid = Object.keys(props.requestedMeetingObj)[0];
 const meetingObj = Object.values(props.requestedMeetingObj)[0];
@@ -35,7 +34,7 @@ function getSenderObj() {
     });
 }
 
-console.log("meetingObj: ", meetingObj);
+// console.log("meetingObj: ", meetingObj);
 
 
 
@@ -89,15 +88,6 @@ getMeetingObjToDisplay();
 //         console.log("participants: ", participants.value);
 //     });
 // }
-
-
-
-
-
-
-
-
-
 
 async function clickAcceptBtn() {
     console.log("meetingObj before storing: ", meetingObj);

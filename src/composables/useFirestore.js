@@ -189,7 +189,16 @@ export function useFirestore() {
         });
     }
 
-    // Availability
+    //// Inbox
+    async function readMessage(updatedMeetingRequestsReceived) {
+        // 수정 후 받은 메시지 어레이 전체를 통으로 다시 저장해야 할 듯
+        const userRef = doc(db, "users", auth.currentUser.uid);
+        await updateDoc(userRef, {
+            meetingRequestsReceived: updatedMeetingRequestsReceived
+        });
+    }
+
+    //// Availability
     async function updateWeeklyAvailability(days) {
         console.log("days in updateWeeklyAvailability: ", days);
         const docRef = doc(db, "users", auth.currentUser.uid);
@@ -214,7 +223,7 @@ export function useFirestore() {
     }
 
 
-    // Calendar
+    //// Calendar
     async function getMeetingByDocID(id) {
         const docRef = doc(db, "meetings", id);
         const docSnap = await getDoc(docRef);
@@ -243,6 +252,7 @@ export function useFirestore() {
         requestMeeting,
         acceptMeetingRequest,
         refuseMeetingRequest,
+        readMessage,
         updateWeeklyAvailability,
         addDateOverrides,
         getMeetingByDocID
