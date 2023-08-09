@@ -28,9 +28,6 @@ watch(selectedDate, (newDate) => {
 //     console.log("props.overrideTimes: ", newTime);
 // });
 
-
-
-
 </script>
 
 <template>

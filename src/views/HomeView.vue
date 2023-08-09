@@ -6,11 +6,7 @@ import SignIn from '../components/SignIn.vue'
 import Setting from './Setting.vue'
 
 const { currentUser, userStateObserver, logOut } = useAuth();
-
 userStateObserver();
-
-console.log("user in homeview: ", auth.currentUser);
-
 const router = useRouter();
 
 function clickLogout() {

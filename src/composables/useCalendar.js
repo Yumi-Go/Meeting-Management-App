@@ -4,6 +4,7 @@ import { useDateTime } from '../composables/useDateTime'
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const currentUser = useLocalStorage('currentUser', {});
+const { getMeetingByDocID } = useFirestore();
 const { format2digits } = useDateTime();
 const weekdayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
@@ -48,25 +49,11 @@ export function useCalendar() {
                 sortedDays[key] = obj[key];
             }
         }
-        // console.log("sortedDays: ", sortedDays);
         return sortedDays;
     }
 
-    function formatWeeklyEventTime(timeArr) { // e.g. [ 9, 0, 5, 0 ]
-        const result = timeArr[0] + ":" + timeArr[1]
-
-    }
-
-
-
     function getWeeklyAvailabilityForCalendar() {
-        
-    }
-
-
-    function getWeeklyEventsForCalendar() {
         const weeklyAvailability = sortWeek(currentUser.value.weeklyAvailability);
-        // console.log("weeklyAvailability: ", weeklyAvailability);
         const result = {};
         for (const [key, value] of Object.entries(weeklyAvailability)) {
             if (value) {
@@ -74,18 +61,16 @@ export function useCalendar() {
                 result[newKey] = value;
             }
         }
-        // console.log("result: ", result);
         return result;
     }
 
-    function deleteWeeklyEvent() {
+    function deleteWeeklyAvailability() {
     
     }
 
-    function editWeeklyEvent() {
+    function updateWeeklyAvailability() {
 
     }
-
 
     function getDateOverridesForCalendar() {
         const dateOverrides = currentUser.value.dateOverrides;
@@ -93,7 +78,6 @@ export function useCalendar() {
         dateOverrides.forEach(fromUntilPairObj => {
             yearMonthDate.push(getYearMonthDayStr(new Date(fromUntilPairObj.from)));
         });
-        // console.log("yearMonthDate: ", yearMonthDate);
         return yearMonthDate;
     }
 
@@ -101,7 +85,7 @@ export function useCalendar() {
     
     }
 
-    function editDateOverrides() {
+    function updateDateOverrides() {
 
     }
 
@@ -111,9 +95,9 @@ export function useCalendar() {
         getToday,
         getDayNameOfDateObj,
         getDurationMinutesFromISOstrings,
-        getWeeklyEventsForCalendar,
-        deleteWeeklyEvent,
-        editWeeklyEvent,
-        getDateOverridesForCalendar
+        getWeeklyAvailabilityForCalendar,
+        deleteWeeklyAvailability,
+        updateWeeklyAvailability,
+        getDateOverridesForCalendar,
     }
 }

@@ -29,7 +29,6 @@ function getSelectedUsers() {
 function clickUser(user) {
     openUserPopup.value = true;
     popupUser.value = user;
-    // console.log("popupUser: ", popupUser.value);
 }
 
 </script>

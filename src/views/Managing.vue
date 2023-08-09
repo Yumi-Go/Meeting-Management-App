@@ -18,10 +18,8 @@ const showList = ref(false);
 const showChart = ref(false);
 
 function reloadInbox() {
-    // location.reload();
     router.push('/managing');
     showInbox.value = true;
-    console.log("showInbox: ", showInbox.value);
 }
 provide('refreshInbox', {showInbox, reloadInbox});
 
@@ -52,8 +50,6 @@ function clickChartBtn() {
     showList.value = false;
     showChart.value = !showChart.value;
 }
-
-
 
 </script>
 

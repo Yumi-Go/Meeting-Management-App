@@ -27,15 +27,6 @@ const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initi
 
 function weeklyDaysTimes() {
     const dayOfWeek = {};
-    // for (const [key, value] of Object.entries(days.value)) {
-    //     if (value[0]) {
-    //         const valArr = [];
-    //         for (let i = 1; i < 5; i++) {
-    //             valArr.push(value[i]);
-    //         }
-    //         dayOfWeek[key] = valArr;
-    //     }
-    // }
     for (const [key, value] of Object.entries(days.value)) {
         if (value[0]) {
             let from = removeApmFromTimeArr([value[1], value[2]]); // e.g. [14, 30]
@@ -50,19 +41,6 @@ function weeklyDaysTimes() {
 }
 
 function overrideDatesTimes() {
-    // // pickced From/Until times from combobox
-    // const times = overrideTimes.value.map((timeArr) => {
-    //     let fromHour = Number(timeArr[0].split(":")[0]);
-    //     fromHour = timeArr[2] === false ? fromHour += 12 : fromHour; // PM
-    //     let fromMinute = Number(timeArr[0].split(":")[1]);
-    //     let untilHour = Number(timeArr[1].split(":")[0]);
-    //     untilHour = timeArr[3] === false ? untilHour += 12 : untilHour; // PM
-    //     let untilMinute = Number(timeArr[1].split(":")[1]);
-    //     return [fromHour, fromMinute, untilHour, untilMinute];
-    // });
-
-    // pickced From/Until times from combobox
-    // props.overrideTimes.push([timeItems()[36], timeItems()[20], true, true]);
     const times = overrideTimes.value.map((timeArr) => {
         let from = removeApmFromTimeArr([timeArr[0], timeArr[2]]);
         let until = removeApmFromTimeArr([timeArr[1], timeArr[3]]);

@@ -7,7 +7,6 @@ import InboxSearchResult from "./InboxSearchResult.vue";
 
 const { userStateObserver } = useAuth();
 
-
 </script>
 
 <template>
