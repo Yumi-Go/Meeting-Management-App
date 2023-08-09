@@ -36,10 +36,8 @@ async function clickRequest(index) {
     openInboxMessagePopup.value = true;
     const updatedMeetingRequestsReceived = allRequestsReceived.value;
     Object.values(updatedMeetingRequestsReceived[index])[0].isRead = true;
-    // console.log("updatedMeetingRequestsReceived[index]: ", updatedMeetingRequestsReceived[index]);
     chosenRequest.value = updatedMeetingRequestsReceived[index];
     await readMessage(updatedMeetingRequestsReceived);
-    // console.log("chosenRequest: ", chosenRequest.value);
 }
 
 </script>

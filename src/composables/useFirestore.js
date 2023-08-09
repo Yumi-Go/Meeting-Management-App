@@ -54,7 +54,6 @@ export function useFirestore() {
     async function updateUserInfo(
         fName, mName, lName, organization, department, position, role, location, timezone
     ) {
-        console.log("uid of currentUser: ", auth.currentUser.uid);
         const userRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(userRef, {
             fName: fName.length > 0 ? fName.toLowerCase() : fName,
@@ -189,15 +188,16 @@ export function useFirestore() {
         });
     }
 
+
     //// Inbox
     async function readMessage(updatedMeetingRequestsReceived) {
-        // 수정 후 받은 메시지 어레이 전체를 통으로 다시 저장해야 할 듯
         const userRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(userRef, {
             meetingRequestsReceived: updatedMeetingRequestsReceived
         });
     }
 
+    
     //// Availability
     async function updateWeeklyAvailability(days) {
         console.log("days in updateWeeklyAvailability: ", days);

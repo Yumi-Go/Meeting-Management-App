@@ -1,14 +1,17 @@
 <script setup>
-import { ref, provide } from 'vue'
+import { ref, watch, provide } from 'vue'
 import Inbox from '../components/Managing/Inbox.vue'
 import Availability from '../components/Managing/Availability.vue';
 import Calendar from '../components/Managing/Calendar.vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
+import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
 const { userStateObserver } = useAuth();
-
 userStateObserver();
+
+const currentUser = useLocalStorage('currentUser', {});
+// const receivedRequests = currentUser.value.meetingRequestsReceived;
 
 const router = useRouter();
 const showAvailability = ref(false);
@@ -16,6 +19,13 @@ const showInbox = ref(false);
 const showCalendar = ref(false);
 const showList = ref(false);
 const showChart = ref(false);
+
+const isUnreadMsgExist = ref(false);
+
+watch(currentUser.value.meetingRequestsReceived, (updatedRequests) => {
+    checkUnreadMsg();
+    console.log("isUnreadMsgExist.value: ", isUnreadMsgExist.value);
+});
 
 function reloadInbox() {
     router.push('/managing');
@@ -26,6 +36,15 @@ provide('refreshInbox', {showInbox, reloadInbox});
 function clickAvailabilityBtn() {
     showAvailability.value = !showAvailability.value;
     showInbox.value = false;
+}
+
+function checkUnreadMsg() {
+    for (const requestObj of currentUser.value.meetingRequestsReceived) {
+        if (!Object.values(requestObj)[0].isRead) {
+            isUnreadMsgExist.value = true;
+            break;
+        }
+    }
 }
 
 function clickInboxBtn() {
@@ -51,6 +70,8 @@ function clickChartBtn() {
     showChart.value = !showChart.value;
 }
 
+checkUnreadMsg();
+
 </script>
 
 <template>
@@ -70,23 +91,24 @@ function clickChartBtn() {
                     Set Availability
             </v-btn>
         </div>
-
         <div class="text-right">
             <v-btn
                 @click="clickInboxBtn"
                 variant="outlined"
+                :color="isUnreadMsgExist ? 'red' : 'black'"
             >
                 <template #prepend>
-                    <v-icon color="">
-                        <span class="material-symbols-outlined">
-                            mail
-                        </span>
-                    </v-icon>
-                    <v-icon color="red">
+                    <v-icon v-if="isUnreadMsgExist" color="red">
                         <span class="material-symbols-outlined">
                             mark_email_unread
                         </span>
                     </v-icon>
+                    <v-icon v-else color="black">
+                        <span class="material-symbols-outlined">
+                            mail
+                        </span>
+                    </v-icon>
+
                 </template>
                     Inbox
             </v-btn>
@@ -126,27 +148,6 @@ function clickChartBtn() {
                             </v-icon>
                         </template>
                             List
-                    </v-btn>
-                </div>
-
-                <div class="">
-                    <v-btn
-                        @click="clickChartBtn"
-                        variant="outlined"
-                    >
-                        <template #prepend>
-                            <v-icon color="">
-                                <span class="material-symbols-outlined">
-                                    mail
-                                </span>
-                            </v-icon>
-                            <v-icon color="red">
-                                <span class="material-symbols-outlined">
-                                    mark_email_unread
-                                </span>
-                            </v-icon>
-                        </template>
-                            Chart
                     </v-btn>
                 </div>
             </div>
