@@ -19,6 +19,21 @@ export function useDateTime() {
             times[i] = format2digits(hour % 12) + ':' + format2digits(minute);
             minuteSum = minuteSum + interval;
         }
+        // console.log("times: ", times);
+        return times;
+    }
+
+    function timeItemsIn24hrs() {
+        var interval = 15;
+        var times = [];
+        var minuteSum = 0;
+        for (var i = 0; minuteSum < 60*24; i++) {
+            var hour = Math.floor(minuteSum / 60);
+            var minute = (minuteSum % 60);
+            times[i] = format2digits(hour % 24) + ':' + format2digits(minute);
+            minuteSum = minuteSum + interval;
+        }
+        console.log("timeItemsIn24hrs: ", times);
         return times;
     }
 
@@ -35,11 +50,17 @@ export function useDateTime() {
 
     }
 
-    function generateApmFromTimeArr(timeArr) { // e.g. '15:00' => ['03:00', false]
-        
+    function generateApmWithTimeArr(timeStr) { // e.g. '15:00' => ['03:00', false]
+        let hour = Number(timeStr.split(":")[0]);
+        let minute = Number(timeStr.split(":")[1]);
+        if (hour > 11) {
+            return [`${format2digits(hour - 12)}:${format2digits(minute)}`, false]
+        } else {
+            return [`${format2digits(hour)}:${format2digits(minute)}`, true]
+        }
     }
 
-    function generateApmFromTimeStr(timeStr) { // e.g. '15:00' => '03:00 pm'
+    function generateApmWithTimeStr(timeStr) { // e.g. '15:00' => '03:00 pm'
         
     }
 
@@ -64,5 +85,14 @@ export function useDateTime() {
 
     }
 
-    return { format2digits, timeItems, removeApmFromTimeArr, formatDateStrWithTimezone, getTimeApm, getDuration }
+    return {
+        format2digits,
+        timeItems,
+        timeItemsIn24hrs,
+        removeApmFromTimeArr,
+        generateApmWithTimeArr,
+        formatDateStrWithTimezone,
+        getTimeApm,
+        getDuration
+    }
 }

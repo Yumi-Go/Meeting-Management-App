@@ -16,24 +16,23 @@ const { currentUser, userStateObserver, reAuthentication, changePassword } = use
 userStateObserver();
 
 
-const currentUserInfo = useLocalStorage("currentUser", null, { serializer: StorageSerializers.object });
+const currentUserInLocalStorage = useLocalStorage("currentUser", null, { serializer: StorageSerializers.object });
 
-console.log("currentUser.value.uid: ", currentUser.value);
-// const currentUserInfo = userStateObserver();
+// const currentUserInLocalStorage = userStateObserver();
 
-console.log("currentUserInfo in Setting.vue: ", currentUserInfo.value);
-console.log("currentUserInfo.fName in Setting.vue: ", currentUserInfo.value.fName);
+console.log("currentUserInLocalStorage in Setting.vue: ", currentUserInLocalStorage.value);
+console.log("currentUserInLocalStorage.fName in Setting.vue: ", currentUserInLocalStorage.value.fName);
 
-const fName = ref(currentUserInfo.value.fName);
-const mName = ref (currentUserInfo.value.mName);
-const lName = ref(currentUserInfo.value.lName);
-const organization = ref(currentUserInfo.value.organization);
-const department = ref(currentUserInfo.value.department);
-const position = ref(currentUserInfo.value.position);
-const role = ref(currentUserInfo.value.role);
-const location = ref(currentUserInfo.value.location);
-const timezone = ref(currentUserInfo.value.timezone);
-console.log("email in currentUserInfo.value: ", currentUserInfo.value.email);
+const fName = ref(currentUserInLocalStorage.value.fName);
+const mName = ref (currentUserInLocalStorage.value.mName);
+const lName = ref(currentUserInLocalStorage.value.lName);
+const organization = ref(currentUserInLocalStorage.value.organization);
+const department = ref(currentUserInLocalStorage.value.department);
+const position = ref(currentUserInLocalStorage.value.position);
+const role = ref(currentUserInLocalStorage.value.role);
+const location = ref(currentUserInLocalStorage.value.location);
+const timezone = ref(currentUserInLocalStorage.value.timezone);
+console.log("email in currentUserInLocalStorage.value: ", currentUserInLocalStorage.value.email);
 
 const rules = {
     fName: {

@@ -18,16 +18,6 @@ const props = defineProps({
     days: Object
 });
 
-
-// const days = ref({
-//     monday: [true, timeItems()[36], true, timeItems()[20], false],
-//     tuesday: [true, timeItems()[36], true, timeItems()[20], false],
-//     wednesday: [true, timeItems()[36], true, timeItems()[20], false],
-//     thursday: [true, timeItems()[36], true, timeItems()[20], false],
-//     friday: [true, timeItems()[36], true, timeItems()[20], false],
-//     saturday: [false, timeItems()[36], true, timeItems()[20], false],
-//     sunday: [false, timeItems()[36], true, timeItems()[20], false]
-// });
 </script>
 
 <template>

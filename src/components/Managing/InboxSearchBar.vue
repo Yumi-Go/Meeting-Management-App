@@ -8,17 +8,17 @@ const {  } = useFirestore();
 const { userStateObserver } = useAuth();
 
 const inboxSearchResult = ref([]);
-const currentUserInfo = userStateObserver();
+const currentUserInLocalStorage = userStateObserver();
 const { inboxSearch, getInboxSearchResult } = useSearch();
 
 // function getInboxSearchResult() {
-//     if (currentUserInfo.meetingRequestsReceived.length > 0) {
+//     if (currentUserInLocalStorage.meetingRequestsReceived.length > 0) {
 //         if (inboxSearch.value.length > 0) {
 //             const input = inboxSearch.value.toLowerCase();
-//             inboxSearchResult.value = currentUserInfo.meetingRequestsReceived.filter(
+//             inboxSearchResult.value = currentUserInLocalStorage.meetingRequestsReceived.filter(
 //                 request => request.toLowerCase().match(input));
 //         } else {
-//             inboxSearchResult.value = currentUserInfo.meetingRequestsReceived;
+//             inboxSearchResult.value = currentUserInLocalStorage.meetingRequestsReceived;
 //         }
 //     } else {
 //         inboxSearchResult.value = [];

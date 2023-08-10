@@ -10,7 +10,7 @@ import { onAuthStateChanged,
 } from "firebase/auth";
 import { useFirestore } from './useFirestore';
 
-const currentUserInfo = useLocalStorage('currentUser', {});
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const currentUser = ref(auth.currentUser);
 
 const { getUserInfoByUID } = useFirestore();
@@ -30,7 +30,7 @@ export function useAuth() {
                         fromUntilPairObj.from = fromUntilPairObj.from.toDate();
                         fromUntilPairObj.until = fromUntilPairObj.until.toDate();
                     });
-                    currentUserInfo.value = info;
+                    currentUserInLocalStorage.value = info;
                 });
             } else {
                 console.log("The logged in user does not exist.");
@@ -40,7 +40,7 @@ export function useAuth() {
 
     function logOut() {
         signOut(auth).then(() => {
-            currentUserInfo.value = [];
+            currentUserInLocalStorage.value = [];
             currentUser.value = [];
             console.log("Sign Out successful!");
         }).catch((error) => {
@@ -91,5 +91,5 @@ export function useAuth() {
         });
     }
 
-    return { currentUser, currentUserInfo, isUserReAuthenticated, isPasswordChanged, userStateObserver, logOut, reAuthentication, changePassword }
+    return { currentUser, currentUserInLocalStorage, isUserReAuthenticated, isPasswordChanged, userStateObserver, logOut, reAuthentication, changePassword }
 }

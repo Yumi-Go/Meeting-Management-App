@@ -2,15 +2,35 @@
 import { ref, watch } from 'vue'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router'
+import { useAuth } from '../../composables/useAuth';
 import { useFirestore } from '../../composables/useFirestore';
 import { useDateTime } from '../../composables/useDateTime'
+import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 import WeeklyAvailability from './WeeklyAvailability.vue';
 import DateAvailability from './DateAvailability.vue'
 import { mdiCalendarClock, mdiCalendarEdit } from '@mdi/js';
 
+const { currentUser } = useAuth();
+const { getUserInfoByUID, updateWeeklyAvailability, addDateOverrides } = useFirestore();
+const { timeItems, timeItemsIn24hrs, removeApmFromTimeArr, generateApmWithTimeArr } = useDateTime();
 const router = useRouter();
-const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
-const { timeItems, removeApmFromTimeArr } = useDateTime();
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
+const weeklyAvailability = ref(currentUserInLocalStorage.value.weeklyAvailability);
+const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
+const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
+
+// watch(weeklyAvailability, (updatedWeeklyAvailability) => {
+//     loadStoredValue();
+//     console.log("updatedWeeklyAvailability: ", updatedWeeklyAvailability);
+// });
+
+// watch(overrideDates, (updatedOverrideDates) => {
+//     console.log("updatedOverrideDates: ", updatedOverrideDates);
+// });
+
+// watch(overrideTimes, (updatedOverrideTimes) => {
+//     console.log("updatedOverrideTimes: ", updatedOverrideTimes);
+// });
 
 const days = ref({
     monday: [true, timeItems()[36], true, timeItems()[20], false], // [checked true/false, from, am(true), until, pm(false)]
@@ -22,8 +42,26 @@ const days = ref({
     sunday: [false, timeItems()[36], true, timeItems()[20], false]
 });
 
-const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
-const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
+function loadStoredValue() {
+    // const weeklyAvailability = currentUserInLocalStorage.value.weeklyAvailability;
+    // let isWeeklyAvailabilityEmpty = true;
+    for (const [key, value] of Object.entries(days.value)) {
+        if (Object.keys(weeklyAvailability.value).includes(key)) {
+            value[0] = true;
+            value[1] = generateApmWithTimeArr(weeklyAvailability.value[key][0])[0];
+            value[2] = weeklyAvailability.value[key][0].slice(0, 2) < 12 ? true : false;
+            value[3] = generateApmWithTimeArr(weeklyAvailability.value[key][1])[0];
+            value[4] = weeklyAvailability.value[key][1].slice(0, 2) < 12 ? true : false;
+            // isWeeklyAvailabilityEmpty = false;
+        } else {
+            value[0] = false;
+        }
+    }
+    console.log("days in loadStoredValue(): ",  days.value);
+}
+loadStoredValue();
+
+
 
 function weeklyDaysTimes() {
     const dayOfWeek = {};
@@ -46,14 +84,14 @@ function overrideDatesTimes() {
         let until = removeApmFromTimeArr([timeArr[1], timeArr[3]]);
         return from.concat(until);
     });
-    console.log("times: ", times);
+    // console.log("times: ", times);
 
     // picked date from Date picker
     const dates = overrideDates.value.map((date) => {
         console.log("date before getYear, getMonth, getDay: ", date);
         return [date.getFullYear(), date.getMonth(), date.getDate()];
     });
-    console.log("dates: ", dates);
+    // console.log("dates: ", dates);
 
     // merge date(from date picker) and time(from combobox)
     // here, convert time from Irish Standard Time to GMT (+1 hour) with getTimeezondOffset
@@ -72,7 +110,7 @@ function overrideDatesTimes() {
         }
         return [fromObj(), untilObj()];
     });
-    console.log("date&time merging result: ", datesTimesMerged);
+    // console.log("date&time merging result: ", datesTimesMerged);
     return datesTimesMerged;
 }
 

@@ -78,7 +78,6 @@ function addAvailabilityToCalendar() {
                 dtstart: weeklyStartStr,
                 until: '2023-10-25'
             },
-            // exdate: ['2023-08-08T14:00:00', '2023-08-15T14:00', '2023-08-15T14:00'],
             exdate: [],
             duration: durationHrsMins()
         }
@@ -102,6 +101,8 @@ function addAvailabilityToCalendar() {
                 const exdateTime = currentUser.value.weeklyAvailability[dayFullName][0];
                 weekly.exdate.push(`${dateStr}T${exdateTime}:00`);
                 calendarOptions.value.events.push(overwrittenAvailability);
+            } else {
+                // availability 데이터 로딩문제 해결한 다음에 여기 채워넣어야 할 듯. weekly에 해당안하는 8/15 등록 안되는 문제 해결하기 위해서!
             }
         });
         calendarOptions.value.events.push(weekly);
