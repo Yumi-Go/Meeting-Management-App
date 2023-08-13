@@ -20,19 +20,6 @@ const dateAvailability = ref(currentUserInLocalStorage.value.dateOverrides);
 const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
 const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
-// watch(weeklyAvailability, (updatedWeeklyAvailability) => {
-//     loadStoredValue();
-//     console.log("updatedWeeklyAvailability: ", updatedWeeklyAvailability);
-// });
-
-// watch(overrideDates, (updatedOverrideDates) => {
-//     console.log("updatedOverrideDates: ", updatedOverrideDates);
-// });
-
-// watch(overrideTimes, (updatedOverrideTimes) => {
-//     console.log("updatedOverrideTimes: ", updatedOverrideTimes);
-// });
-
 const days = ref({
     monday: [true, timeItems()[36], true, timeItems()[20], false], // [checked true/false, from, am(true), until, pm(false)]
     tuesday: [true, timeItems()[36], true, timeItems()[20], false],
@@ -57,8 +44,6 @@ function loadStoredValue() {
             value[0] = false;
         }
     }
-    console.log("days in loadStoredValue(): ",  days.value);
-
     // overrideDates e.g. [Sat Aug 05 2023 10:02:00 GMT+0100 (Irish Standard Time)]
     // overrideTimes e.g. [["02:45", "05:45", false, false]]
     if (dateAvailability.value.length > 0) {
@@ -84,6 +69,7 @@ function loadStoredValue() {
         });
     }
 }
+
 loadStoredValue();
 
 function weeklyDaysTimes() {
@@ -107,33 +93,26 @@ function overrideDatesTimes() {
         let until = removeApmFromTimeArr([timeArr[1], timeArr[3]]);
         return from.concat(until);
     });
-    // console.log("times: ", times);
 
     // picked date from Date picker
     const dates = overrideDates.value.map((date) => {
         console.log("date before getYear, getMonth, getDay: ", date);
         return [date.getFullYear(), date.getMonth(), date.getDate()];
     });
-    // console.log("dates: ", dates);
 
     // merge date(from date picker) and time(from combobox)
     // here, convert time from Irish Standard Time to GMT (+1 hour) with getTimeezondOffset
     const datesTimesMerged = dates.map((date, i) => {
         const fromObj = () => {
             const dateObj = new Date(date[0], date[1], date[2], times[i][0], times[i][1]);
-            // const tzOffset = dateObj.getTimezoneOffset() * 60 * 1000;
-            // return new Date(dateObj.getTime() - tzOffset);
             return new Date(dateObj.getTime());
         }
         const untilObj = () => {
             const dateObj = new Date(date[0], date[1], date[2], times[i][2], times[i][3]);
-            // const tzOffset = dateObj.getTimezoneOffset() * 60 * 1000;
-            // return new Date(dateObj.getTime() - tzOffset);
             return new Date(dateObj.getTime());
         }
         return [fromObj(), untilObj()];
     });
-    // console.log("date&time merging result: ", datesTimesMerged);
     return datesTimesMerged;
 }
 

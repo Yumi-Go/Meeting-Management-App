@@ -235,9 +235,6 @@ export function useFirestore() {
         }
     }
 
-
-
-
     return {
         allUsers,
         addUser,

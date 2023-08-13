@@ -65,13 +65,19 @@ export function useDateTime() {
     }
 
     function formatDateStr(date) { // e.g. Date object => '2023-07-12'
-        return date.toISOString().split('T')[0];;
+        return date.toISOString().split('T')[0];
     }
 
-    function formatDateStrWithTimezone(date) { // e.g. Date object => '2023-07-12'
+    function formatDateStrWithTimezone(date) { // e.g. Date object => '2023-07-12' with timezone applied
         const tzOffset = date.getTimezoneOffset() * 60 * 1000;
-        return new Date(date.getTime() - tzOffset).toISOString().split('T')[0];;
+        return new Date(date.getTime() - tzOffset).toISOString().split('T')[0];
     }
+
+    function dateWithTimezone(date) { // e.g. Date object => Date object with timezone applied
+        const tzOffset = date.getTimezoneOffset() * 60 * 1000;
+        return new Date(date.getTime() - tzOffset);
+    }
+
 
     function formatStartEndTime(time) { // e.g. 09:00 am - 05:00 pm
  
@@ -97,6 +103,7 @@ export function useDateTime() {
         generateApmWithTimeArr,
         formatDateStr,
         formatDateStrWithTimezone,
+        dateWithTimezone,
         getTimeApm,
         getDuration
     }

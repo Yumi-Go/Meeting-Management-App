@@ -9,11 +9,13 @@ import { onAuthStateChanged,
     updatePassword
 } from "firebase/auth";
 import { useFirestore } from './useFirestore';
+import { useDateTime } from './useDateTime';
 
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const currentUser = ref(auth.currentUser);
 
 const { getUserInfoByUID } = useFirestore();
+const { dateWithTimezone } = useDateTime();
 
 const isUserReAuthenticated = ref(false);
 const isPasswordChanged = ref(false);
@@ -27,8 +29,8 @@ export function useAuth() {
                 getUserInfoByUID(user.uid)
                 .then(info => {
                     info.dateOverrides.forEach(fromUntilPairObj => {
-                        fromUntilPairObj.from = fromUntilPairObj.from.toDate();
-                        fromUntilPairObj.until = fromUntilPairObj.until.toDate();
+                        fromUntilPairObj.from = dateWithTimezone(fromUntilPairObj.from.toDate());
+                        fromUntilPairObj.until = dateWithTimezone(fromUntilPairObj.until.toDate());
                     });
                     currentUserInLocalStorage.value = info;
                 });
