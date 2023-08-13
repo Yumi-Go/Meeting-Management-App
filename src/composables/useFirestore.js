@@ -5,7 +5,6 @@ import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
 import { useDateTime } from '../composables/useDateTime'
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
-const { formatDateStrWithTimezone } = useDateTime();
 const searchedUsers = useLocalStorage('searchedUsers', []);
 const allUsers = ref([]);
 
@@ -209,15 +208,15 @@ export function useFirestore() {
 
     async function addDateOverrides(overrideObjsArr) {
         const docRef = doc(db, "users", auth.currentUser.uid);
+        const datesArr = [];
         await overrideObjsArr.forEach(fromUntilTimePair => {
             // console.log("fromUntilTimePair: ", fromUntilTimePair);
+            datesArr.push({
+                from: Timestamp.fromDate(fromUntilTimePair[0]),
+                until: Timestamp.fromDate(fromUntilTimePair[1])
+            });
             updateDoc(docRef, {
-                dateOverrides: arrayUnion(
-                    {
-                        from: Timestamp.fromDate(fromUntilTimePair[0]),
-                        until: Timestamp.fromDate(fromUntilTimePair[1])
-                    }
-                )
+                dateOverrides: datesArr
             });
         });
     }

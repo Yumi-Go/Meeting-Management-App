@@ -8,11 +8,11 @@ import { addDays } from 'date-fns';
 import { mdiCheckboxMarkedCirclePlusOutline, mdiCalendarBlank, mdiCalendarBlankOutline, mdiCalendarStart, mdiCalendarStartOutline, mdiCalendarEnd, mdiCalendarEndOutline, mdiDelete, mdiTrashCanOutline } from '@mdi/js';
 
 const { updateWeeklyAvailability, addDateOverrides } = useFirestore();
-const { timeItems, formatDateStrWithTimezone } = useDateTime();
+const { timeItems, formatDateStr } = useDateTime();
 
 const props = defineProps({
-    overrideDates: Array,
-    overrideTimes: Array,
+    overrideDates: Array, // e.g. [Sat Aug 05 2023 10:02:00 GMT+0100 (Irish Standard Time)]
+    overrideTimes: Array, // e.g. [["02:45", "05:45", false, false]]
 });
 
 const selectedDate = ref(new Date());
@@ -58,7 +58,7 @@ watch(selectedDate, (newDate) => {
                 <v-list-item-title>
                     <div class="d-flex flex-row align-center">
                         <div class="tw-text-red-900">
-                            {{ formatDateStrWithTimezone(date) }}
+                            {{ formatDateStr(date) }}
                         </div>
                         <div class="d-flex flex-row ml-5">
                             <div class="d-flex align-center mr-0">

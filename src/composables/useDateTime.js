@@ -64,6 +64,10 @@ export function useDateTime() {
         
     }
 
+    function formatDateStr(date) { // e.g. Date object => '2023-07-12'
+        return date.toISOString().split('T')[0];;
+    }
+
     function formatDateStrWithTimezone(date) { // e.g. Date object => '2023-07-12'
         const tzOffset = date.getTimezoneOffset() * 60 * 1000;
         return new Date(date.getTime() - tzOffset).toISOString().split('T')[0];;
@@ -91,6 +95,7 @@ export function useDateTime() {
         timeItemsIn24hrs,
         removeApmFromTimeArr,
         generateApmWithTimeArr,
+        formatDateStr,
         formatDateStrWithTimezone,
         getTimeApm,
         getDuration

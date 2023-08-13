@@ -12,10 +12,11 @@ import { mdiCalendarClock, mdiCalendarEdit } from '@mdi/js';
 
 const { currentUser } = useAuth();
 const { getUserInfoByUID, updateWeeklyAvailability, addDateOverrides } = useFirestore();
-const { timeItems, timeItemsIn24hrs, removeApmFromTimeArr, generateApmWithTimeArr } = useDateTime();
+const { format2digits, timeItems, timeItemsIn24hrs, removeApmFromTimeArr, generateApmWithTimeArr, formatDateStr } = useDateTime();
 const router = useRouter();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const weeklyAvailability = ref(currentUserInLocalStorage.value.weeklyAvailability);
+const dateAvailability = ref(currentUserInLocalStorage.value.dateOverrides);
 const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
 const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
 
@@ -43,7 +44,6 @@ const days = ref({
 });
 
 function loadStoredValue() {
-    // const weeklyAvailability = currentUserInLocalStorage.value.weeklyAvailability;
     // let isWeeklyAvailabilityEmpty = true;
     for (const [key, value] of Object.entries(days.value)) {
         if (Object.keys(weeklyAvailability.value).includes(key)) {
@@ -58,10 +58,33 @@ function loadStoredValue() {
         }
     }
     console.log("days in loadStoredValue(): ",  days.value);
+
+    // overrideDates e.g. [Sat Aug 05 2023 10:02:00 GMT+0100 (Irish Standard Time)]
+    // overrideTimes e.g. [["02:45", "05:45", false, false]]
+    if (dateAvailability.value.length > 0) {
+        overrideDates.value = [];
+        overrideTimes.value = [];
+        dateAvailability.value.forEach(overrideObj => {
+            overrideDates.value.push(new Date(overrideObj.from));
+            const times = [null, null, null, null];
+            for (const [key, value] of Object.entries(overrideObj)) {
+                const hourMinuteIndex = key === 'from' ? 0 : 1;
+                const apmIndex = key === 'from' ? 2 : 3;
+                const hourMinute = value.split("T")[1].slice(0, 5);
+                const hour = value.split("T")[1].slice(0, 2);
+                const minute = value.split("T")[1].slice(3, 5);
+                times[apmIndex] = hour < 12 ? true : false;
+                if (times[apmIndex]) {
+                    times[hourMinuteIndex] = hourMinute;
+                } else {
+                    times[hourMinuteIndex] = `${format2digits(hour - 12)}:${minute}`
+                }
+            }
+            overrideTimes.value.push(times);
+        });
+    }
 }
 loadStoredValue();
-
-
 
 function weeklyDaysTimes() {
     const dayOfWeek = {};
