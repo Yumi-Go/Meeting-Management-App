@@ -215,9 +215,9 @@ export function useFirestore() {
                 from: Timestamp.fromDate(fromUntilTimePair[0]),
                 until: Timestamp.fromDate(fromUntilTimePair[1])
             });
-            updateDoc(docRef, {
-                dateOverrides: datesArr
-            });
+        });
+        await updateDoc(docRef, {
+            dateOverrides: datesArr
         });
     }
 
