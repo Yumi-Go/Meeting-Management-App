@@ -199,7 +199,6 @@ export function useFirestore() {
     
     //// Availability
     async function updateWeeklyAvailability(days) {
-        console.log("days in updateWeeklyAvailability: ", days);
         const docRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(docRef, {
             weeklyAvailability: days
@@ -218,6 +217,16 @@ export function useFirestore() {
         });
         await updateDoc(docRef, {
             dateOverrides: datesArr
+        });
+    }
+
+    async function deleteDateOverrides(fromUntilObj) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        await updateDoc(docRef, {
+            dateOverrides: arrayRemove({
+                from: Timestamp.fromDate(fromUntilObj[0]),
+                until: Timestamp.fromDate(fromUntilObj[1])
+            })
         });
     }
 
@@ -251,6 +260,7 @@ export function useFirestore() {
         readMessage,
         updateWeeklyAvailability,
         addDateOverrides,
+        deleteDateOverrides,
         getMeetingByDocID
     }
 }

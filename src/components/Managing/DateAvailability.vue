@@ -15,18 +15,24 @@ const props = defineProps({
     overrideTimes: Array, // e.g. [["02:45", "05:45", false, false]]
 });
 
+const emit = defineEmits(['deleteDateAvailability']);
+
 const selectedDate = ref(new Date());
 
 watch(selectedDate, (newDate) => {
     props.overrideDates.push(newDate);
-    console.log("props.overrideDates: ", props.overrideDates);
+    // console.log("props.overrideDates: ", props.overrideDates);
     props.overrideTimes.push([timeItems()[36], timeItems()[20], true, true]);
-    console.log("props.overrideTimes: ", props.overrideTimes);
+    // console.log("props.overrideTimes: ", props.overrideTimes);
 });
 
 // watch(props.overrideTimes, (newTime) => {
 //     console.log("props.overrideTimes: ", newTime);
 // });
+
+function deleteIconClick(fromUntilObjIndex) {
+    emit('deleteDateAvailability', fromUntilObjIndex);
+}
 
 </script>
 
@@ -127,7 +133,10 @@ watch(selectedDate, (newDate) => {
                     </div>
                 </v-list-item-title>
                 <template #append>
-                    <v-icon :icon="mdiTrashCanOutline" class="ma-0"/>
+                    <v-icon
+                        :icon="mdiTrashCanOutline"
+                        class="ma-0"
+                        @click="deleteIconClick(i)"/>
                 </template>
             </v-list-item>
         </v-list>

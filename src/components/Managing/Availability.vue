@@ -10,8 +10,8 @@ import WeeklyAvailability from './WeeklyAvailability.vue';
 import DateAvailability from './DateAvailability.vue'
 import { mdiCalendarClock, mdiCalendarEdit } from '@mdi/js';
 
-const { currentUser } = useAuth();
-const { getUserInfoByUID, updateWeeklyAvailability, addDateOverrides } = useFirestore();
+const { currentUser, userStateObserver } = useAuth();
+const { getUserInfoByUID, updateWeeklyAvailability, addDateOverrides, deleteDateOverrides } = useFirestore();
 const { format2digits, timeItems, timeItemsIn24hrs, removeApmFromTimeArr, generateApmWithTimeArr, formatDateStr } = useDateTime();
 const router = useRouter();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
@@ -19,6 +19,18 @@ const weeklyAvailability = ref(currentUserInLocalStorage.value.weeklyAvailabilit
 const dateAvailability = ref(currentUserInLocalStorage.value.dateOverrides);
 const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
 const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
+
+watch(currentUserInLocalStorage.value.dateOverrides, (newVal) => {
+    console.log("dateOverrides changed: ", newVal);
+    loadStoredValue();
+});
+watch(overrideDates, (newVal) => {
+    console.log("overrideDates: ", newVal);
+});
+watch(overrideTimes, (newVal) => {
+    console.log("overrideTimes: ", newVal);
+});
+
 
 const days = ref({
     monday: [true, timeItems()[36], true, timeItems()[20], false], // [checked true/false, from, am(true), until, pm(false)]
@@ -96,7 +108,6 @@ function overrideDatesTimes() {
 
     // picked date from Date picker
     const dates = overrideDates.value.map((date) => {
-        console.log("date before getYear, getMonth, getDay: ", date);
         return [date.getFullYear(), date.getMonth(), date.getDate()];
     });
 
@@ -116,9 +127,17 @@ function overrideDatesTimes() {
     return datesTimesMerged;
 }
 
-function saveAvailability() {
+function clickSaveBtn() {
     updateWeeklyAvailability(weeklyDaysTimes());
     addDateOverrides(overrideDatesTimes());
+}
+
+function deleteDateAvailability(fromUntilObjIndex) {
+    console.log("fromUntilObjIndex: ", fromUntilObjIndex);
+    console.log("overrideDatesTimes()[fromUntilObjIndex]: ", overrideDatesTimes()[fromUntilObjIndex]);
+    deleteDateOverrides(overrideDatesTimes()[fromUntilObjIndex]);
+    userStateObserver();
+    loadStoredValue();
 }
 
 </script>
@@ -151,7 +170,6 @@ function saveAvailability() {
             <v-col cols="7" class="">
                 <WeeklyAvailability
                     :days="days"
-                    @saveAvailability="saveAvailability" 
                 />
             </v-col>
             <v-col
@@ -161,6 +179,7 @@ function saveAvailability() {
                 <DateAvailability
                     :overrideDates = "overrideDates"
                     :overrideTimes = "overrideTimes"
+                    @deleteDateAvailability="deleteDateAvailability"
                 />
             </v-col>
         </v-row>
@@ -184,7 +203,7 @@ function saveAvailability() {
                     color="black"
                     class=""
                     variant="tonal"
-                    @click="saveAvailability()"
+                    @click="clickSaveBtn()"
                     type="submit"
                 >
                     Save
