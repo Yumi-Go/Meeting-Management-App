@@ -19,10 +19,14 @@ const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const isConnected = ref(false);
 
-console.log("currentUser: ", auth.currentUser);
-console.log("viewed user: ", popupUser.value);
+console.log("currentUser: ", auth.currentUser.uid);
+console.log("viewed user: ", popupUser.value.uid);
 
 const openMeetingRequestPopup = ref(false);
+
+async function clickRequestConnection() {
+    await requestConnection(auth.currentUser.uid, popupUser.value.uid);
+}
 
 function closeMeetingRequestPopup() {
     openMeetingRequestPopup.value = false;
@@ -70,7 +74,7 @@ function closeMeetingRequestPopup() {
             </v-btn>
             <v-btn
                 v-else-if="!isConnected && auth.currentUser.uid !== popupUser.uid"
-                @click="requestConnection(auth.currentUser.uid, popupUser.uid)"
+                @click="clickRequestConnection"
                 class=""
             >
                 <div>
