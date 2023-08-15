@@ -11,7 +11,6 @@ const { userStateObserver } = useAuth();
 userStateObserver();
 
 const currentUser = useLocalStorage('currentUser', {});
-// const receivedRequests = currentUser.value.meetingRequestsReceived;
 
 const router = useRouter();
 const showAvailability = ref(false);

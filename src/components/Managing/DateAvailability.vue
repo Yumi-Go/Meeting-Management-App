@@ -21,14 +21,8 @@ const selectedDate = ref(new Date());
 
 watch(selectedDate, (newDate) => {
     props.overrideDates.push(newDate);
-    // console.log("props.overrideDates: ", props.overrideDates);
     props.overrideTimes.push([timeItems()[36], timeItems()[20], true, true]);
-    // console.log("props.overrideTimes: ", props.overrideTimes);
 });
-
-// watch(props.overrideTimes, (newTime) => {
-//     console.log("props.overrideTimes: ", newTime);
-// });
 
 function deleteIconClick(fromUntilObjIndex) {
     emit('deleteDateAvailability', fromUntilObjIndex);

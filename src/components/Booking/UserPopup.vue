@@ -15,7 +15,6 @@ const props = defineProps({
 const popupUser = useLocalStorage('popupUser', {});
 popupUser.value = props.user;
 
-// const { currentUser } = useAuth();
 const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const isConnected = ref(false);

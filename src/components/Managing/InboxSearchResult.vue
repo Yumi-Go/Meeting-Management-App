@@ -1,7 +1,6 @@
 <script setup>
 import { ref, watch, computed, onBeforeMount } from "vue"
 import { useFirestore } from "../../composables/useFirestore";
-import { useMeeting } from "../../composables/useMeeting";
 import { useDateTime } from '../../composables/useDateTime';
 import { useFormat } from "../../composables/useFormat";
 import { useLocalStorage } from '@vueuse/core';

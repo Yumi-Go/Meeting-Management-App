@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onBeforeMount, watch } from 'vue'
-import UserRequestPopup from './UserRequestPopup.vue';
+import UserPopup from './UserPopup.vue';
 import { mdiOpenInNew } from '@mdi/js';
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 import { useSearch } from '../../composables/useSearch';
@@ -82,7 +82,7 @@ function clickUser(user) {
                         v-model="openUserPopup"
                         width="auto"
                     >
-                        <UserRequestPopup
+                        <UserPopup
                             :user="popupUser"
                             width="80vw"/>
                     </v-dialog>
