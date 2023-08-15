@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, watchEffect } from 'vue'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../../composables/useAuth';
@@ -16,21 +16,9 @@ const { format2digits, timeItems, timeItemsIn24hrs, removeApmFromTimeArr, genera
 const router = useRouter();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const weeklyAvailability = ref(currentUserInLocalStorage.value.weeklyAvailability);
-const dateAvailability = ref(currentUserInLocalStorage.value.dateOverrides);
 const overrideDates = ref([]); // [[date, fromTime, untilTime], [date, fromTime, untilTime], ...]
 const overrideTimes = ref([]); // [09:00am(initial value of From), 05:00pm(initial value of Until), AM(true)/PM(false) in From time, AM(true)/PM(false) in Until time]
-
-watch(currentUserInLocalStorage.value.dateOverrides, (newVal) => {
-    console.log("dateOverrides changed: ", newVal);
-    loadStoredValue();
-});
-watch(overrideDates, (newVal) => {
-    console.log("overrideDates: ", newVal);
-});
-watch(overrideTimes, (newVal) => {
-    console.log("overrideTimes: ", newVal);
-});
-
+const renderChildComponent = ref(true);
 
 const days = ref({
     monday: [true, timeItems()[36], true, timeItems()[20], false], // [checked true/false, from, am(true), until, pm(false)]
@@ -40,6 +28,15 @@ const days = ref({
     friday: [true, timeItems()[36], true, timeItems()[20], false],
     saturday: [false, timeItems()[36], true, timeItems()[20], false],
     sunday: [false, timeItems()[36], true, timeItems()[20], false]
+});
+
+watchEffect(() => {
+    if (currentUserInLocalStorage.value) {
+        renderChildComponent.value = true;
+        loadStoredValue();
+    } else {
+        renderChildComponent.value = false;
+    }
 });
 
 function loadStoredValue() {
@@ -58,10 +55,11 @@ function loadStoredValue() {
     }
     // overrideDates e.g. [Sat Aug 05 2023 10:02:00 GMT+0100 (Irish Standard Time)]
     // overrideTimes e.g. [["02:45", "05:45", false, false]]
-    if (dateAvailability.value.length > 0) {
-        overrideDates.value = [];
-        overrideTimes.value = [];
-        dateAvailability.value.forEach(overrideObj => {
+    const dateAvailability = currentUserInLocalStorage.value.dateOverrides;
+    overrideDates.value = [];
+    overrideTimes.value = [];
+    if (dateAvailability.length > 0) {
+        dateAvailability.forEach(overrideObj => {
             overrideDates.value.push(new Date(overrideObj.from));
             const times = [null, null, null, null];
             for (const [key, value] of Object.entries(overrideObj)) {
@@ -176,11 +174,13 @@ function deleteDateAvailability(fromUntilObjIndex) {
                 cols="5"
                 class="tw-border-l-2 tw-border-gray-100"
             >
+            <div v-if="renderChildComponent">
                 <DateAvailability
                     :overrideDates = "overrideDates"
                     :overrideTimes = "overrideTimes"
                     @deleteDateAvailability="deleteDateAvailability"
                 />
+            </div>
             </v-col>
         </v-row>
         <v-row class="mt-10">
