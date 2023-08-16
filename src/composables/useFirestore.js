@@ -15,7 +15,7 @@ export function useFirestore() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             console.log("existing user");
-            console.log("existing user data:", docSnap.data());
+            // console.log("existing user data:", docSnap.data());
         } else {
             await setDoc(docRef, {
                 email: email,
@@ -85,9 +85,7 @@ export function useFirestore() {
         querySnapshot.forEach((doc) => {
             searchedUsers.value.push({...doc.data(), uid: doc.id, selected: false});
         });
-        console.log("result all users in useFirestore: ", searchedUsers.value);
         allUsers.value = searchedUsers.value;
-        console.log("allUsers: ", allUsers.value);
         // return searchedUsers.value;
     }
 
@@ -162,8 +160,6 @@ export function useFirestore() {
 
     async function acceptMeetingRequest(senderUid, receiverUid, meetingObj) {
         const meetingRef = await addDoc(collection(db, "meetings"), meetingObj);
-        console.log("meeting doc written with ID: ", meetingRef.id);
-
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
             meetings: arrayUnion(meetingRef.id),

@@ -11,9 +11,6 @@ const { addUser } = useFirestore();
 var uiConfig = {
     callbacks: {
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-            console.log("authResult: ", authResult);
-            console.log("uid in authResult: ", authResult.user.uid);
-            console.log("email in authResult: ", authResult.user.email);
             addUser(authResult.user.uid, authResult.user.email);
             return false;
         },
