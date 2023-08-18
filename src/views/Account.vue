@@ -14,15 +14,7 @@ const { updateUserInfo, getUserInfoByUID } = useFirestore();
 const { currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
 
 userStateObserver();
-
-
 const currentUserInLocalStorage = useLocalStorage("currentUser", null, { serializer: StorageSerializers.object });
-
-// const currentUserInLocalStorage = userStateObserver();
-
-console.log("currentUserInLocalStorage in Setting.vue: ", currentUserInLocalStorage.value);
-console.log("currentUserInLocalStorage.fName in Setting.vue: ", currentUserInLocalStorage.value.fName);
-
 const fName = ref(currentUserInLocalStorage.value.fName);
 const mName = ref (currentUserInLocalStorage.value.mName);
 const lName = ref(currentUserInLocalStorage.value.lName);
@@ -32,7 +24,6 @@ const position = ref(currentUserInLocalStorage.value.position);
 const role = ref(currentUserInLocalStorage.value.role);
 const location = ref(currentUserInLocalStorage.value.location);
 const timezone = ref(currentUserInLocalStorage.value.timezone);
-console.log("email in currentUserInLocalStorage.value: ", currentUserInLocalStorage.value.email);
 
 const rules = {
     fName: {
@@ -140,15 +131,7 @@ const openPasswordResetPopup = ref(false);
 function closePasswordResetPopup() {
     openPasswordResetPopup.value = false;
 }
-
-// const timeZones = Intl.supportedValuesOf('timeZone')
-
-// timeZones.forEach(timeZone => {
-//     console.log(timeZone)
-// });
-
 </script>
-
 
 <template>
     <p
