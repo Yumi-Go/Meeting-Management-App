@@ -142,7 +142,7 @@ function handleDateClick(arg) {
 </script>
 
 <template>
-    <div class="tw-bg-white">
+    <div class="bg-white">
         <FullCalendar :options="calendarOptions"/>
     </div>
 </template>

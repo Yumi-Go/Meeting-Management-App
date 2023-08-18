@@ -19,7 +19,7 @@ var uiConfig = {
         }
     },
     signInFlow: 'popup',
-    signInSuccessUrl: '/setting',
+    signInSuccessUrl: '/account',
     signInOptions: [
         {
             provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
@@ -36,10 +36,13 @@ const router = useRouter();
 </script>
 
 <template>
-    <v-container fluid class="tw-h-[50vh] tw-bg-red-500">
-        <v-row class="tw-h-full tw-grid tw-place-content-center tw-bg-blue-100">
+    <v-container fluid class="tw-h-full">
+        <!-- <div class="tw-text-center tw-text-5xl tw-font-extrabold tw-text-black/30 tw-uppercase">
+            <p>Meeting Scheduling & Management App</p>
+        </div> -->
+        <div class="tw-h-full tw-grid tw-place-content-center tw-bg-white/70">
             <div id="firebaseui-auth-container"></div>
-            <div id="loader" class="tw-font-black">Loading...</div>
-        </v-row>
+            <div id="loader" class="tw-text-center tw-font-black">Loading...</div>
+        </div>
     </v-container>
 </template>

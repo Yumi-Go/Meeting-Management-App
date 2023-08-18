@@ -39,7 +39,7 @@ function changePasswordBtnClick() {
             userStateObserver();
                 alert("Password is changed successfully!");
                 emit('closePasswordResetPopup');
-                router.push('/setting');
+                router.push('/account');
             } else {
                 alert("Fail to change password.. something is wrong");
             }

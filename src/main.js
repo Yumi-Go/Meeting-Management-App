@@ -2,9 +2,9 @@ import { createApp } from 'vue'
 import './index.css'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from './views/HomeView.vue'
+import Home from './views/Home.vue'
 import SignIn from './components/SignIn.vue'
-import Setting from './views/Setting.vue'
+import Account from './views/account.vue'
 import Booking from './views/Booking.vue'
 import Managing from './views/Managing.vue'
 import 'vuetify/styles'
@@ -24,9 +24,9 @@ const router = createRouter({
       component: Home,
     },
     {
-      path: '/setting',
-      name: 'Setting',
-      component: Setting,
+      path: '/account',
+      name: 'Account',
+      component: Account,
     },
     {
       path: '/booking',

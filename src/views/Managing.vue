@@ -74,6 +74,7 @@ checkUnreadMsg();
 </script>
 
 <template>
+    <div class="d-flex flex-column w-100">
     <div class="d-flex justify-space-between">
         <div class="text-left">
             <v-btn
@@ -150,16 +151,13 @@ checkUnreadMsg();
                     </v-btn>
                 </div>
             </div>
-            <div>
-
-
+            <div class="w-100">
                 <Calendar/>
-                
-
             </div>
 
 
         </div>
+    </div>
     </div>
 
 
