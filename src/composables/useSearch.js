@@ -18,8 +18,6 @@ export function useSearch() {
         } else {
             await getAllUserInfo();
         }
-        // userSearchResult.value = searchedUsers.value;
-        // console.log("userSearchResult: ", userSearchResult.value);
     }
     
 

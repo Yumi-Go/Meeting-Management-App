@@ -2,11 +2,12 @@ import { createApp } from 'vue'
 import './index.css'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from './views/Home.vue'
 import SignIn from './components/SignIn.vue'
+import Home from './views/Home.vue'
 import Account from './views/Account.vue'
 import Booking from './views/Booking.vue'
 import Managing from './views/Managing.vue'
+import Inbox from './views/Inbox.vue'
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
@@ -38,6 +39,11 @@ const router = createRouter({
       name: 'Managing',
       component: Managing,
     },
+    {
+      path: '/inbox',
+      name: 'Inbox',
+      component: Inbox,
+    }
   ]
 })
 

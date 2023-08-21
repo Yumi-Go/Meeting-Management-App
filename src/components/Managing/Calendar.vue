@@ -5,6 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import rrulePlugin from '@fullcalendar/rrule'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import { mdiViewList } from '@mdi/js';
 import { useAuth } from '../../composables/useAuth'
 import { useCalendar } from '../../composables/useCalendar'
 import { useDateTime } from '../../composables/useDateTime'
@@ -37,6 +38,7 @@ watch(currentUser, (updatedCurrentUser) => {
 const calendarOptions = ref({
     plugins: [ dayGridPlugin, interactionPlugin, rrulePlugin, timeGridPlugin ],
     initialView: 'timeGridWeek',
+    height: 600,
     headerToolbar: {
         left: 'prev,next',
         center: 'title',
@@ -130,7 +132,7 @@ function addMeetingsToCalendar() {
 function addEventsToCalendar() {
     calendarOptions.value.events = [];
     addAvailabilityToCalendar();
-    addMeetingsToCalendar()
+    addMeetingsToCalendar();
 }
 
 addEventsToCalendar();

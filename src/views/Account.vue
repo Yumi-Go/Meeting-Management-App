@@ -6,7 +6,9 @@ import { auth, db } from '../firebaseConfig'
 import { useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, helpers, minLength, maxLength, sameAs } from '@vuelidate/validators'
-import PasswordResetPopup from '../components/Setting/PasswordResetPopup.vue';
+import SignIn from '../components/SignIn.vue'
+import TabHeader from '../components/TabHeader.vue'
+import PasswordResetPopup from '../components/Setting/PasswordResetPopup.vue'
 
 const router = useRouter();
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
@@ -15,6 +17,7 @@ const { currentUser, userStateObserver, reAuthentication, changePassword } = use
 
 userStateObserver();
 const currentUserInLocalStorage = useLocalStorage("currentUser", null, { serializer: StorageSerializers.object });
+const tabHeaderText = 'account';
 const fName = ref(currentUserInLocalStorage.value.fName);
 const mName = ref (currentUserInLocalStorage.value.mName);
 const lName = ref(currentUserInLocalStorage.value.lName);
@@ -134,133 +137,148 @@ function closePasswordResetPopup() {
 </script>
 
 <template>
-    <p
-        v-for="error of v$.$errors"
-        :key="error.$uid"
-    >
-    <strong> {{ error.$message }} </strong>
-    </p>
-    <p v-if="currentUser === null">No exist user logged in</p>
-    <v-sheet v-else width="800" class="mx-auto ma-10 pa-5">
-        <v-form ref="form" @submit.prevent>
-            <v-container>
-                <v-row>
-                    <v-col class="mr-2 pa-0">
-                        <v-text-field
-                            v-model="fName"
-                            label="First Name"
-                            required
-                        />
-                    </v-col>
-                    <v-col class="mr-2 pa-0">
-                        <v-text-field
-                            v-model="mName"
-                            label="Middle Name (optional)"
-                        />
-                    </v-col>
-                    <v-col class="ma-0 pa-0">
-                        <v-text-field
-                            v-model="lName"
-                            label="Last Name"
-                            required
-                        />
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col class="mr-2 pa-0">
-                        <v-text-field
-                            v-model="organization"
-                            label="Organization"
-                        />
-                    </v-col>
-                    <v-col class="ma-0 pa-0">
-                        <v-text-field
-                            v-model="department"
-                            label="Department"
-                        />
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col class="mr-2 pa-0">
-                        <v-text-field
-                            v-model="position"
-                            label="Position"
-                        />
-                    </v-col>
-                    <v-col class="ma-0 pa-0">
-                        <v-text-field
-                            v-model="role"
-                            label="Role"
-                        />
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col class="mr-2 pa-0">
-                        <v-text-field
-                            v-model="location"
-                            label="Location"
-                        />
-                    </v-col>
-                    <v-col class="ma-0 pa-0">
-                        <v-text-field
-                            v-model="timezone"
-                            label="Time Zone"
-                        />
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-text-field
-                        v-model="currentUser.email"
-                        label="Email"
-                        disabled
-                    />
-                </v-row>
 
-                <v-row>
-                    <v-btn
-                        variant="tonal"
-                        class="tw-w-full tw-mb-10"
+    <SignIn v-if="Object.keys(currentUser).length < 1"/>
+    <v-container v-else fluid class="d-flex flex-column">
+        <v-row>
+            <TabHeader
+                :tabHeaderText="tabHeaderText"
+            />
+        </v-row>
+        <v-row class="flex-1-1-100">
+            <div class="w-100 d-flex flex-column">
+                <div class="d-flex">
+                    <p
+                        v-for="error of v$.$errors"
+                        :key="error.$uid"
                     >
-                        Change Password
-                        <v-dialog
-                            v-model="openPasswordResetPopup"
-                            activator="parent"
-                            width="500"
-                        >
-                        <PasswordResetPopup
-                            v-if="openPasswordResetPopup"
-                            @closePasswordResetPopup="closePasswordResetPopup"/>
-                        </v-dialog>
-                    </v-btn>
-                </v-row>
-                <v-row>
-                    <v-col class="mr-1 pa-0">
-                        <v-btn
-                            width="100%"
-                            height="40"
-                            color="indigo-darken-3"
-                            variant="outlined"
-                            class=""
-                            @click="router.push('/')"
-                        >
-                            Cancel
-                        </v-btn>
-                    </v-col>
-                    <v-col class="ml-1 pa-0">
-                        <v-btn
-                            width="100%"
-                            height="40"
-                            color="indigo-darken-3"
-                            variant="flat"
-                            class=""
-                            @click="submit"
-                            type="submit"
-                        >
-                            Save
-                        </v-btn>
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-form>
-    </v-sheet>
+                    <strong> {{ error.$message }} </strong>
+                    </p>
+                    <p v-if="currentUser === null">No exist user logged in</p>
+                    <v-sheet v-else width="100vw" class="pa-5">
+                        <v-form ref="form" @submit.prevent>
+                            <v-container>
+                                <v-row>
+                                    <v-col class="mr-2 pa-0">
+                                        <v-text-field
+                                            v-model="fName"
+                                            label="First Name"
+                                            required
+                                        />
+                                    </v-col>
+                                    <v-col class="mr-2 pa-0">
+                                        <v-text-field
+                                            v-model="mName"
+                                            label="Middle Name (optional)"
+                                        />
+                                    </v-col>
+                                    <v-col class="ma-0 pa-0">
+                                        <v-text-field
+                                            v-model="lName"
+                                            label="Last Name"
+                                            required
+                                        />
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col class="mr-2 pa-0">
+                                        <v-text-field
+                                            v-model="organization"
+                                            label="Organization"
+                                        />
+                                    </v-col>
+                                    <v-col class="ma-0 pa-0">
+                                        <v-text-field
+                                            v-model="department"
+                                            label="Department"
+                                        />
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col class="mr-2 pa-0">
+                                        <v-text-field
+                                            v-model="position"
+                                            label="Position"
+                                        />
+                                    </v-col>
+                                    <v-col class="ma-0 pa-0">
+                                        <v-text-field
+                                            v-model="role"
+                                            label="Role"
+                                        />
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col class="mr-2 pa-0">
+                                        <v-text-field
+                                            v-model="location"
+                                            label="Location"
+                                        />
+                                    </v-col>
+                                    <v-col class="ma-0 pa-0">
+                                        <v-text-field
+                                            v-model="timezone"
+                                            label="Time Zone"
+                                        />
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-text-field
+                                        v-model="currentUser.email"
+                                        label="Email"
+                                        disabled
+                                    />
+                                </v-row>
+
+                                <v-row>
+                                    <v-btn
+                                        variant="tonal"
+                                        class="tw-w-full tw-mb-10"
+                                    >
+                                        Change Password
+                                        <v-dialog
+                                            v-model="openPasswordResetPopup"
+                                            activator="parent"
+                                            width="500"
+                                        >
+                                        <PasswordResetPopup
+                                            v-if="openPasswordResetPopup"
+                                            @closePasswordResetPopup="closePasswordResetPopup"/>
+                                        </v-dialog>
+                                    </v-btn>
+                                </v-row>
+                                <v-row>
+                                    <v-col class="mr-1 pa-0">
+                                        <v-btn
+                                            width="100%"
+                                            height="40"
+                                            color="indigo-darken-3"
+                                            variant="outlined"
+                                            class=""
+                                            @click="router.push('/')"
+                                        >
+                                            Cancel
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col class="ml-1 pa-0">
+                                        <v-btn
+                                            width="100%"
+                                            height="40"
+                                            color="indigo-darken-3"
+                                            variant="flat"
+                                            class=""
+                                            @click="submit"
+                                            type="submit"
+                                        >
+                                            Save
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-form>
+                    </v-sheet>
+                </div>
+            </div>
+        </v-row>
+    </v-container>
 </template>

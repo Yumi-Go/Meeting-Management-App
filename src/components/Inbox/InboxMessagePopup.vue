@@ -19,8 +19,6 @@ const props = defineProps({
 });
 const emit = defineEmits(['closeInboxMessagePopup']);
 
-// console.log("requestedMeetingObj: ", props.requestedMeetingObj);
-
 const senderUid = Object.keys(props.requestedMeetingObj)[0];
 const meetingObj = Object.values(props.requestedMeetingObj)[0];
 const senderObj = ref({});
@@ -28,15 +26,9 @@ const senderObj = ref({});
 function getSenderObj() {
     getUserInfoByUID(senderUid)
     .then(sender => {
-        // console.log("sender: ", sender);
         senderObj.value = sender;
-        // console.log("senderObj: ", senderObj.value);
     });
 }
-
-// console.log("meetingObj: ", meetingObj);
-
-
 
 // 여기 하다 말음.. 
 function getMeetingObjToDisplay() {
@@ -58,36 +50,6 @@ function getMeetingObjToDisplay() {
 }
 
 getMeetingObjToDisplay();
-
-
-
-// async function getParticipants(uidsArr) {
-//     const participants = [];
-//     console.log("uidsArr: ", uidsArr);
-//     if (uidsArr.length > 0) {
-//         await uidsArr.forEach((uid) => {
-//             console.log("uid: ", uid);
-//             getUserInfoByUID(uid)
-//             .then((obj) => {
-//                 console.log("obj: ", obj);
-//                 participants.push(obj);
-//             })
-//         });
-//     }
-//     console.log("participants: ", participants);
-//     return participants;
-// }
-
-// const participants = ref({});
-// function getParticipant(uid) {
-//     participants.value = {};
-//     getUserInfoByUID(uid)
-//     .then(obj => {
-//         console.log("obj: ", obj);
-//         participants.value = obj;
-//         console.log("participants: ", participants.value);
-//     });
-// }
 
 async function clickAcceptBtn() {
     console.log("meetingObj before storing: ", meetingObj);

@@ -11,27 +11,10 @@ const inboxSearchResult = ref([]);
 const currentUserInLocalStorage = userStateObserver();
 const { inboxSearch, getInboxSearchResult } = useSearch();
 
-// function getInboxSearchResult() {
-//     if (currentUserInLocalStorage.meetingRequestsReceived.length > 0) {
-//         if (inboxSearch.value.length > 0) {
-//             const input = inboxSearch.value.toLowerCase();
-//             inboxSearchResult.value = currentUserInLocalStorage.meetingRequestsReceived.filter(
-//                 request => request.toLowerCase().match(input));
-//         } else {
-//             inboxSearchResult.value = currentUserInLocalStorage.meetingRequestsReceived;
-//         }
-//     } else {
-//         inboxSearchResult.value = [];
-//     }
-// }
-
 </script>
 
 <template>
     <v-container fluid class="">
-        <!-- <v-row>
-            {{ inboxSearchResult }}
-        </v-row> -->
         <v-row>
             <v-text-field
                 v-model="inboxSearch"
@@ -40,7 +23,7 @@ const { inboxSearch, getInboxSearchResult } = useSearch();
                 bg-color=""
                 single-line
                 hide-details
-                class="tw-mb-1"
+                class="ma-0"
                 variant="outlined"
                 @keypress.enter="getInboxSearchResult"
             >
@@ -53,7 +36,6 @@ const { inboxSearch, getInboxSearchResult } = useSearch();
                     </v-icon>
                 </template>
             </v-text-field>
-
         </v-row>
     </v-container>
 

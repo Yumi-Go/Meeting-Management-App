@@ -14,7 +14,7 @@ const currentUser = useLocalStorage('currentUser', {});
 </script>
 
 <template>
-    <SignIn v-if="currentUser.length < 1"/>
+    <SignIn v-if="Object.keys(currentUser).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row>
             <TabHeader
@@ -22,6 +22,7 @@ const currentUser = useLocalStorage('currentUser', {});
             />
         </v-row>
         <v-row class="flex-1-1-100 tw-bg-black/10">
+            hahaha
         </v-row>
     </v-container>
 </template>

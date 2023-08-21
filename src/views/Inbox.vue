@@ -1,28 +1,22 @@
 <script setup>
+import { ref } from "vue"
 import { useAuth } from '../composables/useAuth'
-import { auth } from '../firebaseConfig'
 import { useLocalStorage } from '@vueuse/core'
-import { useFormat } from '../composables/useFormat'
 import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
-import SearchTitle from "../components/Booking/SearchTitle.vue";
-import SearchBar from "../components/Booking/SearchBar.vue";
-import SearchResult from "../components/Booking/SearchResult.vue";
+import InboxSearchBar from '../components/Inbox/InboxSearchBar.vue'
+import InboxSearchResult from '../components/Inbox/InboxSearchResult.vue'
 
-
-const { userStateObserver, logOut } = useAuth();
-const { capitalize } = useFormat();
+const { userStateObserver } = useAuth();
+const currentUser = useLocalStorage('currentUser', {});
 
 userStateObserver();
-const currentUser = useLocalStorage('currentUser', {});
-const tabHeaderText = "Book a Meeting"
 
+const tabHeaderText = 'inbox';
 
 </script>
 
-
 <template>
-    <!-- 필터 넣기 (커넥션 리스트만 체크해서 보여주는) -->
     <SignIn v-if="Object.keys(currentUser).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row>
@@ -33,13 +27,10 @@ const tabHeaderText = "Book a Meeting"
         <v-row class="flex-1-1-100">
             <div class="w-100 d-flex flex-column">
                 <div class="d-flex">
-                    <SearchTitle/>
+                    <InboxSearchBar/>
                 </div>
                 <div class="d-flex">
-                    <SearchBar/>
-                </div>
-                <div class="d-flex">
-                    <SearchResult/>  
+                    <InboxSearchResult/>
                 </div>
             </div>
         </v-row>

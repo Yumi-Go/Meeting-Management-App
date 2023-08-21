@@ -5,7 +5,7 @@ const props = defineProps({
 
 </script>
 <template>
-    <v-container fluid class="d-flex mb-5">
+    <v-container fluid class="d-flex mb-5 py-5">
         <v-row justify="center" class="tw-text-3xl tw-font-extrabold tw-tracking-wide text-indigo-darken-4">
             {{ tabHeaderText.toUpperCase() }}
         </v-row>
