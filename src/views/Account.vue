@@ -1,22 +1,23 @@
 <script setup>
 import { onBeforeMount, watch, ref, reactive, computed } from 'vue'
-import { useFirestore } from '../composables/useFirestore'
 import { useAuth } from '../composables/useAuth'
+import { useFirestore } from '../composables/useFirestore'
 import { auth, db } from '../firebaseConfig'
 import { useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, helpers, minLength, maxLength, sameAs } from '@vuelidate/validators'
+import { mdiAlert, mdiAlertCircle } from '@mdi/js';
 import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
 import PasswordResetPopup from '../components/Setting/PasswordResetPopup.vue'
 
 const router = useRouter();
-import { useLocalStorage, StorageSerializers } from '@vueuse/core'
+import { useLocalStorage } from '@vueuse/core'
 const { updateUserInfo, getUserInfoByUID } = useFirestore();
-const { currentUser, userStateObserver, reAuthentication, changePassword } = useAuth();
+const { userStateObserver, reAuthentication, changePassword } = useAuth();
 
 userStateObserver();
-const currentUserInLocalStorage = useLocalStorage("currentUser", null, { serializer: StorageSerializers.object });
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const tabHeaderText = 'account';
 const fName = ref(currentUserInLocalStorage.value.fName);
 const mName = ref (currentUserInLocalStorage.value.mName);
@@ -138,7 +139,7 @@ function closePasswordResetPopup() {
 
 <template>
 
-    <SignIn v-if="Object.keys(currentUser).length < 1"/>
+    <SignIn v-if="Object.keys(currentUserInLocalStorage).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row>
             <TabHeader
@@ -148,12 +149,6 @@ function closePasswordResetPopup() {
         <v-row class="flex-1-1-100">
             <div class="w-100 d-flex flex-column">
                 <div class="d-flex">
-                    <p
-                        v-for="error of v$.$errors"
-                        :key="error.$uid"
-                    >
-                    <strong> {{ error.$message }} </strong>
-                    </p>
                     <p v-if="currentUser === null">No exist user logged in</p>
                     <v-sheet v-else width="100vw" class="pa-5">
                         <v-form ref="form" @submit.prevent>
@@ -224,7 +219,7 @@ function closePasswordResetPopup() {
                                 </v-row>
                                 <v-row>
                                     <v-text-field
-                                        v-model="currentUser.email"
+                                        v-model="currentUserInLocalStorage.email"
                                         label="Email"
                                         disabled
                                     />
@@ -277,6 +272,23 @@ function closePasswordResetPopup() {
                             </v-container>
                         </v-form>
                     </v-sheet>
+                </div>
+                <div class="d-flex flex-column">
+                    <div
+                        v-for="error of v$.$errors"
+                        :key="error.$uid"
+                        class="d-flex flex-row tw-text-red-700"
+                    >
+                        <div class="d-flex">
+                            <v-icon :icon="mdiAlertCircle" class="mr-2"/>
+                        </div>
+                        <div class="d-flex">
+                            <strong>
+                                {{ error.$message }}
+                            </strong>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </v-row>

@@ -46,13 +46,11 @@ function getMeetingObjToDisplay() {
             result[key] = value;
         }
     }
-
 }
 
 getMeetingObjToDisplay();
 
 async function clickAcceptBtn() {
-    console.log("meetingObj before storing: ", meetingObj);
     await acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
     emit('closeInboxMessagePopup');
     userStateObserver();

@@ -17,7 +17,6 @@ const allRequestsReceived = computed(() => {
     return currentUser.value.meetingRequestsReceived;
 });
 const chosenRequest = ref();
-console.log("allRequestsReceived: ", allRequestsReceived.value);
 
 function closeInboxMessagePopup() {
     openInboxMessagePopup.value = false;

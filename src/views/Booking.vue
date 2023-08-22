@@ -14,7 +14,7 @@ const { userStateObserver, logOut } = useAuth();
 const { capitalize } = useFormat();
 
 userStateObserver();
-const currentUser = useLocalStorage('currentUser', {});
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const tabHeaderText = "Book a Meeting"
 
 
@@ -23,7 +23,7 @@ const tabHeaderText = "Book a Meeting"
 
 <template>
     <!-- 필터 넣기 (커넥션 리스트만 체크해서 보여주는) -->
-    <SignIn v-if="Object.keys(currentUser).length < 1"/>
+    <SignIn v-if="Object.keys(currentUserInLocalStorage).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row>
             <TabHeader

@@ -26,10 +26,6 @@ const isUnreadMsgExist = computed(() => {
   return result;
 });
 
-watch(currentUserInLocalStorage.meetingRequestsReceived, (updatedRequests) => {
-    console.log("isUnreadMsgExist.value: ", isUnreadMsgExist.value);
-});
-
 function clickInboxBtn() {
     router.push('/inbox');
     tab.value = 10;
@@ -72,6 +68,7 @@ function clickLogout() {
                 @click="clickInboxBtn"
                 variant="plain"
                 :color="isUnreadMsgExist ? 'red' : 'black'"
+                class="tw-cursor-pointer"
               >
                 <template #prepend>
                   <v-icon v-if="isUnreadMsgExist" color="red">
