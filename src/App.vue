@@ -35,8 +35,6 @@ function checkUnreadMsg() {
 checkUnreadMsg();
 
 function clickInboxBtn() {
-    // showInbox.value = !showInbox.value;
-    // showAvailability.value = false;
     router.push('/inbox');
     tab.value = 10;
 }

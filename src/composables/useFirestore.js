@@ -15,7 +15,6 @@ export function useFirestore() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             console.log("existing user");
-            // console.log("existing user data:", docSnap.data());
         } else {
             await setDoc(docRef, {
                 email: email,
@@ -205,7 +204,6 @@ export function useFirestore() {
         const docRef = doc(db, "users", auth.currentUser.uid);
         const datesArr = [];
         await overrideObjsArr.forEach(fromUntilTimePair => {
-            // console.log("fromUntilTimePair: ", fromUntilTimePair);
             datesArr.push({
                 from: Timestamp.fromDate(fromUntilTimePair[0]),
                 until: Timestamp.fromDate(fromUntilTimePair[1])

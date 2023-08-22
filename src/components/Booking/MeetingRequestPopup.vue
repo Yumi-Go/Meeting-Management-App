@@ -245,33 +245,6 @@ function closeBtnClick() {
                             label="Other References / Links"
                         />
                     </v-row>
-                    <!-- <v-row>
-                        <v-col class="mr-1 pa-0">
-                            <v-btn
-                                width="100%"
-                                height="40"
-                                color="indigo-darken-3"
-                                variant="outlined"
-                                class=""
-                                @click="closeBtnClick"
-                            >
-                                Cancel
-                            </v-btn>
-                        </v-col>
-                        <v-col class="ml-1 pa-0">
-                            <v-btn
-                                width="100%"
-                                height="40"
-                                color="indigo-darken-3"
-                                variant="flat"
-                                class=""
-                                @click="sendMeetingRequest"
-                                type="submit"
-                            >
-                                Save
-                            </v-btn>
-                        </v-col>
-                    </v-row> -->
                 </v-container>
             </v-form>
         </v-sheet>

@@ -9,7 +9,6 @@ const { userStateObserver } = useAuth();
 
 userStateObserver();
 const currentUser = useLocalStorage('currentUser', {});
-// const tabHeaderText = `Welcome, ${currentUser.value.fName}!`
 
 </script>
 
