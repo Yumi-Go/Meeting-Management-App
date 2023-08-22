@@ -8,7 +8,7 @@ import InboxSearchBar from '../components/Inbox/InboxSearchBar.vue'
 import InboxSearchResult from '../components/Inbox/InboxSearchResult.vue'
 
 const { userStateObserver } = useAuth();
-const currentUser = useLocalStorage('currentUser', {});
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 
 userStateObserver();
 
@@ -17,7 +17,7 @@ const tabHeaderText = 'inbox';
 </script>
 
 <template>
-    <SignIn v-if="Object.keys(currentUser).length < 1"/>
+    <SignIn v-if="Object.keys(currentUserInLocalStorage).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row>
             <TabHeader

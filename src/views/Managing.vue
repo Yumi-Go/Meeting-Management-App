@@ -16,7 +16,7 @@ const currentUser = useLocalStorage('currentUser', {});
 const router = useRouter();
 const tabHeaderText = "Manage Schedules"
 const showAvailability = ref(false);
-const showInbox = ref(false);
+// const showInbox = ref(false);
 const viewType = ref(true); // true: Calendar view / false: List view
 
 const isUnreadMsgExist = ref(false);
@@ -26,25 +26,25 @@ watch(currentUser.value.meetingRequestsReceived, (updatedRequests) => {
     console.log("isUnreadMsgExist.value: ", isUnreadMsgExist.value);
 });
 
-function reloadInbox() {
-    router.push('/managing');
-    showInbox.value = true;
-}
-provide('refreshInbox', {showInbox, reloadInbox});
+// function reloadInbox() {
+//     router.push('/managing');
+//     showInbox.value = true;
+// }
+// provide('refreshInbox', {showInbox, reloadInbox});
 
 function clickAvailabilityBtn() {
     showAvailability.value = !showAvailability.value;
-    showInbox.value = false;
+    // showInbox.value = false;
 }
 
-function checkUnreadMsg() {
-    for (const requestObj of currentUser.value.meetingRequestsReceived) {
-        if (!Object.values(requestObj)[0].isRead) {
-            isUnreadMsgExist.value = true;
-            break;
-        }
-    }
-}
+// function checkUnreadMsg() {
+//     for (const requestObj of currentUser.value.meetingRequestsReceived) {
+//         if (!Object.values(requestObj)[0].isRead) {
+//             isUnreadMsgExist.value = true;
+//             break;
+//         }
+//     }
+// }
 
 function clickCalendarBtn() {
     viewType.value = true;
@@ -56,7 +56,7 @@ function clickListBtn() {
     showAvailability.value = false;
 }
 
-checkUnreadMsg();
+// checkUnreadMsg();
 
 </script>
 

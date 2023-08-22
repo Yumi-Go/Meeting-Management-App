@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, computed, onBeforeMount } from "vue"
+import { auth } from '../../firebaseConfig'
 import { useFirestore } from "../../composables/useFirestore";
 import { useDateTime } from '../../composables/useDateTime';
 import { useFormat } from "../../composables/useFormat";
@@ -33,10 +34,14 @@ function getSenderObj(senderUid) {
 
 async function clickRequest(index) {
     openInboxMessagePopup.value = true;
-    const updatedMeetingRequestsReceived = allRequestsReceived.value;
-    Object.values(updatedMeetingRequestsReceived[index])[0].isRead = true;
-    chosenRequest.value = updatedMeetingRequestsReceived[index];
-    await readMessage(updatedMeetingRequestsReceived);
+    const clickedMeetingRequestsReceived = allRequestsReceived.value;
+    Object.values(clickedMeetingRequestsReceived[index])[0].isRead = true;
+    chosenRequest.value = clickedMeetingRequestsReceived[index];
+    await readMessage(
+        Object.keys(clickedMeetingRequestsReceived[index])[0],
+        auth.currentUser.uid,
+        clickedMeetingRequestsReceived
+    );
 }
 
 </script>

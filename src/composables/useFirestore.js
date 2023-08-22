@@ -146,7 +146,9 @@ export function useFirestore() {
 
     //// Meeting
     async function requestMeeting(senderUid, receiverUid, meetingObj) {
-        console.log("meetingObj: ", meetingObj);
+        console.log("meetingObj before timestamp: ", meetingObj);
+        meetingObj.createdAt = Timestamp.fromDate(meetingObj.createdAt);
+        console.log("meetingObj after timestamp: ", meetingObj);
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
             meetingRequestsSent: arrayUnion({[receiverUid]: meetingObj})
@@ -184,10 +186,14 @@ export function useFirestore() {
 
 
     //// Inbox
-    async function readMessage(updatedMeetingRequestsReceived) {
-        const userRef = doc(db, "users", auth.currentUser.uid);
-        await updateDoc(userRef, {
-            meetingRequestsReceived: updatedMeetingRequestsReceived
+    async function readMessage(senderUid, receiverUid, updatedMeetingRequests) {
+        const senderRef = doc(db, "users", senderUid);
+        await updateDoc(senderRef, {
+            meetingRequestsSent: updatedMeetingRequests
+        });
+        const receiverRef = doc(db, "users", receiverUid);
+        await updateDoc(receiverRef, {
+            meetingRequestsReceived: updatedMeetingRequests
         });
     }
 

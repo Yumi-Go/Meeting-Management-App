@@ -8,7 +8,7 @@ import { useFormat } from '../../composables/useFormat'
 import { useDateTime } from '../../composables/useDateTime';
 import { mdiAccountCircleOutline } from '@mdi/js';
 
-const { showInbox, reloadInbox } = inject('refreshInbox');
+// const { showInbox, reloadInbox } = inject('refreshInbox');
 const { userStateObserver } = useAuth();
 const { getTimeApm, getDuration } = useDateTime();
 const { getUserInfoByUID, acceptMeetingRequest, refuseMeetingRequest } = useFirestore();
@@ -56,14 +56,12 @@ async function clickAcceptBtn() {
     await acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
     emit('closeInboxMessagePopup');
     userStateObserver();
-    reloadInbox();
 }
 
 async function clickDismissBtn() {
     await refuseMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
     emit('closeInboxMessagePopup');
     userStateObserver();
-    reloadInbox();
 }
 
 onBeforeMount(() => {

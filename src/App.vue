@@ -1,38 +1,34 @@
 <script setup>
-import { ref, watch, onBeforeMount } from 'vue'
+import { ref, watch, computed, onBeforeMount } from 'vue'
 import { useAuth } from './composables/useAuth';
 import { useRouter } from 'vue-router'
 import { auth } from './firebaseConfig';
 import { useLocalStorage } from '@vueuse/core';
 import { mdiHome, mdiAccountGroup, mdiClockOutline, mdiAccountCircle } from '@mdi/js';
 
-const currentUser = useLocalStorage('currentUser', {});
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const { userStateObserver, logOut } = useAuth();
 const router = useRouter();
 
 userStateObserver();
 const tab = ref(null);
-const isUnreadMsgExist = ref(false);
-
-watch(currentUser, () => {
-  console.log("user changed")
-});
-
-watch(currentUser.value.meetingRequestsReceived, (updatedRequests) => {
-    checkUnreadMsg();
-    console.log("isUnreadMsgExist.value: ", isUnreadMsgExist.value);
-});
-
-function checkUnreadMsg() {
-  for (const requestObj of currentUser.value.meetingRequestsReceived) {
-    if (!Object.values(requestObj)[0].isRead) {
-      isUnreadMsgExist.value = true;
-      break;
+// const isUnreadMsgExist = ref(false);
+const isUnreadMsgExist = computed(() => {
+  let result = false;
+  if (currentUserInLocalStorage.value.meetingRequestsReceived) {
+    for (const requestObj of currentUserInLocalStorage.value.meetingRequestsReceived) {
+      if (!Object.values(requestObj)[0].isRead) {
+        result = true;
+        break;
+      }
     }
   }
-}
+  return result;
+});
 
-checkUnreadMsg();
+watch(currentUserInLocalStorage.meetingRequestsReceived, (updatedRequests) => {
+    console.log("isUnreadMsgExist.value: ", isUnreadMsgExist.value);
+});
 
 function clickInboxBtn() {
     router.push('/inbox');
@@ -49,7 +45,7 @@ function clickLogout() {
 <template>
   <div class="d-flex justify-center">
     <div class="d-flex flex-column h-screen w-75 tw-bg-red-50">
-      <div v-if="Object.keys(currentUser).length > 0" class="d-flex tw-h-[80px]">
+      <div v-if="Object.keys(currentUserInLocalStorage).length > 0" class="d-flex tw-h-[80px]">
         <div class="w-100 d-flex flex-row justify-space-between">
           <div class="d-flex">
             <v-tabs
