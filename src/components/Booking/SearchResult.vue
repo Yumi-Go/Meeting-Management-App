@@ -35,9 +35,6 @@ function clickUser(user) {
 
 <template>
     <v-container fluid class="">
-        <!-- <v-row>
-            {{ searchedUsers }}
-        </v-row> -->
         <v-row>
             <v-list
                 class="tw-w-full"
@@ -52,7 +49,6 @@ function clickUser(user) {
                     :value="user"
                     :key="user.uid"
                 >
-                    <!-- {{ user.selected }} -->
                     <template #prepend>
                         <v-list-item-action start>
                             <v-checkbox-btn v-model="user.selected"/>

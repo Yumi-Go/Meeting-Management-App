@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
-// import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat'
 import MeetingRequestPopup from './MeetingRequestPopup.vue';
@@ -15,7 +14,15 @@ const props = defineProps({
 const popupUser = useLocalStorage('popupUser', {});
 popupUser.value = props.user;
 
-const displayedItems = ['email', 'location', 'organization', 'department', 'position', 'role', 'timezone'];
+const displayedItems = [
+    'email',
+    'location',
+    'organization',
+    'department',
+    'position',
+    'role',
+    'timezone'
+];
 
 const userInfoToDisplay = computed(() => {
     let result = {};
@@ -32,10 +39,6 @@ const userInfoToDisplay = computed(() => {
 const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
 const isConnected = ref(false);
-
-console.log("currentUser: ", auth.currentUser.uid);
-console.log("viewed user: ", popupUser.value.uid);
-
 const openMeetingRequestPopup = ref(false);
 
 async function clickRequestConnection() {
@@ -49,26 +52,17 @@ function closeMeetingRequestPopup() {
 </script>
 
 <template>
-
     <v-card
         class="mx-auto"
         color="blue-grey-lighten-5"
     >
         <v-toolbar flat color="blue-grey-darken-4">
-            <!-- <v-btn icon>
-                <span class="material-symbols-outlined">
-                    person
-                </span>
-            </v-btn> -->
-
             <v-toolbar-title class="font-weight-bold">
                 {{ capitalize(popupUser.fName) }}
                 {{ capitalize(popupUser.mName) }}
                 {{ capitalize(popupUser.lName) }}
             </v-toolbar-title>
-
             <v-spacer></v-spacer>
-
             <v-btn
                 v-if="isConnected"
                 disabled
@@ -121,9 +115,9 @@ function closeMeetingRequestPopup() {
                                     @click="openMeetingRequestPopup = true"
                                     variant="flat"
                                     color="indigo"
-                                    class="mt-10"
+                                    class="mt-10 w-100"
                                 >
-                                    Send a Meeting Request
+                                    Request a Meeting
                                 </v-btn>
                                 <v-dialog
                                     v-model="openMeetingRequestPopup"
@@ -135,8 +129,6 @@ function closeMeetingRequestPopup() {
                                     />
                                 </v-dialog>
                             </v-list-item>
-
-
                         </v-list>
                     </v-sheet>
                 </v-col>
@@ -154,4 +146,3 @@ function closeMeetingRequestPopup() {
         </v-container>
     </v-card>
 </template>
-

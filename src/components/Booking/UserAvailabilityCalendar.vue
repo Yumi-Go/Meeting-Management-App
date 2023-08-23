@@ -51,7 +51,6 @@ function getTimeFromIsoString(isoString) {
 }
 
 function addAvailabilityToCalendar() {
-    // console.log("getWeeklyAvailabilityForCalendar(): ", getWeeklyAvailabilityForCalendar());
     for (const [key, value] of Object.entries(getWeeklyAvailabilityForCalendar())) {
         const weeklyStartStr = `${getToday()}T${value[0]}:00`;
         const weeklyEndStr = `${getToday()}T${value[1]}:00`;
@@ -105,11 +104,8 @@ function addAvailabilityToCalendar() {
                 calendarOptions.value.events.push(overwrittenAvailability);
             }
         });
-        // console.log("weekly: ", weekly);
         calendarOptions.value.events.push(weekly);
     }
-    // console.log("calendarOptions.value.events: ", calendarOptions.value.events);
-
 }
 
 function addEventsToCalendar() {
@@ -122,7 +118,6 @@ addEventsToCalendar();
 function handleDateClick(arg) {
     alert('date click! ' + arg.dateStr);
 }
-
 </script>
 
 <template>
