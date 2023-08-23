@@ -21,7 +21,6 @@ const currentUser = useLocalStorage('currentUser', {});
             />
         </v-row>
         <v-row class="flex-1-1-100 tw-bg-black/10">
-            hahaha
         </v-row>
     </v-container>
 </template>

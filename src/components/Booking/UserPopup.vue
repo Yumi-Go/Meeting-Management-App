@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
 // import { useAuth } from '../../composables/useAuth'
@@ -14,6 +14,20 @@ const props = defineProps({
 
 const popupUser = useLocalStorage('popupUser', {});
 popupUser.value = props.user;
+
+const displayedItems = ['email', 'location', 'organization', 'department', 'position', 'role', 'timezone'];
+
+const userInfoToDisplay = computed(() => {
+    let result = {};
+    if (popupUser.value) {
+        for (const [key, value] of Object.entries(popupUser.value)) {
+            if (displayedItems.includes(key)) {
+                result[key] = value;
+            }
+        }
+    }
+    return result;
+});
 
 const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
@@ -92,61 +106,52 @@ function closeMeetingRequestPopup() {
         </v-toolbar>
 
         <v-container class="">
-            <v-row no-gutters>
-                <v-col class="" cols="12" lg="3">
+            <v-row no-gutters class="">
+                <v-col class="bg-white" cols="12" lg="3">
                     <v-sheet class="pa-2 ma-2">
                         <v-list>
-                            <v-list-item v-for="[key, value] in Object.entries(popupUser)">
+                            <v-list-item v-for="[key, value] in Object.entries(userInfoToDisplay)">
                                 <template #subtitle>
                                     {{ capitalize(key) }}
                                 </template>
                                 {{ value }}
                             </v-list-item>
-                            <!-- <v-list-item>
-                                <v-btn block variant="outlined" class="">
-                                    Check Schedule
+                            <v-list-item>
+                                <v-btn
+                                    @click="openMeetingRequestPopup = true"
+                                    variant="flat"
+                                    color="indigo"
+                                    class="mt-10"
+                                >
+                                    Send a Meeting Request
                                 </v-btn>
-                            </v-list-item> -->
+                                <v-dialog
+                                    v-model="openMeetingRequestPopup"
+                                    width="auto"
+                                >
+                                    <MeetingRequestPopup
+                                        @closeMeetingRequestPopup="closeMeetingRequestPopup"
+                                        width="auto"
+                                    />
+                                </v-dialog>
+                            </v-list-item>
+
+
                         </v-list>
-                        <!-- <v-card-text>
-                            <v-text-field bg-color="blue-grey-lighten-4" color="blue-grey-darken-4" variant="underlined">
-                                <template #label>
-                                    <div class="tw-italic">Message to {{ capitalize(user.fName) }}...</div>
-                                </template>
-                            </v-text-field>
-                        </v-card-text> -->
                     </v-sheet>
                 </v-col>
-                <v-col cols="12" lg="9">
+                <v-col class="bg-white" cols="12" lg="9">
                     <v-sheet class="pa-2 ma-2">
-                        <UserAvailabilityCalendar/>
+                        <div class="w-100 tw-text-center tw-text-xl tw-font-extrabold mb-10">
+                            Availability
+                        </div>
+                        <div class="">
+                            <UserAvailabilityCalendar/>
+                        </div>
                     </v-sheet>
                 </v-col>
             </v-row>
         </v-container>
-
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                @click="openMeetingRequestPopup = true"
-                variant="text"
-                color="indigo"
-            >
-                Send a Meeting Request
-            </v-btn>
-
-            <v-dialog
-                v-model="openMeetingRequestPopup"
-                width="auto"
-            >
-                <MeetingRequestPopup
-                    @closeMeetingRequestPopup="closeMeetingRequestPopup"
-                    width="auto"
-                />
-            </v-dialog>
-
-        </v-card-actions>
     </v-card>
-
 </template>
 

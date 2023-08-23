@@ -22,7 +22,6 @@ const tabHeaderText = "Book a Meeting"
 
 
 <template>
-    <!-- 필터 넣기 (커넥션 리스트만 체크해서 보여주는) -->
     <SignIn v-if="Object.keys(currentUserInLocalStorage).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row>

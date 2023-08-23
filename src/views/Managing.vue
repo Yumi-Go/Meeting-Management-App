@@ -1,8 +1,7 @@
 <script setup>
 import { ref, watch, provide } from 'vue'
-import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
-import { useLocalStorage, StorageSerializers } from '@vueuse/core'
+import { useLocalStorage } from '@vueuse/core'
 import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
 import Availability from '../components/Managing/Availability.vue';
@@ -12,39 +11,14 @@ import { mdiClockEditOutline, mdiCalendarMonth, mdiCalendarMonthOutline, mdiView
 const { userStateObserver } = useAuth();
 userStateObserver();
 
-const currentUser = useLocalStorage('currentUser', {});
-const router = useRouter();
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const tabHeaderText = "Manage Schedules"
 const showAvailability = ref(false);
-// const showInbox = ref(false);
 const viewType = ref(true); // true: Calendar view / false: List view
-
-const isUnreadMsgExist = ref(false);
-
-watch(currentUser.value.meetingRequestsReceived, (updatedRequests) => {
-    checkUnreadMsg();
-    console.log("isUnreadMsgExist.value: ", isUnreadMsgExist.value);
-});
-
-// function reloadInbox() {
-//     router.push('/managing');
-//     showInbox.value = true;
-// }
-// provide('refreshInbox', {showInbox, reloadInbox});
 
 function clickAvailabilityBtn() {
     showAvailability.value = !showAvailability.value;
-    // showInbox.value = false;
 }
-
-// function checkUnreadMsg() {
-//     for (const requestObj of currentUser.value.meetingRequestsReceived) {
-//         if (!Object.values(requestObj)[0].isRead) {
-//             isUnreadMsgExist.value = true;
-//             break;
-//         }
-//     }
-// }
 
 function clickCalendarBtn() {
     viewType.value = true;
@@ -56,12 +30,10 @@ function clickListBtn() {
     showAvailability.value = false;
 }
 
-// checkUnreadMsg();
-
 </script>
 
 <template>
-    <SignIn v-if="Object.keys(currentUser).length < 1"/>
+    <SignIn v-if="Object.keys(currentUserInLocalStorage).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row class="">
             <TabHeader

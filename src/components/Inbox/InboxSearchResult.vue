@@ -47,7 +47,7 @@ async function clickRequest(index) {
 
 <template>
     <v-container fluid class="tw-px-5">
-        <v-row>
+        <v-row class="">
             <v-list
                 class="tw-w-full"
                 select-strategy="classic"
@@ -108,16 +108,13 @@ async function clickRequest(index) {
                     class="tw-p-5 tw-font-bold"
                 >
                     <div
-                        class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-h-[500px]"
+                        class="tw-flex tw-flex-col tw-justify-center tw-items-center"
                     >
                         <div>
                             No Result
                         </div>
                     </div>
                 </v-list-item>
-
-
-
             </v-list>
         </v-row>
     </v-container>
