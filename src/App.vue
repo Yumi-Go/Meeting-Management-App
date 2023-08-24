@@ -12,7 +12,6 @@ const router = useRouter();
 
 userStateObserver();
 const tab = ref(null);
-// const isUnreadMsgExist = ref(false);
 const isUnreadMsgExist = computed(() => {
   let result = false;
   if (currentUserInLocalStorage.value.meetingRequestsReceived) {

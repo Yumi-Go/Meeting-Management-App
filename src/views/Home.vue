@@ -4,20 +4,22 @@ import { useAuth } from '../composables/useAuth'
 import { useLocalStorage } from '@vueuse/core'
 import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
+import Account from "./Account.vue"
 
 const { userStateObserver } = useAuth();
 
 userStateObserver();
-const currentUser = useLocalStorage('currentUser', {});
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
+const tabHeaderText = "Home"
 
 </script>
 
 <template>
-    <SignIn v-if="Object.keys(currentUser).length < 1"/>
+    <SignIn v-if="Object.keys(currentUserInLocalStorage).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row>
             <TabHeader
-                :tabHeaderText="`Welcome, ${currentUser.fName}!`"
+                :tabHeaderText="tabHeaderText"
             />
         </v-row>
         <v-row class="flex-1-1-100 tw-bg-black/10">

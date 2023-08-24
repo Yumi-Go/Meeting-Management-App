@@ -5,6 +5,7 @@ import { useFirestore } from '../composables/useFirestore'
 import { auth, db } from '../firebaseConfig'
 import { useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
+import { useLocalStorage } from '@vueuse/core'
 import { required, helpers, minLength, maxLength, sameAs } from '@vuelidate/validators'
 import { mdiAlert, mdiAlertCircle } from '@mdi/js';
 import SignIn from '../components/SignIn.vue'
@@ -12,7 +13,6 @@ import TabHeader from '../components/TabHeader.vue'
 import PasswordResetPopup from '../components/Setting/PasswordResetPopup.vue'
 
 const router = useRouter();
-import { useLocalStorage } from '@vueuse/core'
 const { updateUserInfo, getUserInfoByUID } = useFirestore();
 const { userStateObserver, reAuthentication, changePassword } = useAuth();
 

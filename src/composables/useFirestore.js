@@ -1,16 +1,14 @@
 import { ref } from "vue"
 import { auth, db } from '../firebaseConfig';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
-    query, where, arrayUnion, arrayRemove, serverTimestamp, Timestamp, documentId } from "firebase/firestore";
-import { useDateTime } from '../composables/useDateTime'
-import { useLocalStorage, StorageSerializers } from '@vueuse/core'
+    query, where, arrayUnion, arrayRemove, Timestamp } from "firebase/firestore";
+import { useLocalStorage } from '@vueuse/core'
 
 const searchedUsers = useLocalStorage('searchedUsers', []);
 const allUsers = ref([]);
 
 export function useFirestore() {
     async function addUser(uid, email) {
-        console.log("currentUser in addUser(): ", uid);
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -27,9 +25,6 @@ export function useFirestore() {
                 role: "",
                 location: "",
                 timezone: "",
-                connections: [],
-                connectionRequestsSent: [],
-                connectionRequestsReceived: [],
                 meetings: [], // meeting ID list (linked to meetings collection)
                 meetingRequestsSent: [],
                 meetingRequestsReceived: [],
@@ -105,44 +100,6 @@ export function useFirestore() {
         console.log("result by name in useFirestore: ", searchedUsers.value);
         // return searchedUsers.value;
    }
-
-   
-    //// Connection
-    async function requestConnection(senderUid, receiverUid) {
-        const senderRef = doc(db, "users", senderUid);
-        await updateDoc(senderRef, {
-            connectionRequestsSent: arrayUnion(receiverUid)
-        });
-        const receiverRef = doc(db, "users", receiverUid);
-        await updateDoc(receiverRef, {
-            connectionRequestsReceived: arrayUnion(senderUid)
-        });
-    }
-
-    async function acceptConnection(senderUid, receiverUid) {
-        const senderRef = doc(db, "users", senderUid);
-        await updateDoc(senderRef, {
-            connection: arrayUnion(receiverUid),
-            connectionRequestsSent: arrayRemove(receiverUid)
-        });
-        const receiverRef = doc(db, "users", receiverUid);
-        await updateDoc(receiverRef, {
-            connection: arrayUnion(senderUid),
-            connectionRequestsReceived: arrayRemove(senderUid)
-        });
-    }
-
-    async function refuseConnection(senderUid, receiverUid) {
-        const senderRef = doc(db, "users", senderUid);
-        await updateDoc(senderRef, {
-            connectionRequestsSent: arrayRemove(receiverUid)
-        });
-        const receiverRef = doc(db, "users", receiverUid);
-        await updateDoc(receiverRef, {
-            connectionRequestsReceived: arrayRemove(senderUid)
-        });
-    }
-
 
     //// Meeting
     async function requestMeeting(senderUid, receiverUid, meetingObj) {
@@ -251,9 +208,6 @@ export function useFirestore() {
         getUserInfoByUID,
         getAllUserInfo,
         getUserInfoByName,
-        requestConnection,
-        acceptConnection,
-        refuseConnection,
         requestMeeting,
         acceptMeetingRequest,
         refuseMeetingRequest,

@@ -28,10 +28,12 @@ export function useAuth() {
                 currentUser.value = user;
                 getUserInfoByUID(user.uid)
                 .then(info => {
-                    info.dateOverrides.forEach(fromUntilPairObj => {
-                        fromUntilPairObj.from = dateWithTimezone(fromUntilPairObj.from.toDate());
-                        fromUntilPairObj.until = dateWithTimezone(fromUntilPairObj.until.toDate());
-                    });
+                    if (info.dateOverrides.length > 0) {
+                        info.dateOverrides.forEach(fromUntilPairObj => {
+                            fromUntilPairObj.from = dateWithTimezone(fromUntilPairObj.from.toDate());
+                            fromUntilPairObj.until = dateWithTimezone(fromUntilPairObj.until.toDate());
+                        });
+                    }
                     currentUserInLocalStorage.value = info;
                 });
             } else {
@@ -93,5 +95,14 @@ export function useAuth() {
         });
     }
 
-    return { currentUser, currentUserInLocalStorage, isUserReAuthenticated, isPasswordChanged, userStateObserver, logOut, reAuthentication, changePassword }
+    return {
+        currentUser,
+        currentUserInLocalStorage,
+        isUserReAuthenticated,
+        isPasswordChanged,
+        userStateObserver,
+        logOut,
+        reAuthentication,
+        changePassword
+    }
 }

@@ -1,8 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
-import { auth } from '../../firebaseConfig'
-import { useFirestore } from '../../composables/useFirestore';
 import { useFormat } from '../../composables/useFormat'
 import MeetingRequestPopup from './MeetingRequestPopup.vue';
 import UserAvailabilityCalendar from './UserAvailabilityCalendar.vue'
@@ -36,19 +34,12 @@ const userInfoToDisplay = computed(() => {
     return result;
 });
 
-const { getUserInfoByUID, requestConnection, requestMeeting } = useFirestore();
 const { capitalize } = useFormat();
-const isConnected = ref(false);
 const openMeetingRequestPopup = ref(false);
-
-async function clickRequestConnection() {
-    await requestConnection(auth.currentUser.uid, popupUser.value.uid);
-}
 
 function closeMeetingRequestPopup() {
     openMeetingRequestPopup.value = false;
 }
-
 </script>
 
 <template>
@@ -62,41 +53,6 @@ function closeMeetingRequestPopup() {
                 {{ capitalize(popupUser.mName) }}
                 {{ capitalize(popupUser.lName) }}
             </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn
-                v-if="isConnected"
-                disabled
-                class=""
-            >
-                <div>
-                    <v-tooltip
-                        activator="parent"
-                        location="top"
-                    >
-                        Connected
-                    </v-tooltip>
-                    <span class="material-symbols-outlined">
-                        how_to_reg
-                    </span>
-                </div>
-            </v-btn>
-            <v-btn
-                v-else-if="!isConnected && auth.currentUser.uid !== popupUser.uid"
-                @click="clickRequestConnection"
-                class=""
-            >
-                <div>
-                    <v-tooltip
-                        activator="parent"
-                        location="top"
-                    >
-                        Request a connection
-                    </v-tooltip>
-                    <span class="material-symbols-outlined">
-                        person_add
-                    </span>
-                </div>
-            </v-btn>
         </v-toolbar>
 
         <v-container class="">

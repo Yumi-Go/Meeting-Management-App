@@ -1,22 +1,15 @@
 <script setup>
-import { ref, watch, onBeforeMount } from 'vue'
+import { ref, watch } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
-// import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from '../../composables/useFirestore';
-import { useSearch } from '../../composables/useSearch';
-import { useFormat } from '../../composables/useFormat'
 import { useDateTime } from '../../composables/useDateTime'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { addDays } from 'date-fns';
 import { mdiEmailArrowRight, mdiRepeat } from '@mdi/js';
 
-const searchedUsers = useLocalStorage('searchedUsers', []);
 const emit = defineEmits(['closeMeetingRequestPopup']);
-const { allUsers, getUserInfoByUID, getAllUserInfo, getUserInfoByName, requestConnection, requestMeeting } = useFirestore();
-const { getUserSearchResult } = useSearch();
-const { capitalize } = useFormat();
+const { allUsers, requestMeeting } = useFirestore();
 const { timeItems, removeApmFromTimeArr, formatDateStr } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
 const selectedParticipant = ref([]);
@@ -48,7 +41,6 @@ watch(selectedParticipant, async(newSelected) => {
 
 watch(selectedDate, (newDate) => {
     meetingRequested.value.date = formatDateStr(newDate);
-    console.log("meetingRequested.value.date: ", meetingRequested.value.date);
 });
 
 function getParticipantUids() {
@@ -67,9 +59,7 @@ function sendMeetingRequest() {
 
 function closeBtnClick() {
     emit('closeMeetingRequestPopup');
-    console.log("Meeting Request popup closed!");
 }
-
 </script>
 
 <template>

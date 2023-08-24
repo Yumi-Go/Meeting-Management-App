@@ -7,6 +7,8 @@ import { auth } from "../firebaseConfig"
 import { useFirestore } from '../composables/useFirestore';
 import { useAuth } from '../composables/useAuth';
 
+const router = useRouter();
+const { userStateObserver } = useAuth();
 const { addUser } = useFirestore();
 var uiConfig = {
     callbacks: {
@@ -19,7 +21,7 @@ var uiConfig = {
         }
     },
     signInFlow: 'popup',
-    signInSuccessUrl: '/account',
+    signInSuccessUrl: '/',
     signInOptions: [
         {
             provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
@@ -31,7 +33,6 @@ var uiConfig = {
 var ui = new firebaseui.auth.AuthUI(auth);
 ui.start('#firebaseui-auth-container', uiConfig);
 
-const router = useRouter();
 
 </script>
 
