@@ -12,8 +12,11 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import { useLocalStorage } from '@vueuse/core'
 // import '@mdi/font/css/materialdesignicons.css'
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
+
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 
 // router not working
 const router = createRouter({
@@ -22,7 +25,14 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: Home,
+      component: function () {
+        if(currentUserInLocalStorage.value.fName.length > 0
+          && currentUserInLocalStorage.value.lName.length > 0) {
+          return import('./views/Home.vue');
+        } else {
+          return import('./views/Account.vue');
+        }
+      }
     },
     {
       path: '/account',

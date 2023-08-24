@@ -157,20 +157,20 @@ function closePasswordResetPopup() {
                                     <v-col class="mr-2 pa-0">
                                         <v-text-field
                                             v-model="fName"
-                                            label="First Name"
+                                            label="First Name (** Required **)"
                                             required
                                         />
                                     </v-col>
                                     <v-col class="mr-2 pa-0">
                                         <v-text-field
                                             v-model="mName"
-                                            label="Middle Name (optional)"
+                                            label="Middle Name"
                                         />
                                     </v-col>
                                     <v-col class="ma-0 pa-0">
                                         <v-text-field
                                             v-model="lName"
-                                            label="Last Name"
+                                            label="Last Name (** Required **)"
                                             required
                                         />
                                     </v-col>
