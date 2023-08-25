@@ -116,7 +116,7 @@ async function submit() {
         return;
     }
     console.log("form validation succeed!");
-    updateUserInfo(
+    await updateUserInfo(
         fName.value,
         mName.value,
         lName.value,
@@ -127,18 +127,28 @@ async function submit() {
         location.value,
         timezone.value
     );
-    router.push('/');
+    alert("Saved successfully!");
+    userStateObserver();
+    router.push('/account');
 }
 
 const openPasswordResetPopup = ref(false);
 
+function clickCancelBtn() {
+    if (currentUserInLocalStorage.value) {
+        if (currentUserInLocalStorage.value.fName === "" || currentUserInLocalStorage.value.lName === "") {
+            alert("Please enter your information (at least the first name and last name are required)");
+        } else {
+            router.push('/');
+        }
+    }
+}
 function closePasswordResetPopup() {
     openPasswordResetPopup.value = false;
 }
 </script>
 
 <template>
-
     <SignIn v-if="Object.keys(currentUserInLocalStorage).length < 1"/>
     <v-container v-else fluid class="d-flex flex-column">
         <v-row>
@@ -250,7 +260,7 @@ function closePasswordResetPopup() {
                                             color="indigo-darken-3"
                                             variant="outlined"
                                             class=""
-                                            @click="router.push('/')"
+                                            @click="clickCancelBtn"
                                         >
                                             Cancel
                                         </v-btn>

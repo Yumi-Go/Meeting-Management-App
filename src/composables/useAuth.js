@@ -28,6 +28,7 @@ export function useAuth() {
                 currentUser.value = user;
                 getUserInfoByUID(user.uid)
                 .then(info => {
+                    console.log("info: ", info);
                     if (info.dateOverrides.length > 0) {
                         info.dateOverrides.forEach(fromUntilPairObj => {
                             fromUntilPairObj.from = dateWithTimezone(fromUntilPairObj.from.toDate());

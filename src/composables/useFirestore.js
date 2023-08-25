@@ -8,6 +8,7 @@ const searchedUsers = useLocalStorage('searchedUsers', []);
 const allUsers = ref([]);
 
 export function useFirestore() {
+
     async function addUser(uid, email) {
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
@@ -49,9 +50,9 @@ export function useFirestore() {
     ) {
         const userRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(userRef, {
-            fName: fName.length > 0 ? fName.toLowerCase() : fName,
-            mName: mName.length > 0 ? mName.toLowerCase() : mName,
-            lName: lName.length > 0 ? lName.toLowerCase() : lName,
+            fName: fName ? fName.toLowerCase() : fName,
+            mName: mName ? mName.toLowerCase() : mName,
+            lName: lName ? lName.toLowerCase() : lName,
             organization: organization,
             department: department,
             position: position,
