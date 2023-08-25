@@ -16,8 +16,8 @@ const router = useRouter();
 const { updateUserInfo, getUserInfoByUID } = useFirestore();
 const { userStateObserver, reAuthentication, changePassword } = useAuth();
 
-userStateObserver();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
+userStateObserver();
 const tabHeaderText = 'account';
 const fName = ref(currentUserInLocalStorage.value.fName);
 const mName = ref (currentUserInLocalStorage.value.mName);
@@ -28,6 +28,9 @@ const position = ref(currentUserInLocalStorage.value.position);
 const role = ref(currentUserInLocalStorage.value.role);
 const location = ref(currentUserInLocalStorage.value.location);
 const timezone = ref(currentUserInLocalStorage.value.timezone);
+
+watch(currentUserInLocalStorage, (updatedCurrentUser) => {
+});
 
 const rules = {
     fName: {
@@ -129,7 +132,7 @@ async function submit() {
     );
     alert("Saved successfully!");
     userStateObserver();
-    router.push('/account');
+    router.push('/');
 }
 
 const openPasswordResetPopup = ref(false);

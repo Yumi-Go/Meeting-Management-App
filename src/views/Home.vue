@@ -9,9 +9,8 @@ import Account from "./Account.vue"
 
 const { userStateObserver } = useAuth();
 const router = useRouter();
-
-userStateObserver();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
+userStateObserver();
 const tabHeaderText = "Home"
 
 function requiredInfoCheck() {

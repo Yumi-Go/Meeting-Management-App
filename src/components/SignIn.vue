@@ -14,6 +14,7 @@ var uiConfig = {
     callbacks: {
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
             addUser(authResult.user.uid, authResult.user.email);
+            userStateObserver();
             router.push('/account');
             return false;
         },

@@ -6,6 +6,7 @@ import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
 import Availability from '../components/Managing/Availability.vue';
 import Calendar from '../components/Managing/Calendar.vue'
+import List from '../components/Managing/List.vue'
 import { mdiClockEditOutline, mdiCalendarMonth, mdiCalendarMonthOutline, mdiViewList } from '@mdi/js';
 
 const { userStateObserver } = useAuth();
@@ -97,6 +98,7 @@ function clickListBtn() {
                     <div v-else class="w-100">
                         <div class="w-100">
                             <Calendar v-if="viewType"/>
+                            <List v-else/>
                         </div>
                     </div>
                 </div>
