@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
+import { useRouter } from 'vue-router'
 import { auth } from '../firebaseConfig';
 import { onAuthStateChanged,
     signOut,
@@ -11,6 +12,7 @@ import { onAuthStateChanged,
 import { useFirestore } from './useFirestore';
 import { useDateTime } from './useDateTime';
 
+const router = useRouter();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const currentUser = ref(auth.currentUser);
 
@@ -96,6 +98,19 @@ export function useAuth() {
         });
     }
 
+    function isRequiredInfoEntered() {
+        let result = false;
+        userStateObserver();
+        if (currentUserInLocalStorage.value) {
+            if (currentUserInLocalStorage.value.fName === "" || currentUserInLocalStorage.value.lName === "") {
+                alert("Please enter your information (at least the first name and last name are required)");
+            } else {
+                result = true;
+            }
+        }
+        return result;
+    }
+
     return {
         currentUser,
         currentUserInLocalStorage,
@@ -104,6 +119,7 @@ export function useAuth() {
         userStateObserver,
         logOut,
         reAuthentication,
-        changePassword
+        changePassword,
+        isRequiredInfoEntered
     }
 }

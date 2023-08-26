@@ -7,19 +7,25 @@ import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
 import Account from "./Account.vue"
 
-const { userStateObserver } = useAuth();
+const { userStateObserver, isRequiredInfoEntered } = useAuth();
 const router = useRouter();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 userStateObserver();
 const tabHeaderText = "Home"
 
+// function requiredInfoCheck() {
+//     userStateObserver();
+//     if (currentUserInLocalStorage.value) {
+//         if (currentUserInLocalStorage.value.fName === "" || currentUserInLocalStorage.value.lName === "") {
+//             alert("Please enter your information (at least the first name and last name are required)");
+//             router.push('/account');
+//         }
+//     }
+// }
+
 function requiredInfoCheck() {
-    userStateObserver();
-    if (currentUserInLocalStorage.value) {
-        if (currentUserInLocalStorage.value.fName === "" || currentUserInLocalStorage.value.lName === "") {
-            alert("Please enter your information (at least the first name and last name are required)");
-            router.push('/account');
-        }
+    if (!isRequiredInfoEntered()) {
+        router.push('/account');
     }
 }
 requiredInfoCheck();

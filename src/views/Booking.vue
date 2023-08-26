@@ -2,6 +2,7 @@
 import { useAuth } from '../composables/useAuth'
 import { auth } from '../firebaseConfig'
 import { useLocalStorage } from '@vueuse/core'
+import { useRouter } from 'vue-router'
 import { useFormat } from '../composables/useFormat'
 import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
@@ -9,14 +10,20 @@ import SearchTitle from "../components/Booking/SearchTitle.vue";
 import SearchBar from "../components/Booking/SearchBar.vue";
 import SearchResult from "../components/Booking/SearchResult.vue";
 
-
-const { userStateObserver, logOut } = useAuth();
+const { userStateObserver, isRequiredInfoEntered } = useAuth();
 const { capitalize } = useFormat();
+const router = useRouter();
 
 userStateObserver();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const tabHeaderText = "Book a Meeting"
 
+function requiredInfoCheck() {
+    if (!isRequiredInfoEntered()) {
+        router.push('/account');
+    }
+}
+requiredInfoCheck();
 
 </script>
 

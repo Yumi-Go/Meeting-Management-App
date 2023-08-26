@@ -132,7 +132,7 @@ async function submit() {
     );
     alert("Saved successfully!");
     userStateObserver();
-    router.push('/');
+    router.push('/account');
 }
 
 const openPasswordResetPopup = ref(false);
