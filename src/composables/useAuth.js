@@ -12,7 +12,6 @@ import { onAuthStateChanged,
 import { useFirestore } from './useFirestore';
 import { useDateTime } from './useDateTime';
 
-const router = useRouter();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const currentUser = ref(auth.currentUser);
 
@@ -23,6 +22,8 @@ const isUserReAuthenticated = ref(false);
 const isPasswordChanged = ref(false);
 
 export function useAuth() {
+
+    const router = useRouter();
 
     function userStateObserver() {
         onAuthStateChanged(auth, (user) => {
@@ -98,17 +99,15 @@ export function useAuth() {
         });
     }
 
-    function isRequiredInfoEntered() {
-        let result = false;
+    function requiredInfoCheck() {
         userStateObserver();
         if (currentUserInLocalStorage.value) {
             if (currentUserInLocalStorage.value.fName === "" || currentUserInLocalStorage.value.lName === "") {
                 alert("Please enter your information (at least the first name and last name are required)");
-            } else {
-                result = true;
+                router.push('/account');
             }
         }
-        return result;
+
     }
 
     return {
@@ -120,6 +119,6 @@ export function useAuth() {
         logOut,
         reAuthentication,
         changePassword,
-        isRequiredInfoEntered
+        requiredInfoCheck
     }
 }

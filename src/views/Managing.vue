@@ -2,7 +2,6 @@
 import { ref, watch, provide } from 'vue'
 import { useAuth } from '../composables/useAuth'
 import { useLocalStorage } from '@vueuse/core'
-import { useRouter } from 'vue-router'
 import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
 import Availability from '../components/Managing/Availability.vue';
@@ -10,8 +9,7 @@ import Calendar from '../components/Managing/Calendar.vue'
 import List from '../components/Managing/List.vue'
 import { mdiClockEditOutline, mdiCalendarMonth, mdiCalendarMonthOutline, mdiViewList } from '@mdi/js';
 
-const { userStateObserver, isRequiredInfoEntered } = useAuth();
-const router = useRouter();
+const { userStateObserver, requiredInfoCheck } = useAuth();
 userStateObserver();
 
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
@@ -33,11 +31,6 @@ function clickListBtn() {
     showAvailability.value = false;
 }
 
-function requiredInfoCheck() {
-    if (!isRequiredInfoEntered()) {
-        router.push('/account');
-    }
-}
 requiredInfoCheck();
 
 </script>
