@@ -8,7 +8,6 @@ const searchedUsers = useLocalStorage('searchedUsers', []);
 const allUsers = ref([]);
 
 export function useFirestore() {
-
     async function addUser(uid, email) {
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
@@ -50,9 +49,9 @@ export function useFirestore() {
     ) {
         const userRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(userRef, {
-            fName: fName ? fName.toLowerCase() : fName,
-            mName: mName ? mName.toLowerCase() : mName,
-            lName: lName ? lName.toLowerCase() : lName,
+            fName: fName.length > 0 ? fName.toLowerCase() : fName,
+            mName: mName.length > 0 ? mName.toLowerCase() : mName,
+            lName: lName.length > 0 ? lName.toLowerCase() : lName,
             organization: organization,
             department: department,
             position: position,
@@ -118,6 +117,9 @@ export function useFirestore() {
     }
 
     async function acceptMeetingRequest(senderUid, receiverUid, meetingObj) {
+        console.log("senderUid: ", senderUid);
+        console.log("receiverUid: ", receiverUid);
+        console.log("meetingObj: ", meetingObj);
         const meetingRef = await addDoc(collection(db, "meetings"), meetingObj);
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
@@ -132,6 +134,7 @@ export function useFirestore() {
     }
 
     async function refuseMeetingRequest(senderUid, receiverUid, meetingObj) {
+        console.log("senderUid, receiverUid, meetingObj: ", senderUid, receiverUid, meetingObj);
         const senderRef = doc(db, "users", senderUid);
         await updateDoc(senderRef, {
             meetingRequestsSent: arrayRemove({[receiverUid]: meetingObj})
@@ -144,16 +147,67 @@ export function useFirestore() {
 
 
     //// Inbox
-    async function readMessage(senderUid, receiverUid, updatedMeetingRequests) {
-        const senderRef = doc(db, "users", senderUid);
-        await updateDoc(senderRef, {
-            meetingRequestsSent: updatedMeetingRequests
+    async function markRead(senderUid, receiverUid, allRequestsReceivedUpdated, singleRequestSent_beforeUpdated, singleRequestSent_updated) {
+
+        console.log("singleRequestSent_beforeUpdated: ", singleRequestSent_beforeUpdated);
+        // console.log("singleRequestSent_updated: ", singleRequestSent_updated);
+
+        let dateParsed = null;
+        allRequestsReceivedUpdated.forEach(requestObj => {
+            // console.log("Object.values(request)[0].createdAt: ", Object.values(requestObj)[0].createdAt);
+            // console.log("typeof Object.values(request)[0].createdAt: ", typeof Object.values(requestObj)[0].createdAt);
+            dateParsed = new Date(Object.values(requestObj)[0].createdAt);
+            Object.values(requestObj)[0].createdAt = Timestamp.fromDate(dateParsed);
         });
+        console.log("allRequestsReceivedUpdated: ", allRequestsReceivedUpdated);
+
+        singleRequestSent_beforeUpdated.createdAt = new Timestamp(singleRequestSent_beforeUpdated.createdAt.seconds, singleRequestSent_beforeUpdated.createdAt.nanoseconds);
+        // console.log("singleRequestSent_beforeUpdate: ", singleRequestSent_beforeUpdated);
+
+        // singleRequestSent_updated.createdAt = new Timestamp(singleRequestSent_updated.createdAt.seconds, singleRequestSent_updated.createdAt.nanoseconds);
+        // console.log("singleRequestSent_updated: ", singleRequestSent_updated);
+        
+        // const singleRequestSent_beforeUpdated = () => {
+        //     const result = singleRequestSent_updated;
+        //     result.isRead = false;
+        //     return result;
+        // }
+
         const receiverRef = doc(db, "users", receiverUid);
         await updateDoc(receiverRef, {
-            meetingRequestsReceived: updatedMeetingRequests
+            meetingRequestsReceived: allRequestsReceivedUpdated
+        });
+        const senderRef = doc(db, "users", senderUid);
+        await updateDoc(senderRef, {
+            meetingRequestsSent: arrayRemove({[receiverUid]: singleRequestSent_beforeUpdated})
+        });
+
+        singleRequestSent_beforeUpdated.isRead = true;
+        console.log("changed singleRequestSent_beforeUpdated: ", singleRequestSent_beforeUpdated);
+        await updateDoc(senderRef, {
+            meetingRequestsSent: arrayUnion({[receiverUid]: singleRequestSent_beforeUpdated})
         });
     }
+    // async function markRead_receivedRequestsArr(senderUid, receiverUid, updatedRequestsReceived, singleRequestSentBeforeUpdate, singleRequestSentAfterUpdate) {
+    //     // const senderRef = doc(db, "users", senderUid);
+    //     // await updateDoc(senderRef, {
+    //     //     meetingRequestsSent: updatedMeetingRequestsSent
+    //     // });
+    //     const receiverRef = doc(db, "users", receiverUid);
+    //     await updateDoc(receiverRef, {
+    //         meetingRequestsReceived: updatedRequestsReceived
+    //     });
+    // }
+
+    // async function markRead_singleSentRequest(senderUid, receiverUid, singleRequestSentBeforeUpdate, singleRequestSentAfterUpdate) {
+    //     const senderRef = doc(db, "users", senderUid);
+    //     await updateDoc(senderRef, {
+    //         meetingRequestsSent: arrayRemove({[receiverUid]: singleRequestSentBeforeUpdate})
+    //     });
+    //     await updateDoc(senderRef, {
+    //         meetingRequestsSent: arrayUnion({[receiverUid]: singleRequestSentAfterUpdate})
+    //     });
+    // }
 
     
     //// Availability
@@ -212,7 +266,7 @@ export function useFirestore() {
         requestMeeting,
         acceptMeetingRequest,
         refuseMeetingRequest,
-        readMessage,
+        markRead,
         updateWeeklyAvailability,
         addDateOverrides,
         deleteDateOverrides,

@@ -1,22 +1,32 @@
 <script setup>
 import { ref, watch, computed, onBeforeMount } from "vue"
 import { auth } from '../../firebaseConfig'
+import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from "../../composables/useFirestore";
 import { useDateTime } from '../../composables/useDateTime';
 import { useFormat } from "../../composables/useFormat";
 import { useLocalStorage } from '@vueuse/core';
 import InboxMessagePopup from "./InboxMessagePopup.vue";
 import { mdiTrashCanOutline } from '@mdi/js';
+import _ from 'lodash';
+
 
 const currentUser = useLocalStorage('currentUser', {});
-const { getUserInfoByUID, readMessage } = useFirestore();
+const { userStateObserver } = useAuth();
+const {
+    getUserInfoByUID,
+    refuseMeetingRequest,
+    markRead
+} = useFirestore();
 const { getTimeApm } = useDateTime();
 const { capitalize } = useFormat();
 const openInboxMessagePopup = ref(false);
 const allRequestsReceived = computed(() => {
     return currentUser.value.meetingRequestsReceived;
 });
-const chosenRequest = ref();
+
+const chosenRequest = ref({});
+// const requestToDelete = ref();
 
 function closeInboxMessagePopup() {
     openInboxMessagePopup.value = false;
@@ -31,16 +41,54 @@ function getSenderObj(senderUid) {
     return senderObj;
 }
 
-async function clickRequest(index) {
+// const holdRequestBeforeUpdatedAsRead = currentUser.value.meetingRequestsReceived;
+async function clickRequest(request, index) {
+    console.log("allRequestsReceived.value[index]: ", allRequestsReceived.value[index]);
+    const senderUid = Object.keys(request)[0];
+    const allRequestsSentInSenderObj = getSenderObj(senderUid).meetingRequestsSent;
+    // console.log('allRequestsSentInSenderObj: ', allRequestsSentInSenderObj);
+    const requestBeforeRead = Object.values(allRequestsSentInSenderObj[index])[0]; // 여기서 sender obj에 receiver와 같은 인덱스를 쓰면 안됨. 이것때문에 두번째 read부터 어긋남.
+    console.log("requestBeforeRead: ", requestBeforeRead);
+
+    // const requestAfterRead = Object.values(request)[0];
+    // requestAfterRead.isRead = true;
+    // chosenRequest.value = request;
+    
+    const requestAfterRead = Object.values(request)[0];
+    requestAfterRead.isRead = true;
+
+    // requestBeforeRead.createdAt = new Date(requestBeforeRead.createdAt);
+    // const requestAfterRead = JSON.parse(JSON.stringify(requestBeforeRead));
+    // requestAfterRead.isRead = true;
+    // requestAfterRead.createdAt = new Date(requestBeforeRead.createdAt);
+
+    // console.log("requestBeforeRead.createdAt: ", requestBeforeRead.createdAt);
+    // console.log("requestAfterRead.createdAt: ", requestAfterRead.createdAt);
+    // chosenRequest.value[senderUid] = requestAfterRead;
+    chosenRequest.value[senderUid] = requestAfterRead;
+    console.log("requestBeforeRead: ", requestBeforeRead);
+    console.log("requestAfterRead: ", requestAfterRead);
+    console.log("chosenRequest.value: ", chosenRequest.value);
+
     openInboxMessagePopup.value = true;
-    const clickedMeetingRequestsReceived = allRequestsReceived.value;
-    Object.values(clickedMeetingRequestsReceived[index])[0].isRead = true;
-    chosenRequest.value = clickedMeetingRequestsReceived[index];
-    await readMessage(
-        Object.keys(clickedMeetingRequestsReceived[index])[0],
+
+    await markRead(
+        senderUid,
         auth.currentUser.uid,
-        clickedMeetingRequestsReceived
+        allRequestsReceived.value,
+        requestBeforeRead,
+        requestAfterRead
     );
+    userStateObserver();
+}
+
+async function clickBinIcon(request) {
+    await refuseMeetingRequest(
+        Object.keys(request)[0],
+        auth.currentUser.uid,
+        Object.values(request)[0]
+    );
+    userStateObserver();
 }
 
 </script>
@@ -56,36 +104,40 @@ async function clickRequest(index) {
                     Requests I received
                 </v-list-subheader>
 
+
+
+
+
                 <v-list-item
                     v-if="allRequestsReceived.length > 0"
-                    v-for="(request, index) in Object.values(allRequestsReceived)"
-                    @click="clickRequest(index)"
-                    class=""
+                    v-for="(request, index) in allRequestsReceived"
+                    class="hover:tw-bg-red-300 hover:tw-text-black tw-group"
                 >
                     <template #prepend>
                         <v-list-item-action start>
-                            <v-checkbox-btn v-model="Object.values(request)[0].status">
-                            </v-checkbox-btn>
+                            <v-checkbox-btn v-model="Object.values(request)[0].status"/>
                         </v-list-item-action>
                     </template>
-                    <span class="tw-text-lg tw-text-indigo-900 tw-font-semibold">
-                        {{ Object.values(request)[0].title }}
+                    <span @click="clickRequest(request, index)">
+                        <div class="tw-text-lg tw-text-indigo-900 tw-font-semibold">
+                            {{ Object.values(request)[0].title }}
+                        </div>
+                        <div class="tw-w-[50%]">
+                            {{ Object.values(request)[0].startTime }} - {{ Object.values(request)[0].endTime }}
+                        </div>
+                        <div class="">
+                            from
+                            {{ capitalize(getSenderObj(Object.keys(request)[0]).fName) }}
+                            {{ capitalize(getSenderObj(Object.keys(request)[0]).lName) }}
+                        </div>
                     </span>
-                    <v-list-item-title
-                        class="tw-w-[50%]"
-                    >
-                        {{ Object.values(request)[0].startTime }} - {{ Object.values(request)[0].endTime }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle
-                        class=""
-                    >
-                        from
-                        {{ capitalize(getSenderObj(Object.keys(request)[0]).fName) }}
-                        {{ capitalize(getSenderObj(Object.keys(request)[0]).lName) }}
-
-                    </v-list-item-subtitle>
                     <template #append>
-                        <v-icon start :icon="mdiTrashCanOutline"/>
+                        <v-icon
+                            start
+                            :icon="mdiTrashCanOutline"
+                            @click="clickBinIcon(request)"
+                            class="tw-invisible group-hover:tw-visible"
+                        />
                     </template>
                     <v-dialog
                         v-model="openInboxMessagePopup"
@@ -103,6 +155,9 @@ async function clickRequest(index) {
                         class="tw-border-indigo-900"
                     />
                 </v-list-item>
+
+
+
                 <v-list-item
                     v-else
                     class="tw-p-5 tw-font-bold"
@@ -118,5 +173,4 @@ async function clickRequest(index) {
             </v-list>
         </v-row>
     </v-container>
-
 </template>

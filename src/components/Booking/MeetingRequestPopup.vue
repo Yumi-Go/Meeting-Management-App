@@ -47,13 +47,13 @@ function getParticipantUids() {
     return selectedParticipant.value.map(user => user.uid);
 }
 
-function sendMeetingRequest() {
+async function sendMeetingRequest() {
     meetingRequested.value.participants = getParticipantUids();
     const startTimeArr = removeApmFromTimeArr(meetingRequested.value.startTime);
     meetingRequested.value.startTime = `${startTimeArr[0]}:${startTimeArr[1]}`;
     const endTimeArr = removeApmFromTimeArr(meetingRequested.value.endTime);
     meetingRequested.value.endTime = `${endTimeArr[0]}:${endTimeArr[1]}`;
-    requestMeeting(auth.currentUser.uid, popupUser.value.uid, meetingRequested.value);
+    await requestMeeting(auth.currentUser.uid, popupUser.value.uid, meetingRequested.value);
     closeBtnClick();
 }
 

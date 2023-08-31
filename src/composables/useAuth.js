@@ -31,11 +31,16 @@ export function useAuth() {
                 currentUser.value = user;
                 getUserInfoByUID(user.uid)
                 .then(info => {
-                    console.log("info: ", info);
+                    // console.log("info: ", info);
                     if (info.dateOverrides.length > 0) {
                         info.dateOverrides.forEach(fromUntilPairObj => {
                             fromUntilPairObj.from = dateWithTimezone(fromUntilPairObj.from.toDate());
                             fromUntilPairObj.until = dateWithTimezone(fromUntilPairObj.until.toDate());
+                        });
+                    }
+                    if (info.meetingRequestsReceived.length > 0) {
+                        info.meetingRequestsReceived.forEach(requestObj => {
+                            Object.values(requestObj)[0].createdAt = Object.values(requestObj)[0].createdAt.toDate();
                         });
                     }
                     currentUserInLocalStorage.value = info;

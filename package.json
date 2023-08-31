@@ -24,6 +24,7 @@
     "@vueuse/core": "^10.1.2",
     "firebase": "^9.22.1",
     "firebaseui": "^6.0.2",
+    "lodash": "^4.17.21",
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",
     "vuetify": "^3.3.4"
