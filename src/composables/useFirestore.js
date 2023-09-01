@@ -49,9 +49,9 @@ export function useFirestore() {
     ) {
         const userRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(userRef, {
-            fName: fName.length > 0 ? fName.toLowerCase() : fName,
-            mName: mName.length > 0 ? mName.toLowerCase() : mName,
-            lName: lName.length > 0 ? lName.toLowerCase() : lName,
+            fName: fName ? fName.toLowerCase() : fName,
+            mName: mName ? mName.toLowerCase() : mName,
+            lName: lName ? lName.toLowerCase() : lName,
             organization: organization,
             department: department,
             position: position,
@@ -106,14 +106,23 @@ export function useFirestore() {
         console.log("meetingObj before timestamp: ", meetingObj);
         meetingObj.createdAt = Timestamp.fromDate(meetingObj.createdAt);
         console.log("meetingObj after timestamp: ", meetingObj);
+
         const senderRef = doc(db, "users", senderUid);
+        const receiverRef = doc(db, "users", receiverUid);
+
         await updateDoc(senderRef, {
             meetingRequestsSent: arrayUnion({[receiverUid]: meetingObj})
         });
-        const receiverRef = doc(db, "users", receiverUid);
         await updateDoc(receiverRef, {
             meetingRequestsReceived: arrayUnion({[senderUid]: meetingObj})
         });
+        
+        const senderDocRef_meetingsSent = await addDoc(collection(senderRef, "meetingsSent"), meetingObj);
+        console.log("sender_meetingsSent.id: ", senderDocRef_meetingsSent.id);
+
+        const receiverSubColRef_meetingsReceived = doc(receiverRef, "meetingsReceived", senderDocRef_meetingsSent.id);
+        await setDoc(receiverSubColRef_meetingsReceived, meetingObj, { merge: true });
+
     }
 
     async function acceptMeetingRequest(senderUid, receiverUid, meetingObj) {

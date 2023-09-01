@@ -49,22 +49,9 @@ async function clickRequest(request, index) {
     // console.log('allRequestsSentInSenderObj: ', allRequestsSentInSenderObj);
     const requestBeforeRead = Object.values(allRequestsSentInSenderObj[index])[0]; // 여기서 sender obj에 receiver와 같은 인덱스를 쓰면 안됨. 이것때문에 두번째 read부터 어긋남.
     console.log("requestBeforeRead: ", requestBeforeRead);
-
-    // const requestAfterRead = Object.values(request)[0];
-    // requestAfterRead.isRead = true;
-    // chosenRequest.value = request;
     
     const requestAfterRead = Object.values(request)[0];
     requestAfterRead.isRead = true;
-
-    // requestBeforeRead.createdAt = new Date(requestBeforeRead.createdAt);
-    // const requestAfterRead = JSON.parse(JSON.stringify(requestBeforeRead));
-    // requestAfterRead.isRead = true;
-    // requestAfterRead.createdAt = new Date(requestBeforeRead.createdAt);
-
-    // console.log("requestBeforeRead.createdAt: ", requestBeforeRead.createdAt);
-    // console.log("requestAfterRead.createdAt: ", requestAfterRead.createdAt);
-    // chosenRequest.value[senderUid] = requestAfterRead;
     chosenRequest.value[senderUid] = requestAfterRead;
     console.log("requestBeforeRead: ", requestBeforeRead);
     console.log("requestAfterRead: ", requestAfterRead);
