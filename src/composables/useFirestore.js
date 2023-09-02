@@ -1,6 +1,6 @@
 import { ref } from "vue"
 import { auth, db } from '../firebaseConfig';
-import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
+import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
     query, where, arrayUnion, arrayRemove, Timestamp } from "firebase/firestore";
 import { useLocalStorage } from '@vueuse/core'
 
@@ -26,8 +26,6 @@ export function useFirestore() {
                 location: "",
                 timezone: "",
                 meetings: [], // meeting ID list (linked to meetings collection)
-                meetingRequestsSent: [],
-                meetingRequestsReceived: [],
                 weeklyAvailability: {
                     monday: null,
                     tuesday: null,
@@ -62,6 +60,7 @@ export function useFirestore() {
     }
 
     async function getUserInfoByUID(uid) {
+        console.log("uid: ", uid);
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -102,20 +101,17 @@ export function useFirestore() {
    }
 
     //// Meeting
-    async function requestMeeting(senderUid, receiverUid, meetingObj) {
-        console.log("meetingObj before timestamp: ", meetingObj);
+    async function requestMeeting(meetingObj) {
+
+        // console.log("senderUid: ", meetingObj.sender);
+        // console.log("receiverUid: ", meetingObj.receiver); 
+
+        // console.log("meetingObj before timestamp: ", meetingObj);
         meetingObj.createdAt = Timestamp.fromDate(meetingObj.createdAt);
-        console.log("meetingObj after timestamp: ", meetingObj);
+        // console.log("meetingObj after timestamp: ", meetingObj);
 
-        const senderRef = doc(db, "users", senderUid);
-        const receiverRef = doc(db, "users", receiverUid);
-
-        await updateDoc(senderRef, {
-            meetingRequestsSent: arrayUnion({[receiverUid]: meetingObj})
-        });
-        await updateDoc(receiverRef, {
-            meetingRequestsReceived: arrayUnion({[senderUid]: meetingObj})
-        });
+        const senderRef = doc(db, "users", meetingObj.sender);
+        const receiverRef = doc(db, "users", meetingObj.receiver);
         
         const senderDocRef_meetingsSent = await addDoc(collection(senderRef, "meetingsSent"), meetingObj);
         console.log("sender_meetingsSent.id: ", senderDocRef_meetingsSent.id);
@@ -125,98 +121,48 @@ export function useFirestore() {
 
     }
 
-    async function acceptMeetingRequest(senderUid, receiverUid, meetingObj) {
-        console.log("senderUid: ", senderUid);
-        console.log("receiverUid: ", receiverUid);
-        console.log("meetingObj: ", meetingObj);
-        const meetingRef = await addDoc(collection(db, "meetings"), meetingObj);
-        const senderRef = doc(db, "users", senderUid);
-        await updateDoc(senderRef, {
-            meetings: arrayUnion(meetingRef.id),
-            meetingRequestsSent: arrayRemove({[receiverUid]: meetingObj})
+    async function getSentMeetingRequests(uid) {
+        const sentMeetingRequests = [];
+        const querySnapshot = await getDocs(collection(db, `users/${uid}/meetingsSent`));
+        querySnapshot.forEach((doc) => {
+            sentMeetingRequests.push({...doc.data(), id: doc.id});
         });
-        const receiverRef = doc(db, "users", receiverUid);
-        await updateDoc(receiverRef, {
-            meetings: arrayUnion(meetingRef.id),
-            meetingRequestsReceived: arrayRemove({[senderUid]: meetingObj})
-        });
+        return sentMeetingRequests;
     }
 
-    async function refuseMeetingRequest(senderUid, receiverUid, meetingObj) {
-        console.log("senderUid, receiverUid, meetingObj: ", senderUid, receiverUid, meetingObj);
-        const senderRef = doc(db, "users", senderUid);
-        await updateDoc(senderRef, {
-            meetingRequestsSent: arrayRemove({[receiverUid]: meetingObj})
+    async function getReceivedMeetingRequests(uid) {
+        const receivedMeetingRequests = [];
+        const querySnapshot = await getDocs(collection(db, `users/${uid}/meetingsReceived`));
+        querySnapshot.forEach((doc) => {
+            receivedMeetingRequests.push({...doc.data(), id: doc.id});
         });
-        const receiverRef = doc(db, "users", receiverUid);
-        await updateDoc(receiverRef, {
-            meetingRequestsReceived: arrayRemove({[senderUid]: meetingObj})
-        });
+        return receivedMeetingRequests;
+    }
+
+    async function acceptMeetingRequest(meetingObj) {
+        const docId = meetingObj.id;
+        delete meetingObj.id;
+        console.log("meetingObj: ", meetingObj);
+        await setDoc(doc(db, "meetings", docId), meetingObj);
+    }
+
+    async function refuseMeetingRequest(meetingObj) {
+        await deleteDoc(doc(db, "users", meetingObj.sender, "meetingsSent", meetingObj.id));
+        await deleteDoc(doc(db, "users", meetingObj.receiver, "meetingsReceived", meetingObj.id));
     }
 
 
     //// Inbox
-    async function markRead(senderUid, receiverUid, allRequestsReceivedUpdated, singleRequestSent_beforeUpdated, singleRequestSent_updated) {
-
-        console.log("singleRequestSent_beforeUpdated: ", singleRequestSent_beforeUpdated);
-        // console.log("singleRequestSent_updated: ", singleRequestSent_updated);
-
-        let dateParsed = null;
-        allRequestsReceivedUpdated.forEach(requestObj => {
-            // console.log("Object.values(request)[0].createdAt: ", Object.values(requestObj)[0].createdAt);
-            // console.log("typeof Object.values(request)[0].createdAt: ", typeof Object.values(requestObj)[0].createdAt);
-            dateParsed = new Date(Object.values(requestObj)[0].createdAt);
-            Object.values(requestObj)[0].createdAt = Timestamp.fromDate(dateParsed);
+    async function markRead(request) {
+        const senderRef = doc(db, "users", request.sender, "meetingsSent", request.id);
+        const receiverRef = doc(db, "users", request.receiver, "meetingsReceived", request.id);
+        await updateDoc(senderRef, {
+            isRead: true
         });
-        console.log("allRequestsReceivedUpdated: ", allRequestsReceivedUpdated);
-
-        singleRequestSent_beforeUpdated.createdAt = new Timestamp(singleRequestSent_beforeUpdated.createdAt.seconds, singleRequestSent_beforeUpdated.createdAt.nanoseconds);
-        // console.log("singleRequestSent_beforeUpdate: ", singleRequestSent_beforeUpdated);
-
-        // singleRequestSent_updated.createdAt = new Timestamp(singleRequestSent_updated.createdAt.seconds, singleRequestSent_updated.createdAt.nanoseconds);
-        // console.log("singleRequestSent_updated: ", singleRequestSent_updated);
-        
-        // const singleRequestSent_beforeUpdated = () => {
-        //     const result = singleRequestSent_updated;
-        //     result.isRead = false;
-        //     return result;
-        // }
-
-        const receiverRef = doc(db, "users", receiverUid);
         await updateDoc(receiverRef, {
-            meetingRequestsReceived: allRequestsReceivedUpdated
-        });
-        const senderRef = doc(db, "users", senderUid);
-        await updateDoc(senderRef, {
-            meetingRequestsSent: arrayRemove({[receiverUid]: singleRequestSent_beforeUpdated})
-        });
-
-        singleRequestSent_beforeUpdated.isRead = true;
-        console.log("changed singleRequestSent_beforeUpdated: ", singleRequestSent_beforeUpdated);
-        await updateDoc(senderRef, {
-            meetingRequestsSent: arrayUnion({[receiverUid]: singleRequestSent_beforeUpdated})
+            isRead: true
         });
     }
-    // async function markRead_receivedRequestsArr(senderUid, receiverUid, updatedRequestsReceived, singleRequestSentBeforeUpdate, singleRequestSentAfterUpdate) {
-    //     // const senderRef = doc(db, "users", senderUid);
-    //     // await updateDoc(senderRef, {
-    //     //     meetingRequestsSent: updatedMeetingRequestsSent
-    //     // });
-    //     const receiverRef = doc(db, "users", receiverUid);
-    //     await updateDoc(receiverRef, {
-    //         meetingRequestsReceived: updatedRequestsReceived
-    //     });
-    // }
-
-    // async function markRead_singleSentRequest(senderUid, receiverUid, singleRequestSentBeforeUpdate, singleRequestSentAfterUpdate) {
-    //     const senderRef = doc(db, "users", senderUid);
-    //     await updateDoc(senderRef, {
-    //         meetingRequestsSent: arrayRemove({[receiverUid]: singleRequestSentBeforeUpdate})
-    //     });
-    //     await updateDoc(senderRef, {
-    //         meetingRequestsSent: arrayUnion({[receiverUid]: singleRequestSentAfterUpdate})
-    //     });
-    // }
 
     
     //// Availability
@@ -273,6 +219,8 @@ export function useFirestore() {
         getAllUserInfo,
         getUserInfoByName,
         requestMeeting,
+        getSentMeetingRequests,
+        getReceivedMeetingRequests,
         acceptMeetingRequest,
         refuseMeetingRequest,
         markRead,

@@ -14,9 +14,9 @@ userStateObserver();
 const tab = ref(null);
 const isUnreadMsgExist = computed(() => {
   let result = false;
-  if (currentUserInLocalStorage.value.meetingRequestsReceived) {
-    for (const requestObj of currentUserInLocalStorage.value.meetingRequestsReceived) {
-      if (!Object.values(requestObj)[0].isRead) {
+  if (currentUserInLocalStorage.value.meetingsReceived) {
+    for (const requestObj of currentUserInLocalStorage.value.meetingsReceived) {
+      if (!requestObj.isRead) {
         result = true;
         break;
       }

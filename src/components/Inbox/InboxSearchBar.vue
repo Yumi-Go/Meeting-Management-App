@@ -8,8 +8,11 @@ const {  } = useFirestore();
 const { userStateObserver } = useAuth();
 
 const inboxSearchResult = ref([]);
-const currentUserInLocalStorage = userStateObserver();
 const { inboxSearch, getInboxSearchResult } = useSearch();
+
+async function clickSearch() {
+    await getInboxSearchResult();
+}
 
 </script>
 
@@ -25,11 +28,11 @@ const { inboxSearch, getInboxSearchResult } = useSearch();
                 hide-details
                 class="ma-0"
                 variant="outlined"
-                @keypress.enter="getInboxSearchResult"
+                @keypress.enter="clickSearch"
             >
                 <template #append-inner>
                     <!-- <v-icon icon="md:home" @click.prevent="getInboxSearchResult"/> -->
-                    <v-icon  @click.prevent="getInboxSearchResult">
+                    <v-icon  @click.prevent="clickSearch">
                         <span class="material-symbols-outlined">
                             search
                         </span>

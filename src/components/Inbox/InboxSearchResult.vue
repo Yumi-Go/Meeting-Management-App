@@ -11,7 +11,7 @@ import { mdiTrashCanOutline } from '@mdi/js';
 import _ from 'lodash';
 
 
-const currentUser = useLocalStorage('currentUser', {});
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const { userStateObserver } = useAuth();
 const {
     getUserInfoByUID,
@@ -21,9 +21,9 @@ const {
 const { getTimeApm } = useDateTime();
 const { capitalize } = useFormat();
 const openInboxMessagePopup = ref(false);
-const allRequestsReceived = computed(() => {
-    return currentUser.value.meetingRequestsReceived;
-});
+// const allRequestsReceived = computed(() => {
+//     return currentUserInLocalStorage.value.meetingsReceived;
+// });
 
 const chosenRequest = ref({});
 // const requestToDelete = ref();
@@ -41,40 +41,16 @@ function getSenderObj(senderUid) {
     return senderObj;
 }
 
-// const holdRequestBeforeUpdatedAsRead = currentUser.value.meetingRequestsReceived;
-async function clickRequest(request, index) {
-    console.log("allRequestsReceived.value[index]: ", allRequestsReceived.value[index]);
-    const senderUid = Object.keys(request)[0];
-    const allRequestsSentInSenderObj = getSenderObj(senderUid).meetingRequestsSent;
-    // console.log('allRequestsSentInSenderObj: ', allRequestsSentInSenderObj);
-    const requestBeforeRead = Object.values(allRequestsSentInSenderObj[index])[0]; // 여기서 sender obj에 receiver와 같은 인덱스를 쓰면 안됨. 이것때문에 두번째 read부터 어긋남.
-    console.log("requestBeforeRead: ", requestBeforeRead);
-    
-    const requestAfterRead = Object.values(request)[0];
-    requestAfterRead.isRead = true;
-    chosenRequest.value[senderUid] = requestAfterRead;
-    console.log("requestBeforeRead: ", requestBeforeRead);
-    console.log("requestAfterRead: ", requestAfterRead);
-    console.log("chosenRequest.value: ", chosenRequest.value);
-
+async function clickRequest(request) {
     openInboxMessagePopup.value = true;
-
-    await markRead(
-        senderUid,
-        auth.currentUser.uid,
-        allRequestsReceived.value,
-        requestBeforeRead,
-        requestAfterRead
-    );
+    await markRead(request);
+    chosenRequest.value = request;
+    console.log("chosenRequest: ", chosenRequest.value);
     userStateObserver();
 }
 
 async function clickBinIcon(request) {
-    await refuseMeetingRequest(
-        Object.keys(request)[0],
-        auth.currentUser.uid,
-        Object.values(request)[0]
-    );
+    await refuseMeetingRequest(request);
     userStateObserver();
 }
 
@@ -96,26 +72,26 @@ async function clickBinIcon(request) {
 
 
                 <v-list-item
-                    v-if="allRequestsReceived.length > 0"
-                    v-for="(request, index) in allRequestsReceived"
+                    v-if="currentUserInLocalStorage.meetingsReceived"
+                    v-for="request in currentUserInLocalStorage.meetingsReceived"
                     class="hover:tw-bg-red-300 hover:tw-text-black tw-group"
                 >
                     <template #prepend>
                         <v-list-item-action start>
-                            <v-checkbox-btn v-model="Object.values(request)[0].status"/>
+                            <v-checkbox-btn v-model="request.status"/>
                         </v-list-item-action>
                     </template>
-                    <span @click="clickRequest(request, index)">
+                    <span @click="clickRequest(request)">
                         <div class="tw-text-lg tw-text-indigo-900 tw-font-semibold">
-                            {{ Object.values(request)[0].title }}
+                            {{ request.title }}
                         </div>
                         <div class="tw-w-[50%]">
-                            {{ Object.values(request)[0].startTime }} - {{ Object.values(request)[0].endTime }}
+                            {{ request.startTime }} - {{ request.endTime }}
                         </div>
                         <div class="">
                             from
-                            {{ capitalize(getSenderObj(Object.keys(request)[0]).fName) }}
-                            {{ capitalize(getSenderObj(Object.keys(request)[0]).lName) }}
+                            {{ capitalize(getSenderObj(request.sender).fName) }}
+                            {{ capitalize(getSenderObj(request.sender).lName) }}
                         </div>
                     </span>
                     <template #append>

@@ -18,22 +18,20 @@ const props = defineProps({
     requestedMeetingObj: Object,
 });
 const emit = defineEmits(['closeInboxMessagePopup']);
-
-const senderUid = Object.keys(props.requestedMeetingObj)[0];
-const meetingObj = Object.values(props.requestedMeetingObj)[0];
 const senderObj = ref({});
 
 function getSenderObj() {
-    getUserInfoByUID(senderUid)
+    getUserInfoByUID(props.requestedMeetingObj.sender)
     .then(sender => {
         senderObj.value = sender;
     });
+    return senderObj.value;
 }
 
 // 여기 하다 말음.. 
 function getMeetingObjToDisplay() {
     const result = {};
-    for (const [key, value] of Object.entries(meetingObj)) {
+    for (const [key, value] of Object.entries(props.requestedMeetingObj)) {
         if (key === 'startTime' || key === 'endTime') {
             if (value.length > 0) {
                 result[key] = getTimeApm(value);
@@ -51,20 +49,24 @@ function getMeetingObjToDisplay() {
 getMeetingObjToDisplay();
 
 async function clickAcceptBtn() {
-    await acceptMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
+    await acceptMeetingRequest(props.requestedMeetingObj);
     emit('closeInboxMessagePopup');
     userStateObserver();
 }
 
 async function clickDismissBtn() {
-    await refuseMeetingRequest(senderUid, auth.currentUser.uid, meetingObj);
+    await refuseMeetingRequest(props.requestedMeetingObj);
     emit('closeInboxMessagePopup');
     userStateObserver();
 }
 
-onBeforeMount(() => {
-    getSenderObj();
-});
+// onBeforeMount(() => {
+//     console.log("props.requestedMeetingObj.sender: ", props.requestedMeetingObj.sender);
+//     getUserInfoByUID(props.requestedMeetingObj.sender)
+//     .then(sender => {
+//         senderObj.value = sender;
+//     });
+// });
 
 </script>
 
@@ -82,25 +84,27 @@ onBeforeMount(() => {
             <v-row no-gutters>
                 <v-sheet class="px-2 pb-1 tw-w-full" color="transparent">
                     <div class="mb-3">
-                        <span class="tw-text-gray-500 tw-font-semibold tw-text-sm mr-2 ">From |</span> 
+                        <span class="tw-text-gray-500 tw-font-semibold tw-text-sm mr-2 ">
+                            From |
+                        </span> 
                         <v-chip
                             class="ma-0"
                             color="default"
                             label
                         >
                             <v-icon start :icon="mdiAccountCircleOutline"/>
-                            {{ capitalize(senderObj.fName) }} {{ capitalize(senderObj.lName) }}
+                            {{ capitalize(getSenderObj().fName) }} {{ capitalize(getSenderObj().lName) }}
                         </v-chip>
                     </div>
                     <div class="tw-text-xl tw-border-b tw-border-indigo-300 tw-text-indigo-900 tw-font-bold">
-                        {{ meetingObj.title }}
+                        {{ requestedMeetingObj.title }}
                     </div>
                 </v-sheet>
             </v-row>
             <v-row no-gutters>
                 <v-sheet class="pa-2 ma-2 tw-w-full">
                     <v-list>
-                        <v-list-item v-for="[key, value] in Object.entries(meetingObj)">
+                        <v-list-item v-for="[key, value] in Object.entries(requestedMeetingObj)">
                             <template #subtitle>
                                 {{ capitalize(key) }}
                             </template>

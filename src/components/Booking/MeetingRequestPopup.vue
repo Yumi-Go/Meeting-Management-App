@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
+import { useAuth } from '../../composables/useAuth';
 import { useFirestore } from '../../composables/useFirestore';
 import { useDateTime } from '../../composables/useDateTime'
 import VueDatePicker from '@vuepic/vue-datepicker';
@@ -9,6 +10,8 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { mdiEmailArrowRight, mdiRepeat } from '@mdi/js';
 
 const emit = defineEmits(['closeMeetingRequestPopup']);
+
+const { userStateObserver } = useAuth();
 const { allUsers, requestMeeting } = useFirestore();
 const { timeItems, removeApmFromTimeArr, formatDateStr } = useDateTime();
 const popupUser = useLocalStorage('popupUser', {});
@@ -18,6 +21,8 @@ const weeklyRecurring = ref(false);
 const monthlyRecurring = ref(false);
 const meetingRequested = ref({
     status: false, // Boolean, Default: false(Pending), Only Accepted meetings(=true) are displayed on the calendar
+    sender: auth.currentUser.uid,
+    receiver: popupUser.value.uid,
     title: '',
     link: '',
     location: '',
@@ -53,7 +58,8 @@ async function sendMeetingRequest() {
     meetingRequested.value.startTime = `${startTimeArr[0]}:${startTimeArr[1]}`;
     const endTimeArr = removeApmFromTimeArr(meetingRequested.value.endTime);
     meetingRequested.value.endTime = `${endTimeArr[0]}:${endTimeArr[1]}`;
-    await requestMeeting(auth.currentUser.uid, popupUser.value.uid, meetingRequested.value);
+    await requestMeeting(meetingRequested.value);
+    userStateObserver();
     closeBtnClick();
 }
 

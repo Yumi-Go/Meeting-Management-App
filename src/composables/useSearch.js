@@ -2,13 +2,13 @@ import { ref, watch } from "vue"
 import { useFirestore } from "./useFirestore";
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'
 
-const currentUser = useLocalStorage('currentUser', []);
+const currentUserInLocalStorage = useLocalStorage('currentUser', []);
 
 const { getAllUserInfo, getUserInfoByName } = useFirestore();
 const userSearch = ref('');
 // const userSearchResult = ref([]);
 
-// const inboxSearch = ref('');
+const inboxSearch = ref('');
 
 export function useSearch() {
 
@@ -20,9 +20,9 @@ export function useSearch() {
         }
     }
     
-
+    // // 인박스 서치기능할때 살려서 수정하기
     // function getInboxSearchResult() {
-    //     if (currentUser.value.meetingRequestsReceived.length > 0) {
+    //     if (currentUserInLocalStorage.value.meetingRequestsReceived.length > 0) {
     //         if (inboxSearch.value.length > 0) {
     //             const input = inboxSearch.value.toLowerCase();
     //             inboxSearchResult.value = currentUserInLocalStorage.meetingRequestsReceived.filter(

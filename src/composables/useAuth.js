@@ -15,7 +15,7 @@ import { useDateTime } from './useDateTime';
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const currentUser = ref(auth.currentUser);
 
-const { getUserInfoByUID } = useFirestore();
+const { getUserInfoByUID, getSentMeetingRequests, getReceivedMeetingRequests, } = useFirestore();
 const { dateWithTimezone } = useDateTime();
 
 const isUserReAuthenticated = ref(false);
@@ -38,12 +38,27 @@ export function useAuth() {
                             fromUntilPairObj.until = dateWithTimezone(fromUntilPairObj.until.toDate());
                         });
                     }
-                    if (info.meetingRequestsReceived.length > 0) {
-                        info.meetingRequestsReceived.forEach(requestObj => {
-                            Object.values(requestObj)[0].createdAt = Object.values(requestObj)[0].createdAt.toDate();
-                        });
-                    }
                     currentUserInLocalStorage.value = info;
+                    getSentMeetingRequests(user.uid)
+                    .then(requests => {
+                        console.log("requests sent: ", requests);
+                        if (requests.length > 0) {
+                            requests.forEach(request => {
+                                request.createdAt = request.createdAt.toDate();
+                            });
+                        }
+                        currentUserInLocalStorage.value['meetingsSent'] = requests;
+                    });
+                    getReceivedMeetingRequests(user.uid)
+                    .then(requests => {
+                        console.log("requests received: ", requests);
+                        if (requests.length > 0) {
+                            requests.forEach(request => {
+                                request.createdAt = request.createdAt.toDate();
+                            });
+                        }
+                        currentUserInLocalStorage.value['meetingsReceived'] = requests;
+                    });
                 });
             } else {
                 console.log("The logged in user does not exist.");

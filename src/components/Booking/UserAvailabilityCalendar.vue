@@ -11,7 +11,7 @@ import { useDateTime } from '../../composables/useDateTime'
 import { useFirestore } from '../../composables/useFirestore'
 import { useLocalStorage } from '@vueuse/core';
 
-const currentUser = useLocalStorage('currentUser', {});
+const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const {
     weekdayNames,
     getYearMonthDayStr,
@@ -28,7 +28,7 @@ const { userStateObserver } = useAuth();
 
 userStateObserver();
 
-watch(currentUser, (updatedCurrentUser) => {
+watch(currentUserInLocalStorage, (updatedCurrentUser) => {
     addEventsToCalendar();
 });
 
@@ -82,7 +82,7 @@ function addAvailabilityToCalendar() {
         }
 
         //// date overrides: corresponding to 'exdate' in above weekly obj
-        const dateOverrides = currentUser.value.dateOverrides;
+        const dateOverrides = currentUserInLocalStorage.value.dateOverrides;
         dateOverrides.forEach((fromUntilPairObj, index) => {
             const dateStr = getDateOverridesForCalendar()[index];
             const fromTimeStr = `${format2digits(new Date(fromUntilPairObj.from).getHours())}:${format2digits(new Date(fromUntilPairObj.from).getMinutes())}:00`;
@@ -96,10 +96,10 @@ function addAvailabilityToCalendar() {
             }
 
             // 여기 하다말았음. 데이터 더 넣어서 테스트해봐야 함!
-            const availableDayFullNames = Object.keys(currentUser.value.weeklyAvailability);
+            const availableDayFullNames = Object.keys(currentUserInLocalStorage.value.weeklyAvailability);
             const dayFullName = getDayNameOfDateObj(new Date(fromUntilPairObj.from));
             if (availableDayFullNames.includes(dayFullName)) {
-                const exdateTime = currentUser.value.weeklyAvailability[dayFullName][0];
+                const exdateTime = currentUserInLocalStorage.value.weeklyAvailability[dayFullName][0];
                 weekly.exdate.push(`${dateStr}T${exdateTime}:00`);
                 calendarOptions.value.events.push(overwrittenAvailability);
             }
