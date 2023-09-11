@@ -2,7 +2,6 @@
 import { useAuth } from '../composables/useAuth'
 import { auth } from '../firebaseConfig'
 import { useLocalStorage } from '@vueuse/core'
-import { useFormat } from '../composables/useFormat'
 import SignIn from '../components/SignIn.vue'
 import TabHeader from '../components/TabHeader.vue'
 import SearchTitle from "../components/Booking/SearchTitle.vue";
@@ -10,16 +9,12 @@ import SearchBar from "../components/Booking/SearchBar.vue";
 import SearchResult from "../components/Booking/SearchResult.vue";
 
 const { userStateObserver, requiredInfoCheck } = useAuth();
-const { capitalize } = useFormat();
-
 userStateObserver();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 const tabHeaderText = "Book a Meeting"
-
 requiredInfoCheck();
 
 </script>
-
 
 <template>
     <SignIn v-if="Object.keys(currentUserInLocalStorage).length < 1"/>

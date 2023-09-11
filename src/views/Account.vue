@@ -19,15 +19,38 @@ const { userStateObserver, reAuthentication, changePassword } = useAuth();
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
 userStateObserver();
 const tabHeaderText = 'account';
-const fName = ref(currentUserInLocalStorage.value.fName);
-const mName = ref (currentUserInLocalStorage.value.mName);
-const lName = ref(currentUserInLocalStorage.value.lName);
-const organization = ref(currentUserInLocalStorage.value.organization);
-const department = ref(currentUserInLocalStorage.value.department);
-const position = ref(currentUserInLocalStorage.value.position);
-const role = ref(currentUserInLocalStorage.value.role);
-const location = ref(currentUserInLocalStorage.value.location);
-const timezone = ref(currentUserInLocalStorage.value.timezone);
+
+const fName = ref(null);
+const mName = ref (null);
+const lName = ref(null);
+const organization = ref(null);
+const department = ref(null);
+const position = ref(null);
+const role = ref(null);
+const location = ref(null);
+const timezone = ref(null);
+
+// const fName = ref(currentUserInLocalStorage.value.fName);
+// const mName = ref (currentUserInLocalStorage.value.mName);
+// const lName = ref(currentUserInLocalStorage.value.lName);
+// const organization = ref(currentUserInLocalStorage.value.organization);
+// const department = ref(currentUserInLocalStorage.value.department);
+// const position = ref(currentUserInLocalStorage.value.position);
+// const role = ref(currentUserInLocalStorage.value.role);
+// const location = ref(currentUserInLocalStorage.value.location);
+// const timezone = ref(currentUserInLocalStorage.value.timezone);
+
+onBeforeMount(() => {
+    fName.value = currentUserInLocalStorage.value.fName;
+    mName.value = currentUserInLocalStorage.value.mName;
+    lName.value = currentUserInLocalStorage.value.lName;
+    organization.value = currentUserInLocalStorage.value.organization;
+    department.value = currentUserInLocalStorage.value.department;
+    position.value = currentUserInLocalStorage.value.position;
+    role.value = currentUserInLocalStorage.value.role;
+    location.value = currentUserInLocalStorage.value.location;
+    timezone.value = currentUserInLocalStorage.value.timezone;
+});
 
 watch(currentUserInLocalStorage, (updatedCurrentUser) => {
 });

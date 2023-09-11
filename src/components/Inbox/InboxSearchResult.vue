@@ -10,8 +10,8 @@ import InboxMessagePopup from "./InboxMessagePopup.vue";
 import { mdiTrashCanOutline } from '@mdi/js';
 import _ from 'lodash';
 
-
 const currentUserInLocalStorage = useLocalStorage('currentUser', {});
+const senderInLocalStorage = useLocalStorage('sender', {});
 const { userStateObserver } = useAuth();
 const {
     getUserInfoByUID,
@@ -19,34 +19,33 @@ const {
     markRead
 } = useFirestore();
 const { getTimeApm } = useDateTime();
-const { capitalize } = useFormat();
+const { capitalize, formatFullName } = useFormat();
 const openInboxMessagePopup = ref(false);
+const chosenRequest = ref({});
+
 // const allRequestsReceived = computed(() => {
 //     return currentUserInLocalStorage.value.meetingsReceived;
 // });
-
-const chosenRequest = ref({});
-// const requestToDelete = ref();
 
 function closeInboxMessagePopup() {
     openInboxMessagePopup.value = false;
 }
 
-let senderObj = {};
-function getSenderObj(senderUid) {
+function getSenderName(senderUid) {
     getUserInfoByUID(senderUid)
-    .then(sender => {
-        senderObj = sender;
+    .then(info => {
+        for (const [key, value] of Object.entries(info)) {
+            senderInLocalStorage.value[key] = value;
+        }
     });
-    return senderObj;
+    return formatFullName(senderInLocalStorage.value.fName, senderInLocalStorage.value.mName, senderInLocalStorage.value.lName);
 }
 
 async function clickRequest(request) {
     openInboxMessagePopup.value = true;
     await markRead(request);
     chosenRequest.value = request;
-    console.log("chosenRequest: ", chosenRequest.value);
-    userStateObserver();
+    // userStateObserver();
 }
 
 async function clickBinIcon(request) {
@@ -66,15 +65,10 @@ async function clickBinIcon(request) {
                 <v-list-subheader class="tw-text-black">
                     Requests I received
                 </v-list-subheader>
-
-
-
-
-
                 <v-list-item
                     v-if="currentUserInLocalStorage.meetingsReceived"
                     v-for="request in currentUserInLocalStorage.meetingsReceived"
-                    class="hover:tw-bg-red-300 hover:tw-text-black tw-group"
+                    class="hover:tw-bg-gray-200 hover:tw-text-black tw-group"
                 >
                     <template #prepend>
                         <v-list-item-action start>
@@ -82,16 +76,22 @@ async function clickBinIcon(request) {
                         </v-list-item-action>
                     </template>
                     <span @click="clickRequest(request)">
-                        <div class="tw-text-lg tw-text-indigo-900 tw-font-semibold">
+                        <div class="tw-text-lg tw-text-indigo-900 tw-font-extrabold">
                             {{ request.title }}
                         </div>
-                        <div class="tw-w-[50%]">
-                            {{ request.startTime }} - {{ request.endTime }}
+                        <div class="tw-w-[50%] tw-text-red-400">
+                            <span class="tw-mr-2">
+                                {{ request.date }}
+                            </span>
+                            <span class="">
+                                {{ request.startTime }} - {{ request.endTime }}
+                            </span>
                         </div>
-                        <div class="">
-                            from
-                            {{ capitalize(getSenderObj(request.sender).fName) }}
-                            {{ capitalize(getSenderObj(request.sender).lName) }}
+                        <div class="tw-italic">
+                            <span class="tw-text-gray-500">from </span>
+                            <span class="tw-font-semibold">
+                                {{ getSenderName(request.sender) }}
+                            </span>
                         </div>
                     </span>
                     <template #append>
@@ -118,16 +118,11 @@ async function clickBinIcon(request) {
                         class="tw-border-indigo-900"
                     />
                 </v-list-item>
-
-
-
                 <v-list-item
                     v-else
                     class="tw-p-5 tw-font-bold"
                 >
-                    <div
-                        class="tw-flex tw-flex-col tw-justify-center tw-items-center"
-                    >
+                    <div class="tw-flex tw-flex-col tw-justify-center tw-items-center">
                         <div>
                             No Result
                         </div>

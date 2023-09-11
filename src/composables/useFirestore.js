@@ -64,7 +64,7 @@ export function useFirestore() {
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            // console.log("Document data:", docSnap.data());
+            console.log("Document data:", docSnap.data());
             return docSnap.data();
         } else {
             console.log("No such document!");
@@ -102,20 +102,10 @@ export function useFirestore() {
 
     //// Meeting
     async function requestMeeting(meetingObj) {
-
-        // console.log("senderUid: ", meetingObj.sender);
-        // console.log("receiverUid: ", meetingObj.receiver); 
-
-        // console.log("meetingObj before timestamp: ", meetingObj);
         meetingObj.createdAt = Timestamp.fromDate(meetingObj.createdAt);
-        // console.log("meetingObj after timestamp: ", meetingObj);
-
         const senderRef = doc(db, "users", meetingObj.sender);
         const receiverRef = doc(db, "users", meetingObj.receiver);
-        
         const senderDocRef_meetingsSent = await addDoc(collection(senderRef, "meetingsSent"), meetingObj);
-        console.log("sender_meetingsSent.id: ", senderDocRef_meetingsSent.id);
-
         const receiverSubColRef_meetingsReceived = doc(receiverRef, "meetingsReceived", senderDocRef_meetingsSent.id);
         await setDoc(receiverSubColRef_meetingsReceived, meetingObj, { merge: true });
 
@@ -142,7 +132,6 @@ export function useFirestore() {
     async function acceptMeetingRequest(meetingObj) {
         const docId = meetingObj.id;
         delete meetingObj.id;
-        console.log("meetingObj: ", meetingObj);
         await setDoc(doc(db, "meetings", docId), meetingObj);
     }
 

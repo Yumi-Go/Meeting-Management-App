@@ -10,5 +10,9 @@ export function useFormat() {
         }
     }
 
-    return { capitalize }
+    function formatFullName(fName, mName, lName) {
+        return `${capitalize(fName)} ${capitalize(mName)} ${capitalize(lName)}`;
+    }
+
+    return { capitalize, formatFullName }
 }

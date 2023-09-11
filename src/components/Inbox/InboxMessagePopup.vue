@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, onBeforeMount } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { useLocalStorage } from '@vueuse/core';
 import { auth } from '../../firebaseConfig'
 import { useAuth } from '../../composables/useAuth'
@@ -8,25 +8,14 @@ import { useFormat } from '../../composables/useFormat'
 import { useDateTime } from '../../composables/useDateTime';
 import { mdiAccountCircleOutline } from '@mdi/js';
 
-// const { showInbox, reloadInbox } = inject('refreshInbox');
 const { userStateObserver } = useAuth();
 const { getTimeApm, getDuration } = useDateTime();
 const { getUserInfoByUID, acceptMeetingRequest, refuseMeetingRequest } = useFirestore();
-const { capitalize } = useFormat();
+const { capitalize, formatFullName } = useFormat();
+const senderInLocalStorage = useLocalStorage('sender', {});
 
-const props = defineProps({
-    requestedMeetingObj: Object,
-});
+const props = defineProps({requestedMeetingObj: Object});
 const emit = defineEmits(['closeInboxMessagePopup']);
-const senderObj = ref({});
-
-function getSenderObj() {
-    getUserInfoByUID(props.requestedMeetingObj.sender)
-    .then(sender => {
-        senderObj.value = sender;
-    });
-    return senderObj.value;
-}
 
 // 여기 하다 말음.. 
 function getMeetingObjToDisplay() {
@@ -60,13 +49,7 @@ async function clickDismissBtn() {
     userStateObserver();
 }
 
-// onBeforeMount(() => {
-//     console.log("props.requestedMeetingObj.sender: ", props.requestedMeetingObj.sender);
-//     getUserInfoByUID(props.requestedMeetingObj.sender)
-//     .then(sender => {
-//         senderObj.value = sender;
-//     });
-// });
+// userStateObserver();
 
 </script>
 
@@ -93,7 +76,8 @@ async function clickDismissBtn() {
                             label
                         >
                             <v-icon start :icon="mdiAccountCircleOutline"/>
-                            {{ capitalize(getSenderObj().fName) }} {{ capitalize(getSenderObj().lName) }}
+                            {{ formatFullName(senderInLocalStorage.fName, senderInLocalStorage.mName, senderInLocalStorage.lName) }}
+                            <!-- {{ capitalize(getSenderObj().fName) }} {{ capitalize(getSenderObj().lName) }} -->
                         </v-chip>
                     </div>
                     <div class="tw-text-xl tw-border-b tw-border-indigo-300 tw-text-indigo-900 tw-font-bold">
