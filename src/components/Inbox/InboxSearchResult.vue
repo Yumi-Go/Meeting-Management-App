@@ -76,10 +76,10 @@ async function clickBinIcon(request) {
                         </v-list-item-action>
                     </template>
                     <span @click="clickRequest(request)">
-                        <div class="tw-text-lg tw-text-indigo-900 tw-font-extrabold">
+                        <div class="tw-text-lg tw-text-red-900 tw-font-extrabold">
                             {{ request.title }}
                         </div>
-                        <div class="tw-w-[50%] tw-text-red-400">
+                        <div class="tw-w-[50%] tw-text-gray-500">
                             <span class="tw-mr-2">
                                 {{ request.date }}
                             </span>
@@ -88,8 +88,8 @@ async function clickBinIcon(request) {
                             </span>
                         </div>
                         <div class="tw-italic">
-                            <span class="tw-text-gray-500">from </span>
-                            <span class="tw-font-semibold">
+                            <span class="tw-text-gray-400">from </span>
+                            <span class="">
                                 {{ getSenderName(request.sender) }}
                             </span>
                         </div>

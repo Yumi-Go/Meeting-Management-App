@@ -26,9 +26,9 @@ requiredInfoCheck();
         </v-row>
         <v-row class="flex-1-1-100">
             <div class="w-100 d-flex flex-column">
-                <div class="d-flex">
+                <!-- <div class="d-flex">
                     <SearchTitle/>
-                </div>
+                </div> -->
                 <div class="d-flex">
                     <SearchBar/>
                 </div>

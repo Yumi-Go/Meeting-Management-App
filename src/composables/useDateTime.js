@@ -78,7 +78,6 @@ export function useDateTime() {
         return new Date(date.getTime() - tzOffset);
     }
 
-
     function formatStartEndTime(time) { // e.g. 09:00 am - 05:00 pm
  
     }

@@ -130,6 +130,7 @@ export function useFirestore() {
     }
 
     async function acceptMeetingRequest(meetingObj) {
+        await refuseMeetingRequest(meetingObj);
         const docId = meetingObj.id;
         delete meetingObj.id;
         await setDoc(doc(db, "meetings", docId), meetingObj);
