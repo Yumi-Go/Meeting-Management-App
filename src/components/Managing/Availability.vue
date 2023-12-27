@@ -40,14 +40,21 @@ watchEffect(() => {
 });
 
 function loadStoredValue() {
-    // let isWeeklyAvailabilityEmpty = true;
+    console.log("weeklyAvailability.value: ", weeklyAvailability.value);
     for (const [key, value] of Object.entries(days.value)) {
-        if (Object.keys(weeklyAvailability.value).includes(key)) {
+        if (Object.keys(weeklyAvailability.value).includes(key) && weeklyAvailability.value[key] != null) {
+            console.log("key & value: ", key, "/", value);
+            console.log("weeklyAvailability.value[key]: ", weeklyAvailability.value[key]);
             value[0] = true;
             value[1] = generateApmWithTimeArr(weeklyAvailability.value[key][0])[0];
             value[2] = weeklyAvailability.value[key][0].slice(0, 2) < 12 ? true : false;
             value[3] = generateApmWithTimeArr(weeklyAvailability.value[key][1])[0];
             value[4] = weeklyAvailability.value[key][1].slice(0, 2) < 12 ? true : false;
+            // value[1] = 0;
+            // value[2] = 0;
+            // value[3] = 0;
+            // value[4] = 0;
+
             // isWeeklyAvailabilityEmpty = false;
         } else {
             value[0] = false;
