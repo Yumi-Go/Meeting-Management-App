@@ -1,6 +1,5 @@
 <script setup>
-import { ref, watch, computed, onBeforeMount } from "vue"
-import { auth } from '../../firebaseConfig'
+import { ref } from "vue"
 import { useAuth } from '../../composables/useAuth'
 import { useFirestore } from "../../composables/useFirestore";
 import { useDateTime } from '../../composables/useDateTime';
@@ -22,6 +21,7 @@ const { getTimeApm } = useDateTime();
 const { capitalize, formatFullName } = useFormat();
 const openInboxMessagePopup = ref(false);
 const chosenRequest = ref({});
+const meetingRequestsReceived = ref([])
 
 // const allRequestsReceived = computed(() => {
 //     return currentUserInLocalStorage.value.meetingsReceived;
@@ -31,15 +31,24 @@ function closeInboxMessagePopup() {
     openInboxMessagePopup.value = false;
 }
 
-function getSenderName(senderUid) {
-    getUserInfoByUID(senderUid)
-    .then(info => {
-        for (const [key, value] of Object.entries(info)) {
-            senderInLocalStorage.value[key] = value;
+async function getMeetingRequestsReceived() {
+    console.log("currentUserInLocalStorage.value.meetingsReceived: ", currentUserInLocalStorage.value.meetingsReceived);
+    if (currentUserInLocalStorage.value.meetingsReceived) {
+        for (const [key, value] of Object.entries(currentUserInLocalStorage.value.meetingsReceived)) {
+            console.log("meetingsReceived key:", key);
+            console.log("meetingsReceived value:", value);
+            console.log("value[sender]: ", value.sender);
+            const senderInfo = await getUserInfoByUID(value.sender);
+            console.log("senderInfo:", senderInfo);
+            value['senderName'] = formatFullName(senderInfo.fName, senderInfo.mName, senderInfo.lName);
+            console.log("value.senderName: ", value.senderName);
+            meetingRequestsReceived.value.push(value);
+            console.log("meetingRequestsReceived: ", meetingRequestsReceived.value);
         }
-    });
-    return formatFullName(senderInLocalStorage.value.fName, senderInLocalStorage.value.mName, senderInLocalStorage.value.lName);
+    }
 }
+
+getMeetingRequestsReceived();
 
 async function clickRequest(request) {
     openInboxMessagePopup.value = true;
@@ -65,10 +74,13 @@ async function clickBinIcon(request) {
                 <v-list-subheader class="tw-text-black">
                     Requests I received
                 </v-list-subheader>
+                <!-- <v-list-item>
+                    {{ currentUserInLocalStorage.meetingsReceived }}
+                </v-list-item> -->
                 <v-list-item
                     v-if="currentUserInLocalStorage.meetingsReceived"
-                    v-for="request in currentUserInLocalStorage.meetingsReceived"
-                    class="hover:tw-bg-gray-200 hover:tw-text-black tw-group"
+                    v-for="request in meetingRequestsReceived"
+                    class="hover:tw-bg-gray-200 hover:tw-text-black tw-group tw-cursor-pointer"
                 >
                     <template #prepend>
                         <v-list-item-action start>
@@ -90,7 +102,7 @@ async function clickBinIcon(request) {
                         <div class="tw-italic">
                             <span class="tw-text-gray-400">from </span>
                             <span class="">
-                                {{ getSenderName(request.sender) }}
+                                {{ request.senderName }}
                             </span>
                         </div>
                     </span>
